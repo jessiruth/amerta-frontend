@@ -69,13 +69,6 @@ jobs:
       
       - name: Install Dependencies
         run: npm install
-    
-      - name: Verify react-scripts is installed
-        run: |
-            if ! [ -x "$(command -v react-scripts)" ]; then
-            echo 'react-scripts is not installed, please check the installation.' >&2
-            exit 1
-            fi
       
       - name: Run Frontend Tests with Coverage
         run: npm run test -- --coverage --watchAll=false
