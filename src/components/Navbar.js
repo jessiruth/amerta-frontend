@@ -30,12 +30,24 @@ const Navbar = () => {
 
             {/* Navbar Kiri */}
             <div className="navbar-left">
-                <img src={companyIcon} alt="Company" className="nav-icon" />
-                <img src={financeIcon} alt="Finance" className="nav-icon" />
-                <img src={purchasesIcon} alt="Purchases" className="nav-icon" />
-                <img src={salesIcon} alt="Sales" className="nav-icon" />
-                <img src={assetsIcon} alt="Assets" className="nav-icon" />
-                <img src={crmIcon} alt="CRM" className="nav-icon" />
+                <div className="nav-item" data-tooltip="Company">
+                    <img src={companyIcon} alt="Company" className="nav-icon" />
+                </div>
+                <div className="nav-item" data-tooltip="Finance">
+                    <img src={financeIcon} alt="Finance" className="nav-icon" />
+                </div>
+                <div className="nav-item" data-tooltip="Purchases">
+                    <img src={purchasesIcon} alt="Purchases" className="nav-icon" />
+                </div>
+                <div className="nav-item" data-tooltip="Sales">
+                    <img src={salesIcon} alt="Sales" className="nav-icon" />
+                </div>
+                <div className="nav-item" data-tooltip="Assets">
+                    <img src={assetsIcon} alt="Assets" className="nav-icon" />
+                </div>
+                <div className="nav-item" data-tooltip="CRM">
+                    <img src={crmIcon} alt="CRM" className="nav-icon" />
+                </div>
             </div>
         </div>
     );

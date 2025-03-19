@@ -38,3 +38,9 @@
     text-align: center;
     color: #1a1a1a;
 }
+
+.home-container {
+    margin-left: 100px;
+    padding: 80px 20px;
+    text-align: center;
+}

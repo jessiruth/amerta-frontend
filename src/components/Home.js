@@ -23,8 +23,8 @@ const Home = () => {
                 }}>Logout</button>
             </nav>
             <div className="content">
-                <h3>Selamat Datang di Home</h3>
-                <p>Halaman ini masih kosong, nantinya akan ada informasi lebih lanjut.</p>
+                <h3>Dashboard</h3>
+                <p>On Development</p>
             </div>
         </div>
     );

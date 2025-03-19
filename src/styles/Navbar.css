@@ -19,6 +19,7 @@
     position: fixed;
     top: 0;
     left: 0;
+    z-index: 1001;
 }
 
 .logout-btn {
@@ -28,11 +29,10 @@
 }
 
 .logout-btn img {
-    width: 30px;
+    width: 40px;
     height: auto;
 }
 
-/* Navbar Kiri */
 .navbar-left {
     display: flex;
     flex-direction: column;
@@ -44,16 +44,41 @@
     position: fixed;
     left: 0;
     top: 0;
+    z-index: 1000;
 }
 
-.nav-icon {
-    width: 40px;
-    height: auto;
+.nav-item {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     margin: 20px 0;
     cursor: pointer;
-    transition: transform 0.2s ease;
 }
 
-.nav-icon:hover {
-    transform: scale(1.1);
+.nav-item img {
+    width: 50px; /* ✅ Pastikan ikon tidak terlalu besar */
+    height: auto;
+}
+
+.nav-item::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    left: 50px;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 14px;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.nav-item:hover::after {
+    opacity: 1;
+    visibility: visible;
 }
