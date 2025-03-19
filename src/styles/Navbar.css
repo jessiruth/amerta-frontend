@@ -1,13 +1,12 @@
-/* Navbar container */
 .navbar-container {
     display: flex;
     position: fixed;
-    width: 100%;
+    width: 80px; /* Only occupy space for the sidebar */
     height: 100vh;
     z-index: 1000;
+    pointer-events: auto; /* Ensure clicks pass through when needed */
 }
 
-/* Navbar Atas */
 .navbar-top {
     display: flex;
     align-items: center;
@@ -22,6 +21,15 @@
     z-index: 1001;
 }
 
+.clickable-logo {
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.clickable-logo:hover {
+    transform: scale(1.1);
+}
+
 .logout-btn {
     background: none;
     border: none;
@@ -33,6 +41,7 @@
     height: auto;
 }
 
+/* Fix Sidebar Overlapping Issues */
 .navbar-left {
     display: flex;
     flex-direction: column;
@@ -44,7 +53,8 @@
     position: fixed;
     left: 0;
     top: 0;
-    z-index: 1000;
+    z-index: 900; /* Lower z-index to prevent overlapping */
+    pointer-events: auto; /* Allow clicks to pass through */
 }
 
 .nav-item {
@@ -57,7 +67,7 @@
 }
 
 .nav-item img {
-    width: 50px; /* ✅ Pastikan ikon tidak terlalu besar */
+    width: 50px;
     height: auto;
 }
 
