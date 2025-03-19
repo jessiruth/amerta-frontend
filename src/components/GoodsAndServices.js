@@ -28,14 +28,6 @@ const GoodsAndServices = () => {
 
     return (
         <div className="page-container">
-            <nav className="navbar">
-                <h2>Goods & Services</h2>
-                <button onClick={() => {
-                    localStorage.removeItem("token");
-                    localStorage.removeItem("role");
-                    navigate("/");
-                }}>Logout</button>
-            </nav>
             <div className="goods-container">
                 <h1 className="page-title">Goods & Services</h1>
     
