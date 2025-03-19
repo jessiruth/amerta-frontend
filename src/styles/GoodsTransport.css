@@ -1,0 +1,36 @@
+.goods-transport-container {
+    margin-left: 100px;
+    padding: 80px 20px;
+}
+
+.goods-transport-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.goods-transport-table th,
+.goods-transport-table td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: left;
+}
+
+.goods-transport-table th {
+    background-color: #f7931e;
+    color: white;
+}
+
+.goods-transport-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.goods-transport-table tr:hover {
+    background-color: #ddd;
+}
+
+td[colspan="4"] {
+    text-align: center;
+    padding: 15px;
+    font-weight: bold;
+}
