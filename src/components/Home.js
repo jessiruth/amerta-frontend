@@ -16,6 +16,9 @@ const Home = () => {
         <div className="Home-container">
             <nav className="navbar">
                 <h2>Home</h2>
+                <button onClick={() => navigate("/good-and-services")}>
+                    Goods & Services
+                </button>
                 <button onClick={() => {
                     localStorage.removeItem("token");
                     localStorage.removeItem("role");
