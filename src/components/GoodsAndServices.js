@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import "../styles/GoodsAndServices.css"; // File CSS untuk styling
+import "../styles/GoodsAndServices.css";
 
 const GoodsAndServices = () => {
     const [barangList, setBarangList] = useState([]);
@@ -37,6 +37,8 @@ const GoodsAndServices = () => {
                 }}>Logout</button>
             </nav>
             <div className="goods-container">
+                <h1 className="page-title">Goods & Services</h1>
+    
                 {barangList.length > 0 ? (
                     <div className="table-container">
                         <table>
@@ -78,7 +80,7 @@ const GoodsAndServices = () => {
                 )}
             </div>
         </div>
-    );
+    );    
 };
 
 export default GoodsAndServices;

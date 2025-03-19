@@ -20,22 +20,39 @@ const Navbar = () => {
 
     return (
         <div className="navbar-container">
-            {/* Navbar Atas */}
+            {/* Navbar Top */}
             <div className="navbar-top">
-                <img src={logo} alt="Logo" className="logo" />
+                <img
+                    src={logo}
+                    alt="Logo"
+                    className="logo clickable-logo"
+                    onClick={() => navigate("/home")}
+                />
                 <button onClick={handleLogout} className="logout-btn">
                     <img src={logoutIcon} alt="Logout" />
                 </button>
             </div>
 
-            {/* Navbar Kiri */}
+            {/* Navbar Left */}
             <div className="navbar-left">
-                <img src={companyIcon} alt="Company" className="nav-icon" />
-                <img src={financeIcon} alt="Finance" className="nav-icon" />
-                <img src={purchasesIcon} alt="Purchases" className="nav-icon" />
-                <img src={salesIcon} alt="Sales" className="nav-icon" />
-                <img src={assetsIcon} alt="Assets" className="nav-icon" />
-                <img src={crmIcon} alt="CRM" className="nav-icon" />
+                <div className="nav-item" data-tooltip="Company">
+                    <img src={companyIcon} alt="Company" className="nav-icon" />
+                </div>
+                <div className="nav-item" data-tooltip="Finance">
+                    <img src={financeIcon} alt="Finance" className="nav-icon" />
+                </div>
+                <div className="nav-item" data-tooltip="Purchases">
+                    <img src={purchasesIcon} alt="Purchases" className="nav-icon" />
+                </div>
+                <div className="nav-item" data-tooltip="Sales">
+                    <img src={salesIcon} alt="Sales" className="nav-icon" />
+                </div>
+                <div className="nav-item" data-tooltip="Assets" onClick={() => navigate("/assets")}>
+                    <img src={assetsIcon} alt="Assets" className="nav-icon" />
+                </div>
+                <div className="nav-item" data-tooltip="CRM">
+                    <img src={crmIcon} alt="CRM" className="nav-icon" />
+                </div>
             </div>
         </div>
     );

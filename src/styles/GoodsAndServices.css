@@ -63,3 +63,12 @@ th {
     font-weight: bold;
     color: #d9534f;
 }
+
+.page-title {
+    text-align: center;
+    font-size: 36px;
+    font-weight: bold;
+    color: #f7931e;
+    margin-bottom: 20px;
+    font-family: 'Poppins', sans-serif;
+}
