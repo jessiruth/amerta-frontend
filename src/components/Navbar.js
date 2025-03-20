@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "../styles/Navbar.css";
 import logo from "../assets/Logo.png";
@@ -8,6 +9,8 @@ import purchasesIcon from "../assets/Purchases.png";
 import salesIcon from "../assets/Sales.png";
 import assetsIcon from "../assets/Assets.png";
 import crmIcon from "../assets/CRM.png";
+
+const AUTO_LOGOUT_TIME = 10 * 60 * 1000;
 
 const Navbar = () => {
     const navigate = useNavigate();
@@ -20,6 +23,33 @@ const Navbar = () => {
             navigate("/");
         }
     };
+
+    useEffect(() => {
+        let timeout;
+
+        const resetTimer = () => {
+            clearTimeout(timeout);
+            timeout = setTimeout(() => {
+                alert("You have been logged out due to inactivity.");
+                handleLogout();
+            }, AUTO_LOGOUT_TIME);
+        };
+
+        window.addEventListener("mousemove", resetTimer);
+        window.addEventListener("keypress", resetTimer);
+        window.addEventListener("click", resetTimer);
+        window.addEventListener("scroll", resetTimer);
+
+        resetTimer();
+
+        return () => {
+            clearTimeout(timeout);
+            window.removeEventListener("mousemove", resetTimer);
+            window.removeEventListener("keypress", resetTimer);
+            window.removeEventListener("click", resetTimer);
+            window.removeEventListener("scroll", resetTimer);
+        };
+    }, []);
 
     return (
         <div className="navbar-container">
