@@ -4,6 +4,7 @@ import Home from "./components/Home";
 import Assets from "./components/Assets";
 import GoodsTransport from "./components/GoodsTransport";
 import Navbar from "./components/Navbar";
+import CreatePengeluaran from "./components/Pengeluaran"
 
 function Layout() {
     const location = useLocation();
@@ -17,6 +18,7 @@ function Layout() {
                 <Route path="/home" element={<Home />} />
                 <Route path="/assets" element={<Assets />} />
                 <Route path="/goods-transport" element={<GoodsTransport />} />
+                <Route path="/create-pengeluaran" element={<CreatePengeluaran />} />
             </Routes>
         </div>
     );
