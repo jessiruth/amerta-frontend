@@ -26,7 +26,7 @@ const Login = () => {
             if (response.data.status === 200) {
                 console.log("Login berhasil, menyimpan token...");
                 localStorage.setItem("token", response.data.data.token);
-                localStorage.setItem("role", response.data.data.role);
+                localStorage.setItem("name", response.data.data.name);
                 navigate("/home");
             } else {
                 console.log("Login gagal, status bukan 200:", response.data);
@@ -59,14 +59,14 @@ const Login = () => {
                 <form onSubmit={handleLogin}>
                     <input
                         type="email"
-                        placeholder="Enter text here"
+                        placeholder="Enter email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         required
                     />
                     <input
                         type="password"
-                        placeholder="Enter text here"
+                        placeholder="Enter password"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         required

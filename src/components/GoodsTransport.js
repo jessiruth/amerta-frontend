@@ -41,7 +41,7 @@ const GoodsTransport = () => {
 
     return (
         <div className="goods-transport-container">
-            <h2>Goods Transport Data</h2>
+            <h1 className="page-title">Goods Transport</h1>
 
             <Toolbar
                 onAdd={() => navigate("/goods-transport/add")}
