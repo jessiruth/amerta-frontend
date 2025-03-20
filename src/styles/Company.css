@@ -1,17 +1,17 @@
-.assets-container {
+.company-container {
     margin-left: 100px;
     padding: 80px 20px;
     text-align: center;
 }
 
-.assets-grid {
+.company-grid {
     display: flex;
     justify-content: center;
     gap: 40px;
     margin-top: 20px;
 }
 
-.asset-box {
+.company-box {
     background-color: #f7931e;
     padding: 20px;
     border-radius: 10px;
@@ -26,19 +26,19 @@
     justify-content: center;
 }
 
-.asset-box img {
+.company-box img {
     width: 50px;
     height: 50px;
     margin-bottom: 10px;
 }
 
-.asset-box:hover {
+.company-box:hover {
     transform: scale(1.05);
     background-color: #d97816;
     box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.15);
 }
 
-.asset-box p {
+.company-box p {
     color: black;
     font-weight: bold;
     font-size: 14px;

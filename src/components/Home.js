@@ -29,8 +29,7 @@ const Home = () => {
                 }}>Logout</button>
             </nav>
             <div className="content">
-                <h3>Welcome, {name}!</h3>
-                <p>On Development</p>
+                <h1 className="page-title">Welcome, {name}</h1>
             </div>
         </div>
     );

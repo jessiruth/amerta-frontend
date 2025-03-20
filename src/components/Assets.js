@@ -9,7 +9,7 @@ const Assets = () => {
 
     return (
         <div className="assets-container">
-            <h2>Assets Feature</h2>
+            <h1 className="page-title">Assets</h1>
             <div className="assets-grid">
                 <div className="asset-box" onClick={() => navigate("/good-and-services")}>
                     <img src={goodsImage} alt="Goods & Services" />
