@@ -1,43 +1,48 @@
-.page-container {
+.page-container-detail {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 20px;
+    padding: 40px;
+    background-color: #f5f5f5;
 }
 
-.page-title {
-    font-size: 32px;
+.page-title-detail {
+    font-size: 36px;
     font-weight: bold;
     color: #f7931e;
     text-align: center;
-    margin-bottom: 20px;
+    margin-bottom: 30px;
     font-family: 'Poppins', sans-serif;
 }
 
 .detail-container {
-    width: 80%;
+    width: 85%;
     background-color: white;
-    padding: 30px;
+    padding: 40px;
     border-radius: 10px;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0px 0px 12px rgba(0, 0, 0, 0.15);
+    text-align: center;
 }
 
 .detail-content {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-around;
+    margin-bottom: 30px;
 }
 
 .info-section {
     width: 45%;
+    text-align: left;
 }
 
 .info-section p {
-    font-size: 18px;
-    margin: 10px 0;
+    font-size: 20px;
+    margin: 12px 0;
     font-weight: 500;
     color: #333;
+    font-family: 'Poppins', sans-serif;
 }
 
 .stock-section {
@@ -47,14 +52,14 @@
 }
 
 .stock-section h3 {
-    font-size: 22px;
+    font-size: 24px;
     color: #333;
     margin-bottom: 20px;
     font-weight: bold;
 }
 
 .stock-section table {
-    width: 60%; 
+    width: 70%; 
     margin: 0 auto;
     border-collapse: collapse;
     background-color: white;
@@ -63,17 +68,10 @@
     box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.1);
 }
 
-.stock-section th {
-    background-color: #f7931e;
-    color: white;
-    font-weight: bold;
-    padding: 12px;
-    text-align: center;
-}
-
-.stock-section td {
+.stock-section th, .stock-section td {
     border: 1px solid #ddd;
-    padding: 12px;
+    padding: 14px;
+    font-size: 18px;
     text-align: center;
 }
 
@@ -86,17 +84,17 @@
 .button-container {
     display: flex;
     justify-content: center;
-    margin-top: 50px;
+    margin-top: 40px;
 }
 
 .back-btn, .update-btn {
-    padding: 12px 20px;
+    padding: 14px 24px;
     border: none;
     cursor: pointer;
-    font-size: 18px;
+    font-size: 20px;
     font-weight: bold;
     border-radius: 5px;
-    margin: 0 10px;
+    margin: 0 15px;
     transition: all 0.3s ease;
 }
 
@@ -120,7 +118,7 @@
 
 .loading-text {
     text-align: center;
-    font-size: 20px;
+    font-size: 22px;
     margin-top: 50px;
     color: #d9534f;
 }

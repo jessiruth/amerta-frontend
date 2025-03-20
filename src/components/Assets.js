@@ -11,7 +11,7 @@ const Assets = () => {
         <div className="assets-container">
             <h2>Assets Feature</h2>
             <div className="assets-grid">
-                <div className="asset-box" onClick={() => navigate("/good-and-services")}>
+                <div className="asset-box" onClick={() => navigate("/goods-and-services")}>
                     <img src={goodsImage} alt="Goods & Services" />
                     <p>Goods & Service</p>
                 </div>

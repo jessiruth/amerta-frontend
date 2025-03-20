@@ -4,7 +4,8 @@ import Home from "./components/Home";
 import GoodsAndServices from "./components/GoodsAndServices";
 import GoodsDetail from "./components/GoodsDetail";
 import Assets from "./components/Assets";
-// import GoodsTransport from "./components/GoodsTransport";
+import GoodsTransport from "./components/GoodsTransport";
+import AddGoods from "./components/AddGoodsAndServices";
 import Navbar from "./components/Navbar";
 
 function Layout() {
@@ -18,9 +19,10 @@ function Layout() {
                 <Route path="/" element={<Login />} />
                 <Route path="/home" element={<Home />} />
                 <Route path="/assets" element={<Assets />} />
-                <Route path="/good-and-services" element={<GoodsAndServices />} />
-                {/* <Route path="/goods-transport" element={<GoodsTransport />} /> */}
-                <Route path="/good-and-services/:id" element={<GoodsDetail />} />
+                <Route path="/goods-and-services" element={<GoodsAndServices />} />
+                <Route path="/goods-transport" element={<GoodsTransport />} />
+                <Route path="/goods-and-services/:id" element={<GoodsDetail />} />
+                <Route path="/goods-and-services/add" element={<AddGoods />} />
             </Routes>
         </div>
     );

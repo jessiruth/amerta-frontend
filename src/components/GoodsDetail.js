@@ -32,8 +32,8 @@ const GoodsDetail = () => {
     }
 
     return (
-        <div className="page-container">
-            <h1 className="page-title">View Goods - ID: {barang.id}</h1>
+        <div className="page-container-detail">
+            <h1 className="page-title-detail">View Goods - ID: {barang.id}</h1>
 
             <div className="detail-container">
                 <div className="detail-content">
@@ -72,7 +72,7 @@ const GoodsDetail = () => {
                 </div>
 
                 <div className="button-container">
-                    <button className="back-btn" onClick={() => navigate("/good-and-services")}>Back</button>
+                    <button className="back-btn" onClick={() => navigate("/goods-and-services")}>Back</button>
                     <button className="update-btn" onClick={() => alert("Update barang dalam pengembangan")}>Update</button>
                 </div>
             </div>

@@ -3,8 +3,10 @@ import { useNavigate } from "react-router-dom";
 import addIcon from "../assets/Add.png";
 import refreshIcon from "../assets/Refresh.png";
 import filterIcon from "../assets/Filter.png";
+import SearchIcon from "@mui/icons-material/Search";
 
-const Toolbar = ({ onAdd, onRefresh, onFilter, onSearch }) => {
+
+const Toolbar = ({ onAdd, onRefresh, onFilter, onSearch, searchPlaceholder  }) => {
     return (
         <div className="toolbar">
             {/* Add Button */}
@@ -35,12 +37,13 @@ const Toolbar = ({ onAdd, onRefresh, onFilter, onSearch }) => {
             <div className="search-container">
                 <input
                     type="text"
-                    placeholder="Search here"
+                    placeholder={searchPlaceholder || "Search by name..."}
                     className="search-bar"
                     onChange={(e) => onSearch(e.target.value)}
                 />
-                <span className="search-icon">🔍</span>
+                <SearchIcon className="search-icon" />
             </div>
+
         </div>
     );
 };
