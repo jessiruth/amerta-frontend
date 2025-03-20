@@ -1,10 +1,10 @@
 import { useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import Toolbar from "../components/Toolbar";
+import Toolbar from "./Toolbar";
 import "../styles/GoodsTransport.css";
 
-const GoodsTransport = () => {
+const Expense = () => {
     const [data, setData] = useState([]);
     const navigate = useNavigate();
     const token = localStorage.getItem("token");
@@ -17,7 +17,7 @@ const GoodsTransport = () => {
 
     const fetchData = useCallback(async () => {
         try {
-            const response = await axios.get("http://localhost:8080/api/barang/transfer/viewall", {
+            const response = await axios.get("http://localhost:8080/api/pengeluaran/viewall", {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -25,7 +25,9 @@ const GoodsTransport = () => {
 
             console.log("API Response:", response.data);
 
-            if (response.data && response.data.data) {
+            if (Array.isArray(response.data)) {
+                setData(response.data);
+            } else if (response.data && Array.isArray(response.data.data)) {
                 setData(response.data.data);
             } else {
                 console.error("Unexpected response format:", response.data);
@@ -41,10 +43,10 @@ const GoodsTransport = () => {
 
     return (
         <div className="goods-transport-container">
-            <h1 className="page-title">Goods Transport</h1>
+            <h1 className="page-title">Expense</h1>
 
             <Toolbar
-                onAdd={() => navigate("/goods-transport/add")}
+                onAdd={() => navigate("/create-pengeluaran")}
                 onRefresh={fetchData}
                 onFilter={() => console.log("Filter Clicked")}
                 onSearch={(term) => console.log("Search:", term)}
@@ -54,9 +56,9 @@ const GoodsTransport = () => {
                 <thead>
                     <tr>
                         <th>ID</th>
-                        <th>Date of Transfer</th>
-                        <th>Gudang Asal</th>
-                        <th>Gudang Tujuan</th>
+                        <th>Jenis Pengeluaran</th>
+                        <th>Jumlah</th>
+                        <th>Penanggung Jawab</th>
                         <th>Action</th>
                     </tr>
                 </thead>
@@ -65,13 +67,13 @@ const GoodsTransport = () => {
                         data.map((item) => (
                             <tr key={item.id}>
                                 <td>{item.id}</td>
-                                <td>{item.tanggalPemindahan}</td>
-                                <td>{item.gudangAsal}</td>
-                                <td>{item.gudangTujuan}</td>
+                                <td>{item.jenisPengeluaran}</td>
+                                <td>{item.jumlah.toLocaleString("id-ID", { style: "currency", currency: "IDR" })}</td>
+                                <td>{item.penanggung_jawab}</td>
                                 <td>
                                     <button
                                         className="detail-button"
-                                        onClick={() => navigate(`/goods-transport/detail/${item.id}`)}
+                                        onClick={() => navigate(`/expense/detail/${item.id}`)}
                                     >
                                         Detail
                                     </button>
@@ -80,7 +82,7 @@ const GoodsTransport = () => {
                         ))
                     ) : (
                         <tr>
-                            <td colSpan="4">No data available</td>
+                            <td colSpan="6">No data available</td>
                         </tr>
                     )}
                 </tbody>
@@ -89,4 +91,4 @@ const GoodsTransport = () => {
     );
 };
 
-export default GoodsTransport;
+export default Expense;

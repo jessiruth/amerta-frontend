@@ -1,0 +1,56 @@
+.goods-transport-detail-container {
+    margin-left: 100px;
+    padding: 80px 20px;
+}
+
+.goods-transport-detail-table,
+.goods-transport-list-table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+    margin-top: 20px;
+}
+
+.goods-transport-detail-table th,
+.goods-transport-detail-table td,
+.goods-transport-list-table th,
+.goods-transport-list-table td {
+    border: 1px solid #ddd;
+    padding: 12px;
+    text-align: left;
+}
+
+.goods-transport-detail-table th,
+.goods-transport-list-table th {
+    background-color: #f7931e; /* Warna oranye */
+    color: white;
+    width: 15%;
+    font-weight: bold;
+}
+
+.back-button {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    background-color: #f7931e;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    text-align: center;
+    font-size: 16px;
+    margin-top: 20px;
+}
+
+.back-button:hover {
+    background-color: #e6811b;
+}
+
+.page-title {
+    text-align: center;
+    font-size: 36px;
+    font-weight: bold;
+    color: #f7931e;
+    margin-bottom: 20px;
+    font-family: 'Poppins', sans-serif;
+}

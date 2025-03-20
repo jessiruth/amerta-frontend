@@ -43,3 +43,23 @@ td[colspan="4"] {
     margin-bottom: 20px;
     font-family: 'Poppins', sans-serif;
 }
+.detail-button {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    background-color: #f7931e;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    text-align: center;
+}
+
+.page-title {
+    text-align: center;
+    font-size: 36px;
+    font-weight: bold;
+    color: #f7931e;
+    margin-bottom: 20px;
+    font-family: 'Poppins', sans-serif;
+}

@@ -8,6 +8,11 @@ import GoodsTransport from "./components/GoodsTransport";
 import Navbar from "./components/Navbar";
 import Company from "./components/Company";
 import Employee from "./components/Employee";
+import CreatePengeluaran from "./components/Pengeluaran";
+import Finance from "./components/Finance";
+import Expense from "./components/Expense";
+import ExpenseDetail from "./components/ExpenseDetail";
+import GoodsTransportDetail from "./components/GoodsTransportDetail";
 
 function Layout() {
     const location = useLocation();
@@ -25,6 +30,11 @@ function Layout() {
                 <Route path="/good-and-services/:id" element={<GoodsDetail />} />
                 <Route path="/company" element={<Company />} />
                 <Route path="/employee" element={<Employee />} />
+                <Route path="/create-pengeluaran" element={<CreatePengeluaran />} />
+                <Route path="/finance" element={<Finance />} />
+                <Route path="/expense" element={<Expense />} />
+                <Route path="/expense/detail/:id" element={<ExpenseDetail />} />
+                <Route path="/goods-transport/detail/:id" element={<GoodsTransportDetail />} />
             </Routes>
         </div>
     );
