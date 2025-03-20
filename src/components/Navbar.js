@@ -13,9 +13,12 @@ const Navbar = () => {
     const navigate = useNavigate();
 
     const handleLogout = () => {
-        localStorage.removeItem("token");
-        localStorage.removeItem("role");
-        navigate("/");
+        const confirmLogout = window.confirm("Are you sure you want to log out?");
+        if (confirmLogout) {
+            localStorage.removeItem("token");
+            localStorage.removeItem("name");
+            navigate("/");
+        }
     };
 
     return (
