@@ -55,7 +55,7 @@ const Pengeluaran = () => {
             if (response.status === 200 || response.status === 201) {
                 console.log("Pengeluaran berhasil ditambahkan!");
                 alert("Pengeluaran berhasil ditambahkan!");
-                navigate("/home"); // Redirect setelah sukses
+                navigate("/expense"); // Redirect setelah sukses
             } else {
                 console.log("Gagal menambahkan pengeluaran:", response.data);
                 setError("Gagal menambahkan pengeluaran. Silakan coba lagi.");
@@ -82,18 +82,7 @@ const Pengeluaran = () => {
     const handleCancel = () => {
       if (window.confirm("Apakah Anda yakin ingin membatalkan penambahan pengeluaran?")) {
           console.log("Membatalkan penambahan pengeluaran");
-  
-          setFormData({
-              jenisPengeluaran: "",
-              jumlah: "",
-              tanggal: new Date().toISOString().split("T")[0],
-              penanggung_jawab: "",
-              keterangan: "",
-          });
-  
-          setError("");
-          console.log("Form telah direset ke kondisi awal");
-          navigate("/create-pengeluaran");
+          navigate("/expense");
       }
     };
 
@@ -165,7 +154,7 @@ const Pengeluaran = () => {
                         <button type="button" className="cancel-button" onClick={handleCancel}>
                             Batal
                         </button>
-                        <button type="submit" className="submit-button" disabled={isSubmitting}>
+                        <button type="submit" className="submit-button" disabled={isSubmitting => navigate("/expense")}>
                             {isSubmitting ? "Menyimpan..." : "Simpan Pengeluaran"}
                         </button>
                     </div>

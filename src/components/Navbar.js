@@ -38,7 +38,7 @@ const Navbar = () => {
                 <div className="nav-item" data-tooltip="Company">
                     <img src={companyIcon} alt="Company" className="nav-icon" />
                 </div>
-                <div className="nav-item" data-tooltip="Finance" onClick={() => navigate("/create-pengeluaran")}>
+                <div className="nav-item" data-tooltip="Finance" onClick={() => navigate("/finance")}>
                     <img src={financeIcon} alt="Finance" className="nav-icon" />
                 </div>
                 <div className="nav-item" data-tooltip="Purchases">
