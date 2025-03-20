@@ -9,10 +9,10 @@ const Assets = () => {
 
     return (
         <div className="assets-container">
-            <h2>Asset Feature</h2>
+            <h2>Assets Feature</h2>
             <div className="assets-grid">
-                <div className="asset-box" onClick={() => alert("Goods & Service Clicked")}>
-                    <img src={goodsImage} alt="Goods & Service" />
+                <div className="asset-box" onClick={() => navigate("/good-and-services")}>
+                    <img src={goodsImage} alt="Goods & Services" />
                     <p>Goods & Service</p>
                 </div>
 
