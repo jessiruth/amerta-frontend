@@ -35,6 +35,14 @@ td[colspan="4"] {
     font-weight: bold;
 }
 
+.page-title {
+    text-align: center;
+    font-size: 36px;
+    font-weight: bold;
+    color: #f7931e;
+    margin-bottom: 20px;
+    font-family: 'Poppins', sans-serif;
+}
 .detail-button {
     display: block;
     width: 100%;

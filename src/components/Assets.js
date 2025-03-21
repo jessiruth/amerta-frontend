@@ -9,14 +9,14 @@ const Assets = () => {
 
     return (
         <div className="assets-container">
-            <h2>Asset Feature</h2>
+            <h1 className="page-title">Assets</h1>
             <div className="assets-grid">
-                <div className="asset-box" onClick={() => alert("Goods & Service Clicked")}>
-                    <img src={goodsImage} alt="Goods & Service" />
+                <div className="asset-box" onClick={() => navigate("/good-and-services")}>
+                    <img src={goodsImage} alt="Goods & Services" />
                     <p>Goods & Service</p>
                 </div>
 
-                <div className="asset-box" onClick={() => alert("Storage Clicked")}>
+                <div className="asset-box" onClick={() => navigate("/gudang")}>
                     <img src={storageImage} alt="Storage" />
                     <p>Storage</p>
                 </div>

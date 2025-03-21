@@ -8,7 +8,7 @@ const Finance = () => {
 
     return (
         <div className="finance-container">
-            <h2>Finance Feature</h2>
+            <h1 className="page-title">Finance</h1>
             <div className="finance-grid">
                 <div className="finance-box" onClick={() => navigate("/expense")}>
                     <img src={expenseImage} alt="Expense" />

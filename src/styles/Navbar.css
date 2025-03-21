@@ -41,7 +41,6 @@
     height: auto;
 }
 
-/* Fix Sidebar Overlapping Issues */
 .navbar-left {
     display: flex;
     flex-direction: column;
@@ -53,8 +52,8 @@
     position: fixed;
     left: 0;
     top: 0;
-    z-index: 900; /* Lower z-index to prevent overlapping */
-    pointer-events: auto; /* Allow clicks to pass through */
+    z-index: 900;
+    pointer-events: auto;
 }
 
 .nav-item {

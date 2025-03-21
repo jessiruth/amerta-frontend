@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import axiosInstance from '../services/axiosInstance';
 import Toolbar from "../components/ToolbarGoodsTransport";
 import "../styles/GoodsTransport.css";
 
@@ -21,7 +21,7 @@ const GoodsTransport = () => {
 
     const fetchData = useCallback(async () => {
         try {
-            const response = await axios.get("http://localhost:8080/api/barang/transfer/viewall", {
+            const response = await axiosInstance.get("/api/barang/transfer/viewall", {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
