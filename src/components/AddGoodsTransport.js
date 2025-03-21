@@ -91,6 +91,8 @@ const AddGoodsTransport = () => {
         e.preventDefault();
         setError("");
 
+        const confirm = window.confirm("Apakah Anda yakin ingin menyimpan pemindahan barang ini?");
+        if (!confirm) return;
         if (!validateForm()) return;
 
         setIsSubmitting(true);
@@ -191,7 +193,17 @@ const AddGoodsTransport = () => {
 
                     {/* Submit & Cancel Buttons */}
                     <div className="form-actions">
-                        <button type="button" className="cancel-button" onClick={() => navigate("/goods-transport")}>Batal</button>
+                        <button
+                            type="button"
+                            className="cancel-button"
+                            onClick={() => {
+                                if (window.confirm("Apakah Anda yakin ingin membatalkan transfer barang?")) {
+                                    navigate("/goods-transport");
+                                }
+                            }}
+                        >
+                            Batal
+                        </button>
                         <button type="submit" className="submit-button" disabled={isSubmitting}>
                             {isSubmitting ? "Menyimpan..." : "Simpan"}
                         </button>
