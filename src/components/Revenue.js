@@ -48,9 +48,7 @@ const Revenue = () => {
         const lower = searchTerm.toLowerCase();
 
         const filtered = data.filter((item) => {
-            if (searchCategory === "id") {
-                return item.id.toLowerCase().includes(lower);
-            } else if (searchCategory === "penerimaan") {
+            if (searchCategory === "penerimaan") {
                 return item.jenisPenerimaan.toLowerCase().includes(lower);
             } else if (searchCategory === "jumlah") {
                 const searchValue = searchTerm.replace(/[^0-9]/g, "");
@@ -61,7 +59,6 @@ const Revenue = () => {
                 return item.sumberPenerimaan.toLowerCase().includes(lower);
             } else {
                 return (
-                    item.id.toLowerCase().includes(lower) ||
                     item.jenisPenerimaan.toLowerCase().includes(lower) ||
                     item.jumlah.toString().includes(searchTerm.replace(/[^0-9]/g, "")) ||
                     item.sumberPenerimaan.toLowerCase().includes(lower)

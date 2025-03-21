@@ -46,9 +46,7 @@ const GoodsTransport = () => {
         const lower = searchTerm.toLowerCase();
 
         const filtered = data.filter((item) => {
-            if (searchCategory === "id") {
-                return item.id.toLowerCase().includes(lower);
-            } else if (searchCategory === "tanggal") {
+            if (searchCategory === "tanggal") {
                 return item.tanggalPemindahan.toLowerCase().includes(lower);
             } else if (searchCategory === "asal") {
                 return item.gudangAsal.toLowerCase().includes(lower);
@@ -56,7 +54,6 @@ const GoodsTransport = () => {
                 return item.gudangTujuan.toLowerCase().includes(lower);
             } else {
                 return (
-                    item.id.toLowerCase().includes(lower) ||
                     item.tanggalPemindahan.toLowerCase().includes(lower) ||
                     item.gudangAsal.toLowerCase().includes(lower) ||
                     item.gudangTujuan.toLowerCase().includes(lower)

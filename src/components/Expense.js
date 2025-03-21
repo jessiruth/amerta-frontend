@@ -48,9 +48,7 @@ const Expense = () => {
         const lower = searchTerm.toLowerCase();
 
         const filtered = data.filter((item) => {
-            if (searchCategory === "id") {
-                return item.id.toLowerCase().includes(lower);
-            } else if (searchCategory === "pengeluaran") {
+            if (searchCategory === "pengeluaran") {
                 return item.jenisPengeluaran.toLowerCase().includes(lower);
             } else if (searchCategory === "jumlah") {
                 const searchValue = searchTerm.replace(/[^0-9]/g, "");
@@ -61,7 +59,6 @@ const Expense = () => {
                 return item.penanggung_jawab.toLowerCase().includes(lower);
             } else {
                 return (
-                    item.id.toLowerCase().includes(lower) ||
                     item.jenisPengeluaran.toLowerCase().includes(lower) ||
                     item.jumlah.toString().includes(searchTerm.replace(/[^0-9]/g, "")) ||
                     item.penanggung_jawab.toLowerCase().includes(lower)

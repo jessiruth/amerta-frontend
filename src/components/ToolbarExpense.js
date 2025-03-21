@@ -42,7 +42,6 @@ const ToolbarExpense = ({ onAdd, onRefresh, onFilter, onSearch, selectedCategory
             <div className="toolbar-item filter-container">
                 <select className="filter-dropdown" onChange={handleCategoryChange} value={selectedCategory}>
                     <option value="all">Filter: All Fields</option>
-                    <option value="id">Filter: ID</option>
                     <option value="pengeluaran">Filter: Jenis Pengeluaran</option>
                     <option value="jumlah">Filter: Jumlah</option>
                     <option value="penanggung">Filter: Penanggung Jawab</option>
