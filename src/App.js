@@ -11,6 +11,7 @@ import ExpenseDetail from "./components/ExpenseDetail";
 import GoodsTransportDetail from "./components/GoodsTransportDetail";
 import Revenue from "./components/Revenue";
 import RevenueDetail from "./components/RevenueDetail";
+import CreatePenerimaan from "./components/Penerimaan";
 
 function Layout() {
     const location = useLocation();
@@ -25,6 +26,7 @@ function Layout() {
                 <Route path="/assets" element={<Assets />} />
                 <Route path="/goods-transport" element={<GoodsTransport />} />
                 <Route path="/create-pengeluaran" element={<CreatePengeluaran />} />
+                <Route path="/create-penerimaan" element={<CreatePenerimaan />} />
                 <Route path="/finance" element={<Finance />} />
                 <Route path="/expense" element={<Expense />} />
                 <Route path="/expense/detail/:id" element={<ExpenseDetail />} />
