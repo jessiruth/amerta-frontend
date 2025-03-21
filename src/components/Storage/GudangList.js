@@ -1,113 +1,82 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import Navbar from '../Navbar';
-import Toolbar from '../Toolbar';
-import axiosInstance from '../../services/axiosInstance';
-import '../../styles/GudangList.css';
+import React, { useState, useEffect, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
+import Navbar from "../Navbar";
+import Toolbar from "../ToolbarGudang";
+import axiosInstance from "../../services/axiosInstance";
+import "../../styles/GudangList.css";
 
 const GudangList = () => {
-    const [loading, setLoading] = useState(true);
     const [gudangList, setGudangList] = useState([]);
-    const [searchTerm, setSearchTerm] = useState('');
-    const [locationFilter, setLocationFilter] = useState({ kota: '', provinsi: '' });
+    const [filteredData, setFilteredData] = useState([]);
+    const [searchTerm, setSearchTerm] = useState("");
+    const [searchCategory, setSearchCategory] = useState("all");
+    const [loading, setLoading] = useState(true);
+
     const navigate = useNavigate();
 
     useEffect(() => {
         const token = localStorage.getItem("token");
-
         if (!token) {
             navigate("/");
             return;
         }
-
         fetchGudangList(token);
     }, [navigate]);
 
-    const fetchGudangList = async (token) => {
+    const fetchGudangList = useCallback(async (token) => {
         setLoading(true);
-        const { kota, provinsi } = locationFilter;
         try {
-            const params = new URLSearchParams();
-            if (searchTerm) params.append('search', searchTerm);
-            if (kota) params.append('kota', kota);
-            if (provinsi) params.append('provinsi', provinsi);
-
-            const endpoint = `/api/gudang/?${params.toString()}`;
-            const response = await axiosInstance.get(endpoint, {
+            const response = await axiosInstance.get("/api/gudang/", {
                 headers: { Authorization: `Bearer ${token}` },
             });
-            
+
             if (response.data && response.data.data) {
                 setGudangList(response.data.data);
+                setFilteredData(response.data.data); // Set data awal
             }
         } catch (error) {
-            console.error('Error fetching gudang list:', error);
-            if (error.response && error.response.status === 403) {
-                alert('Anda tidak memiliki akses untuk melihat daftar gudang');
-                navigate('/dashboard');
-            } else {
-                alert('Gagal memuat daftar gudang');
-            }
+            console.error("Error fetching gudang list:", error);
         } finally {
             setLoading(false);
         }
-    };
+    }, []);
 
-    const handleAddGudang = () => {
-        navigate('/gudang/add');
-    };
+    useEffect(() => {
+        const lower = searchTerm.toLowerCase();
+
+        const filtered = gudangList.filter((item) => {
+            if (searchCategory === "nama") {
+                return item.nama.toLowerCase().includes(lower);
+            } else if (searchCategory === "kota") {
+                return item.alamatGudang?.kota?.toLowerCase().includes(lower);
+            } else if (searchCategory === "provinsi") {
+                return item.alamatGudang?.provinsi?.toLowerCase().includes(lower);
+            } else if (searchCategory === "kapasitas") {
+                const searchValue = searchTerm.replace(/[^0-9]/g, "");
+                if (searchValue === "") return true; 
+                return item.kapasitas.toString().includes(searchValue);
+            } else {
+                return (
+                    item.nama.toLowerCase().includes(lower) ||
+                    item.alamatGudang?.kota?.toLowerCase().includes(lower) ||
+                    item.alamatGudang?.provinsi?.toLowerCase().includes(lower) ||
+                    item.kapasitas.toString().includes(searchTerm.replace(/[^0-9]/g, ""))
+                );
+            }
+        });
+
+        setFilteredData(filtered);
+    }, [searchTerm, searchCategory, gudangList]);
 
     const handleRefresh = () => {
-        setSearchTerm('');
-        setLocationFilter({ kota: '', provinsi: '' });
+        setSearchTerm("");
+        setSearchCategory("all");
+        setFilteredData(gudangList);
         const token = localStorage.getItem("token");
         if (token) {
             fetchGudangList(token);
         }
     };
-
-    const handleSearch = (e) => {
-        setSearchTerm(e.target.value);
-    };
-
-    const handleSearchSubmit = () => {
-        const token = localStorage.getItem("token");
-        if (token) {
-            fetchGudangList(token);
-        }
-    };
-
-    const handleLocationFilterChange = (e) => {
-        const { name, value } = e.target;
-        setLocationFilter(prev => ({
-            ...prev,
-            [name]: value
-        }));
-    };
-
-    const handleFilter = () => {
-        // You can implement a modal/popup for the filter functionality
-        // For now, we'll just use the existing filter
-        const token = localStorage.getItem("token");
-        if (token) {
-            fetchGudangList(token);
-        }
-    };
-
-    const handleViewDetail = (namaGudang) => {
-        navigate(`/gudang/${namaGudang}`);
-    };
-
-    if (loading && gudangList.length === 0) {
-        return (
-            <div className="gudang-list-container">
-                <Navbar />
-                <div className="gudang-list-content">
-                    <h3 className="loading-text">Memuat data gudang...</h3>
-                </div>
-            </div>
-        );
-    }
 
     return (
         <div className="gudang-list-container">
@@ -116,19 +85,19 @@ const GudangList = () => {
                 <h1 className="page-title">Storage</h1>
 
                 <Toolbar
-                    onAdd={handleAddGudang}
+                    onAdd={() => navigate("/gudang/add")}
                     onRefresh={handleRefresh}
-                    onFilter={handleFilter}
-                    onSearch={handleSearch}
+                    onFilter={(category) => setSearchCategory(category)}
+                    onSearch={(term) => setSearchTerm(term)}
+                    selectedCategory={searchCategory}
                     searchTerm={searchTerm}
-                    onSearchSubmit={handleSearchSubmit}
                 />
 
                 <div className="table-container">
                     <div className="table-header">
                         <h2>Storage Table</h2>
                     </div>
-                    
+
                     {loading ? (
                         <div className="loading-container">
                             <p>Loading...</p>
@@ -138,22 +107,24 @@ const GudangList = () => {
                             <thead>
                                 <tr>
                                     <th>Nama</th>
-                                    <th>Lokasi</th>
+                                    <th>Kota</th>
+                                    <th>Provinsi</th>
                                     <th>Kapasitas</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {gudangList.length > 0 ? (
-                                    gudangList.map((gudang) => (
+                                {filteredData.length > 0 ? (
+                                    filteredData.map((gudang) => (
                                         <tr key={gudang.nama}>
                                             <td>{gudang.nama}</td>
-                                            <td>{`${gudang.alamatGudang?.kota || '-'}, ${gudang.alamatGudang?.provinsi || '-'}`}</td>
+                                            <td>{gudang.alamatGudang?.kota || "-"}</td>
+                                            <td>{gudang.alamatGudang?.provinsi || "-"}</td>
                                             <td>{gudang.kapasitas}</td>
                                             <td>
-                                                <button 
+                                                <button
                                                     className="detail-btn"
-                                                    onClick={() => handleViewDetail(gudang.nama)}
+                                                    onClick={() => navigate(`/gudang/${gudang.nama}`)}
                                                 >
                                                     Details
                                                 </button>
@@ -162,7 +133,7 @@ const GudangList = () => {
                                     ))
                                 ) : (
                                     <tr>
-                                        <td colSpan="4" className="no-data">
+                                        <td colSpan="5" className="no-data">
                                             No data available
                                         </td>
                                     </tr>
