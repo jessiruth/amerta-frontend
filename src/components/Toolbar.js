@@ -1,5 +1,4 @@
 import "../styles/Toolbar.css";
-import { useNavigate } from "react-router-dom";
 import addIcon from "../assets/Add.png";
 import refreshIcon from "../assets/Refresh.png";
 import filterIcon from "../assets/Filter.png";
