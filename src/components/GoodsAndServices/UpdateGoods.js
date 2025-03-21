@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import axios from "axios";
+import axiosInstance from "../../services/axiosInstance";
 import "../../styles/UpdateGoods.css";
 import DeleteIcon from "@mui/icons-material/Delete";
 import Modal from "@mui/material/Modal";
@@ -22,22 +22,17 @@ const UpdateGoods = () => {
     const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
     const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
 
-    useEffect(() => {
-        fetchBarangDetail();
-        fetchGudangOptions();
-    }, []);
-
     const token = localStorage.getItem("token");
     if (!token) {
         navigate("/login");
     }
 
-    const fetchBarangDetail = async () => {
+    const fetchBarangDetail = useCallback(async () => {
         try {
-            const response = await axios.get(`http://localhost:8080/api/barang/${id}`, {
+            const response = await axiosInstance.get(`/api/barang/${id}`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
-
+    
             const barang = response.data.data;
             setNama(barang.nama);
             setKategori(barang.kategori);
@@ -53,11 +48,11 @@ const UpdateGoods = () => {
             setErrorMessage("Gagal mengambil data barang.");
             setIsErrorModalOpen(true);
         }
-    };
+    }, [id, token]);
 
-    const fetchGudangOptions = async () => {
+    const fetchGudangOptions = useCallback(async () => {
         try {
-            const response = await axios.get("http://localhost:8080/api/gudang/", {
+            const response = await axiosInstance.get("/api/gudang/", {
                 headers: { Authorization: `Bearer ${token}` }
             });
             setGudangOptions(response.data.data.map(gudang => gudang.nama));
@@ -66,7 +61,12 @@ const UpdateGoods = () => {
             setErrorMessage("Gagal mengambil daftar gudang.");
             setIsErrorModalOpen(true);
         }
-    };
+    }, [token]);
+
+    useEffect(() => {
+        fetchBarangDetail();
+        fetchGudangOptions();
+    }, [fetchBarangDetail, fetchGudangOptions]);
 
     const addStockRow = () => {
         setStokList([...stokList, { stock: "", namaGudang: "", isExisting: false }]);
@@ -119,7 +119,7 @@ const UpdateGoods = () => {
         };
 
         try {
-            await axios.put(`http://localhost:8080/api/barang/update/${id}`, requestData, {
+            await axiosInstance.put(`/api/barang/update/${id}`, requestData, {
                 headers: {
                     "Content-Type": "application/json",
                     Authorization: `Bearer ${token}`

@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import axiosInstance from "../../services/axiosInstance";
 import "../../styles/AddGoodsAndServices.css";
 import DeleteIcon from "@mui/icons-material/Delete";
 import Modal from "@mui/material/Modal";
@@ -22,18 +22,14 @@ const AddGoodsAndServices = () => {
     const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
     const [newBarangId, setNewBarangId] = useState(null);
 
-    useEffect(() => {
-        fetchGudangOptions();
-    }, []);
-
     const token = localStorage.getItem("token");
     if (!token) {
         navigate("/login");
     }
 
-    const fetchGudangOptions = async () => {
+    const fetchGudangOptions = useCallback(async () => {
         try {
-            const response = await axios.get("http://localhost:8080/api/gudang/", {
+            const response = await axiosInstance.get("/api/gudang/", {
                 headers: { Authorization: `Bearer ${token}` }
             });
             setGudangOptions(response.data.data.map(gudang => gudang.nama));
@@ -42,7 +38,11 @@ const AddGoodsAndServices = () => {
             setErrorMessage("Gagal mengambil daftar gudang. Pastikan Anda memiliki akses.");
             setIsErrorModalOpen(true);
         }
-    };
+    }, [token]);
+
+    useEffect(() => {
+        fetchGudangOptions();
+    }, [fetchGudangOptions]);
 
     const addStockRow = () => {
         setStokList([...stokList, { stock: "", namaGudang: "" }]);
@@ -101,7 +101,7 @@ const AddGoodsAndServices = () => {
         };
 
         try {
-            const response = await axios.post("http://localhost:8080/api/barang/add", requestData, {
+            const response = await axiosInstance.post("/api/barang/add", requestData, {
                 headers: {
                     "Content-Type": "application/json",
                     Authorization: `Bearer ${token}`
