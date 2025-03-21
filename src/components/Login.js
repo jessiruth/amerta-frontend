@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import "../styles/Login.css";
 import logo from "../assets/Logo.png";
+import axiosInstance from '../services/axiosInstance';
 
 const Login = () => {
     const [email, setEmail] = useState("");
@@ -16,7 +16,7 @@ const Login = () => {
     
         try {
             console.log("Mengirim permintaan login...");
-            const response = await axios.post("http://localhost:8080/api/auth/login", {
+            const response = await axiosInstance.post("/api/auth/login", {
                 email,
                 password
             });

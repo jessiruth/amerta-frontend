@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import "../styles/GoodsAndServices.css";
+import axiosInstance from '../services/axiosInstance';
 
 const GoodsAndServices = () => {
     const [barangList, setBarangList] = useState([]);
@@ -15,7 +15,7 @@ const GoodsAndServices = () => {
             return;
         }
 
-        axios.get("http://localhost:8080/api/barang/viewall", {
+        axiosInstance.get("/api/barang/viewall", {
             headers: { Authorization: `Bearer ${token}` },
         })
         .then(response => {

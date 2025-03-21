@@ -19,6 +19,11 @@ import AddEmployee from "./components/AddEmployee";
 import AddGoodsTransport from "./components/AddGoodsTransport";
 
 
+import AddGudang from "./components/Storage/AddGudang";
+import GudangList from './components/Storage/GudangList';
+import GudangDetail from "./components/Storage/GudangDetail";
+import UpdateGudang from "./components/Storage/UpdateGudang";
+
 function Layout() {
     const location = useLocation();
     const hideNavbarOnLogin = location.pathname === "/";
@@ -44,6 +49,10 @@ function Layout() {
                 <Route path="/revenue/detail/:id" element={<RevenueDetail />} />
                 <Route path="/employee/add" element={<AddEmployee />} />
                 <Route path="/goods-transport/add" element={<AddGoodsTransport />} />
+                <Route path="/gudang/add" element={<AddGudang />} />
+                <Route path="/gudang" element={<GudangList />} />
+                <Route path="/gudang/:namaGudang" element={<GudangDetail />} />
+                <Route path="/gudang/update/:namaGudang" element={<UpdateGudang />} />
             </Routes>
         </div>
     );

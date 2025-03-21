@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import axios from "axios";
 import "../styles/GoodsDetail.css";
+import axiosInstance from '../services/axiosInstance';
 
 const GoodsDetail = () => {
     const { id } = useParams();
@@ -16,7 +16,7 @@ const GoodsDetail = () => {
             return;
         }
 
-        axios.get(`http://localhost:8080/api/barang/${id}`, {
+        axiosInstance.get(`/api/barang/${id}`, {
             headers: { Authorization: `Bearer ${token}` },
         })
         .then(response => {
