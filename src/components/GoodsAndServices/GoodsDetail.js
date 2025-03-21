@@ -65,7 +65,10 @@ const GoodsDetail = () => {
                                 {barang.stockBarang.map((stock, index) => (
                                     <tr key={index}>
                                         <td>{stock.namaGudang}</td>
-                                        <td>{stock.stock} unit</td>
+                                        <td className={stock.stock === 0 ? "stok-kosong" : ""}>
+                                            {stock.stock} unit
+                                        </td>
+
                                     </tr>
                                 ))}
                             </tbody>

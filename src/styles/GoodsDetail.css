@@ -138,3 +138,8 @@
     margin-top: 50px;
     color: #d9534f;
 }
+
+.stok-kosong {
+    color: red;
+    font-weight: bold;
+}
