@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import axiosInstance from '../services/axiosInstance';
+import axiosInstance from "../services/axiosInstance";
 import Toolbar from "../components/ToolbarGoodsTransport";
 import "../styles/GoodsTransport.css";
 
@@ -9,6 +9,7 @@ const GoodsTransport = () => {
     const [filteredData, setFilteredData] = useState([]);
     const [searchTerm, setSearchTerm] = useState("");
     const [searchCategory, setSearchCategory] = useState("all");
+    const [loading, setLoading] = useState(true);
 
     const navigate = useNavigate();
     const token = localStorage.getItem("token");
@@ -20,6 +21,7 @@ const GoodsTransport = () => {
     }, [navigate, token]);
 
     const fetchData = useCallback(async () => {
+        setLoading(true);
         try {
             const response = await axiosInstance.get("/api/barang/transfer/viewall", {
                 headers: {
@@ -35,6 +37,8 @@ const GoodsTransport = () => {
             }
         } catch (error) {
             console.error("Error fetching data:", error);
+        } finally {
+            setLoading(false);
         }
     }, [token]);
 
@@ -72,7 +76,7 @@ const GoodsTransport = () => {
     };
 
     return (
-        <div className="goods-transport-container">
+        <div className="gudang-list-container">
             <h1 className="page-title">Goods Transport</h1>
 
             <Toolbar
@@ -84,41 +88,53 @@ const GoodsTransport = () => {
                 searchTerm={searchTerm}
             />
 
-            <table className="goods-transport-table">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Date of Transfer</th>
-                        <th>Gudang Asal</th>
-                        <th>Gudang Tujuan</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {filteredData.length > 0 ? (
-                        filteredData.map((item) => (
-                            <tr key={item.id}>
-                                <td>{item.id}</td>
-                                <td>{item.tanggalPemindahan}</td>
-                                <td>{item.gudangAsal}</td>
-                                <td>{item.gudangTujuan}</td>
-                                <td>
-                                    <button
-                                        className="detail-button"
-                                        onClick={() => navigate(`/goods-transport/detail/${item.id}`)}
-                                    >
-                                        Detail
-                                    </button>
-                                </td>
+            <div className="table-container">
+                <div className="table-header">
+                    <h2>Transport Table</h2>
+                </div>
+
+                {loading ? (
+                    <div className="loading-container">
+                        <p>Loading...</p>
+                    </div>
+                ) : (
+                    <table className="gudang-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Date of Transfer</th>
+                                <th>Gudang Asal</th>
+                                <th>Gudang Tujuan</th>
+                                <th>Action</th>
                             </tr>
-                        ))
-                    ) : (
-                        <tr>
-                            <td colSpan="5">No data available</td>
-                        </tr>
-                    )}
-                </tbody>
-            </table>
+                        </thead>
+                        <tbody>
+                            {filteredData.length > 0 ? (
+                                filteredData.map((item) => (
+                                    <tr key={item.id}>
+                                        <td>{item.id}</td>
+                                        <td>{item.tanggalPemindahan}</td>
+                                        <td>{item.gudangAsal}</td>
+                                        <td>{item.gudangTujuan}</td>
+                                        <td>
+                                            <button
+                                                className="detail-btn"
+                                                onClick={() => navigate(`/goods-transport/detail/${item.id}`)}
+                                            >
+                                                Detail
+                                            </button>
+                                        </td>
+                                    </tr>
+                                ))
+                            ) : (
+                                <tr>
+                                    <td colSpan="5" className="no-data">No data available</td>
+                                </tr>
+                            )}
+                        </tbody>
+                    </table>
+                )}
+            </div>
         </div>
     );
 };
