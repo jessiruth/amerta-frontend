@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import Navbar from "../Navbar";
 import Toolbar from "../ToolbarGudang";
 import axiosInstance from "../../services/axiosInstance";
 import "../../styles/GudangList.css";
@@ -80,7 +79,6 @@ const GudangList = () => {
 
     return (
         <div className="gudang-list-container">
-            <Navbar />
             <div className="gudang-list-content">
                 <h1 className="page-title">Storage</h1>
 
