@@ -43,3 +43,12 @@
     font-weight: bold;
     font-size: 14px;
 }
+
+.page-title {
+    text-align: center;
+    font-size: 36px;
+    font-weight: bold;
+    color: #f7931e;
+    margin-bottom: 20px;
+    font-family: 'Poppins', sans-serif;
+}

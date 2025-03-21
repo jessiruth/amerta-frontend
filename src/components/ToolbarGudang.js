@@ -3,7 +3,7 @@ import "../styles/Toolbar.css";
 import addIcon from "../assets/Add.png";
 import refreshIcon from "../assets/Refresh.png";
 
-const ToolbarGoodsTransport = ({ onAdd, onRefresh, onFilter, onSearch, selectedCategory, searchTerm }) => {
+const ToolbarGudang = ({ onAdd, onRefresh, onFilter, onSearch, selectedCategory, searchTerm }) => {
     const [inputValue, setInputValue] = useState("");
 
     useEffect(() => {
@@ -42,9 +42,10 @@ const ToolbarGoodsTransport = ({ onAdd, onRefresh, onFilter, onSearch, selectedC
             <div className="toolbar-item filter-container">
                 <select className="filter-dropdown" onChange={handleCategoryChange} value={selectedCategory}>
                     <option value="all">Filter: All Fields</option>
-                    <option value="tanggal">Filter: Tanggal Pemindahan</option>
-                    <option value="asal">Filter: Gudang Asal</option>
-                    <option value="tujuan">Filter: Gudang Tujuan</option>
+                    <option value="nama">Filter: Nama</option>
+                    <option value="kota">Filter: Kota</option>
+                    <option value="provinsi">Filter: Provinsi</option>
+                    <option value="kapasitas">Filter: Kapasitas</option>
                 </select>
             </div>
 
@@ -63,4 +64,4 @@ const ToolbarGoodsTransport = ({ onAdd, onRefresh, onFilter, onSearch, selectedC
     );
 };
 
-export default ToolbarGoodsTransport;
+export default ToolbarGudang;

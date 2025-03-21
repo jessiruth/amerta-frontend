@@ -44,3 +44,12 @@
     padding: 80px 20px;
     text-align: center;
 }
+
+.page-title {
+    text-align: center;
+    font-size: 36px;
+    font-weight: bold;
+    color: #f7931e;
+    margin-bottom: 20px;
+    font-family: 'Poppins', sans-serif;
+}

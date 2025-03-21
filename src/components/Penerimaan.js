@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import axiosInstance from "../services/axiosInstance";
 import "../styles/Pengeluaran.css";
 
 const Penerimaan = () => {
@@ -46,7 +46,7 @@ const Penerimaan = () => {
                 keterangan: formData.keterangan,
             };
 
-            const response = await axios.post("http://localhost:8080/api/penerimaan/create", payload, {
+            const response = await axiosInstance.post("/api/penerimaan/create", payload, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -94,7 +94,7 @@ const Penerimaan = () => {
                             <option value="">Pilih jenis penerimaan</option>
                             <option value="Donasi">Donasi</option>
                             <option value="Hibah">Hibah</option>
-                            <option value="InvestasiA">InvestasiA</option>
+                            <option value="Investasi">Investasi</option>
                             <option value="Penjualan Aset">Penjualan Aset</option>
                             <option value="Lainnya">Lainnya</option>
                         </select>

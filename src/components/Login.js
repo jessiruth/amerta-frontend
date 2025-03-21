@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import "../styles/Login.css";
 import logo from "../assets/Logo.png";
+import axiosInstance from '../services/axiosInstance';
 
 const Login = () => {
     const [email, setEmail] = useState("");
@@ -16,7 +16,7 @@ const Login = () => {
     
         try {
             console.log("Mengirim permintaan login...");
-            const response = await axios.post("http://localhost:8080/api/auth/login", {
+            const response = await axiosInstance.post("/api/auth/login", {
                 email,
                 password
             });
@@ -26,7 +26,7 @@ const Login = () => {
             if (response.data.status === 200) {
                 console.log("Login berhasil, menyimpan token...");
                 localStorage.setItem("token", response.data.data.token);
-                localStorage.setItem("role", response.data.data.role);
+                localStorage.setItem("name", response.data.data.name);
                 navigate("/home");
             } else {
                 console.log("Login gagal, status bukan 200:", response.data);
@@ -54,19 +54,19 @@ const Login = () => {
                 <img src={logo} alt="Logo" className="logo" />
             </header>
             <div className="login-box">
-                <h2>Login</h2>
+                <h1 className="title">Login</h1>
                 {error && <p className="error">{error}</p>}
                 <form onSubmit={handleLogin}>
                     <input
                         type="email"
-                        placeholder="Enter text here"
+                        placeholder="Enter email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         required
                     />
                     <input
                         type="password"
-                        placeholder="Enter text here"
+                        placeholder="Enter password"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         required

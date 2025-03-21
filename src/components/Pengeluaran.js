@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import axiosInstance from "../services/axiosInstance";
 import "../styles/Pengeluaran.css";
 
 const Pengeluaran = () => {
@@ -43,7 +43,7 @@ const Pengeluaran = () => {
                 tanggal: formattedTanggal,
             };
 
-            const response = await axios.post("http://localhost:8080/api/pengeluaran/create", payload, {
+            const response = await axiosInstance.post("http://localhost:8080/api/pengeluaran/create", payload, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
