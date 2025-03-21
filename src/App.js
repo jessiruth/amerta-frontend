@@ -16,6 +16,8 @@ import GoodsTransportDetail from "./components/GoodsTransportDetail";
 import Revenue from "./components/Revenue";
 import RevenueDetail from "./components/RevenueDetail";
 import AddEmployee from "./components/AddEmployee";
+import AddGoodsTransport from "./components/AddGoodsTransport";
+
 
 function Layout() {
     const location = useLocation();
@@ -41,6 +43,7 @@ function Layout() {
                 <Route path="/revenue" element={<Revenue />} />
                 <Route path="/revenue/detail/:id" element={<RevenueDetail />} />
                 <Route path="/employee/add" element={<AddEmployee />} />
+                <Route path="/goods-transport/add" element={<AddGoodsTransport />} />
             </Routes>
         </div>
     );

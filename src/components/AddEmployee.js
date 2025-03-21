@@ -112,40 +112,39 @@ const AddEmployee = () => {
     return (
         <div className="add-employee-container">
             <div className="form-box">
-                <h2>Tambah Karyawan</h2>
-                <p className="subtitle">Isi form di bawah untuk menambahkan karyawan baru ke sistem.</p>
+                <h1 className="page-title">Add Employee</h1>
 
                 {error && <p className="error">{error}</p>}
 
                 <form onSubmit={handleSubmit} className="add-employee-form">
                     <div className="form-row">
                         <div className="form-group">
-                            <label>Nama</label>
+                            <label><b>Nama</b></label>
                             <input type="text" name="name" value={formData.name} onChange={handleChange} required />
                         </div>
 
                         <div className="form-group">
-                            <label>Username</label>
+                            <label><b>Username</b></label>
                             <input type="text" name="username" value={formData.username} onChange={handleChange} required />
                         </div>
                     </div>
 
                     <div className="form-row">
                         <div className="form-group">
-                            <label>Email</label>
+                            <label><b>Email</b></label>
                             <input type="email" name="email" value={formData.email} onChange={handleChange} required />
                             {validationErrors.email && <p className="error">{validationErrors.email}</p>}
                         </div>
 
                         <div className="form-group">
-                            <label>Password</label>
+                            <label><b>Password</b></label>
                             <input type="password" name="password" value={formData.password} onChange={handleChange} required />
                             {validationErrors.password && <p className="error">{validationErrors.password}</p>}
                         </div>
                     </div>
 
                     <div className="form-group">
-                        <label>Jenis Kelamin</label>
+                        <label><b>Jenis Kelamin</b></label>
                         <select name="gender" value={formData.gender} onChange={handleChange} required>
                             <option value="true">Laki-laki</option>
                             <option value="false">Perempuan</option>
@@ -153,34 +152,34 @@ const AddEmployee = () => {
                     </div>
 
                     <div className="form-group">
-                        <label>No. KTP</label>
+                        <label><b>No. KTP</b></label>
                         <input type="text" name="ktpNumber" value={formData.ktpNumber} onChange={handleChange} required />
                         {validationErrors.ktpNumber && <p className="error">{validationErrors.ktpNumber}</p>}
                     </div>
 
                     <div className="form-group">
-                        <label>No. Handphone</label>
+                        <label><b>No. Handphone</b></label>
                         <input type="text" name="phone" value={formData.phone} onChange={handleChange} required />
                         {validationErrors.phone && <p className="error">{validationErrors.phone}</p>}
                     </div>
 
                     <div className="form-group">
-                        <label>No. WhatsApp</label>
+                        <label><b>No. WhatsApp</b></label>
                         <input type="text" name="whatsappNumber" value={formData.whatsappNumber} onChange={handleChange} required />
                     </div>
 
                     <div className="form-group">
-                        <label>No. Telepon Rumah</label>
+                        <label><b>No. Telepon Rumah</b></label>
                         <input type="text" name="homePhone" value={formData.homePhone} onChange={handleChange} required />
                     </div>
 
                     <div className="form-group">
-                        <label>No. Telepon Kantor</label>
+                        <label><b>No. Telepon Kantor</b></label>
                         <input type="text" name="businessPhone" value={formData.businessPhone} onChange={handleChange} required />
                     </div>
 
                     <div className="form-group">
-                        <label>Role</label>
+                        <label><b>Role</b></label>
                         <select name="role" value={formData.role} onChange={handleChange} required>
                             <option value="">Pilih Role</option>
                             <option value="Sales">Sales</option>
@@ -193,7 +192,7 @@ const AddEmployee = () => {
                     </div>
 
                     <div className="form-group">
-                        <label>Catatan</label>
+                        <label><b>Catatan</b></label>
                         <textarea name="notes" value={formData.notes} onChange={handleChange} required />
                     </div>
 
