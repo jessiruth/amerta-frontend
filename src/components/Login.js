@@ -54,7 +54,7 @@ const Login = () => {
                 <img src={logo} alt="Logo" className="logo" />
             </header>
             <div className="login-box">
-                <h2>Login</h2>
+                <h1 className="title">Login</h1>
                 {error && <p className="error">{error}</p>}
                 <form onSubmit={handleLogin}>
                     <input
