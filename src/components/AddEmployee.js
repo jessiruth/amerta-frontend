@@ -21,19 +21,57 @@ const AddEmployee = () => {
     });
 
     const [error, setError] = useState("");
+    const [validationErrors, setValidationErrors] = useState({});
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [showConfirmation, setShowConfirmation] = useState(false);
     const navigate = useNavigate();
     const token = localStorage.getItem("token");
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setFormData(prev => ({ ...prev, [name]: value }));
+        setFormData((prev) => ({ ...prev, [name]: value }));
+        setValidationErrors((prevErrors) => ({ ...prevErrors, [name]: "" }));
     };
 
-    const handleSubmit = async (e) => {
+    const validateForm = () => {
+        let errors = {};
+
+        if (!/^\d{16}$/.test(formData.ktpNumber)) {
+            errors.ktpNumber = "KTP harus 16 digit angka.";
+        }
+
+        if (!/\S+@\S+\.\S+/.test(formData.email)) {
+            errors.email = "Format email tidak valid.";
+        }
+
+        if (!/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/.test(formData.password)) {
+            errors.password = "Password harus minimal 8 karakter, mengandung huruf dan angka.";
+        }
+
+        ["phone", "homePhone", "businessPhone", "whatsappNumber"].forEach((field) => {
+            if (formData[field] && !/^\d+$/.test(formData[field])) {
+                errors[field] = "Nomor telepon harus berupa angka.";
+            }
+        });
+
+        setValidationErrors(errors);
+        return Object.keys(errors).length === 0;
+    };
+
+    const handleSubmit = (e) => {
         e.preventDefault();
         setError("");
+
+        if (!validateForm()) {
+            return;
+        }
+
+        setShowConfirmation(true);
+    };
+
+    const confirmSubmit = async () => {
         setIsSubmitting(true);
+        setShowConfirmation(false);
 
         try {
             const payload = {
@@ -96,11 +134,13 @@ const AddEmployee = () => {
                         <div className="form-group">
                             <label>Email</label>
                             <input type="email" name="email" value={formData.email} onChange={handleChange} required />
+                            {validationErrors.email && <p className="error">{validationErrors.email}</p>}
                         </div>
 
                         <div className="form-group">
                             <label>Password</label>
                             <input type="password" name="password" value={formData.password} onChange={handleChange} required />
+                            {validationErrors.password && <p className="error">{validationErrors.password}</p>}
                         </div>
                     </div>
 
@@ -112,28 +152,31 @@ const AddEmployee = () => {
                         </select>
                     </div>
 
-                    <div className="form-row">
-                        <div className="form-group">
-                            <label>No. Handphone</label>
-                            <input type="text" name="phone" value={formData.phone} onChange={handleChange} required />
-                        </div>
-
-                        <div className="form-group">
-                            <label>No. WhatsApp</label>
-                            <input type="text" name="whatsappNumber" value={formData.whatsappNumber} onChange={handleChange} required />
-                        </div>
+                    <div className="form-group">
+                        <label>No. KTP</label>
+                        <input type="text" name="ktpNumber" value={formData.ktpNumber} onChange={handleChange} required />
+                        {validationErrors.ktpNumber && <p className="error">{validationErrors.ktpNumber}</p>}
                     </div>
 
-                    <div className="form-row">
-                        <div className="form-group">
-                            <label>Tanggal Masuk</label>
-                            <input type="date" name="entryDate" value={formData.entryDate} onChange={handleChange} required />
-                        </div>
+                    <div className="form-group">
+                        <label>No. Handphone</label>
+                        <input type="text" name="phone" value={formData.phone} onChange={handleChange} required />
+                        {validationErrors.phone && <p className="error">{validationErrors.phone}</p>}
+                    </div>
 
-                        <div className="form-group">
-                            <label>No. KTP</label>
-                            <input type="text" name="ktpNumber" value={formData.ktpNumber} onChange={handleChange} required />
-                        </div>
+                    <div className="form-group">
+                        <label>No. WhatsApp</label>
+                        <input type="text" name="whatsappNumber" value={formData.whatsappNumber} onChange={handleChange} required />
+                    </div>
+
+                    <div className="form-group">
+                        <label>No. Telepon Rumah</label>
+                        <input type="text" name="homePhone" value={formData.homePhone} onChange={handleChange} required />
+                    </div>
+
+                    <div className="form-group">
+                        <label>No. Telepon Kantor</label>
+                        <input type="text" name="businessPhone" value={formData.businessPhone} onChange={handleChange} required />
                     </div>
 
                     <div className="form-group">
@@ -149,16 +192,33 @@ const AddEmployee = () => {
                         </select>
                     </div>
 
+                    <div className="form-group">
+                        <label>Catatan</label>
+                        <textarea name="notes" value={formData.notes} onChange={handleChange} required />
+                    </div>
+
                     <div className="form-actions">
-                        <button type="button" className="cancel-button" onClick={handleCancel}>
-                            Batal
-                        </button>
+                        <button type="button" className="cancel-button" onClick={handleCancel}>Batal</button>
                         <button type="submit" className="submit-button" disabled={isSubmitting}>
                             {isSubmitting ? "Menyimpan..." : "Simpan Karyawan"}
                         </button>
                     </div>
                 </form>
             </div>
+            {showConfirmation && (
+                <div className="confirmation-overlay">
+                    <div className="confirmation-dialog">
+                        <h3>Konfirmasi Penambahan Karyawan</h3>
+                        <p>Pastikan data yang Anda masukkan sudah benar sebelum menyimpan.</p>
+                        <div className="confirmation-actions">
+                            <button className="cancel-button" onClick={() => setShowConfirmation(false)}>Batal</button>
+                            <button className="confirm-button" onClick={confirmSubmit} disabled={isSubmitting}>
+                                {isSubmitting ? "Menyimpan..." : "Konfirmasi"}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };
