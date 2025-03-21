@@ -1,45 +1,43 @@
+import React from 'react';
 import "../styles/Toolbar.css";
-import { useNavigate } from "react-router-dom";
 import addIcon from "../assets/Add.png";
 import refreshIcon from "../assets/Refresh.png";
 import filterIcon from "../assets/Filter.png";
 
-const Toolbar = ({ onAdd, onRefresh, onFilter, onSearch }) => {
+const Toolbar = ({ onAdd, onRefresh, onFilter, onSearch, searchTerm, onSearchSubmit }) => {
     return (
-        <div className="toolbar">
-            {/* Add Button */}
-            <div className="toolbar-item">
-                <button className="toolbar-btn add-btn" onClick={onAdd}>
-                    <img src={addIcon} alt="Add" />
-                </button>
-                <p className="toolbar-text">Add</p>
+        <div className="toolbar-wrapper">
+            <div className="toolbar">
+                <div className="action-buttons">
+                    <button className="add-button" onClick={onAdd}>
+                        <img src={addIcon} alt="Add" className="toolbar-icon" />
+                        <span className="button-text">Add</span>
+                    </button>
+                    
+                    <button className="refresh-button" onClick={onRefresh}>
+                        <img src={refreshIcon} alt="Refresh" className="toolbar-icon" />
+                        <span className="button-text">Refresh</span>
+                    </button>
+                    
+                    <button className="filter-button" onClick={onFilter}>
+                        <img src={filterIcon} alt="Filter" className="toolbar-icon" />
+                        <span className="button-text">Filter</span>
+                        <span className="dropdown-arrow">▼</span>
+                    </button>
+                </div>
             </div>
-
-            {/* Refresh Button */}
-            <div className="toolbar-item">
-                <button className="toolbar-btn white-btn" onClick={onRefresh}>
-                    <img src={refreshIcon} alt="Refresh" />
-                </button>
-                <p className="toolbar-text">Refresh</p>
-            </div>
-
-            {/* Filter Button */}
-            <div className="toolbar-item">
-                <button className="toolbar-btn white-btn" onClick={onFilter}>
-                    <img src={filterIcon} alt="Filter" />
-                </button>
-                <p className="toolbar-text">Filter</p>
-            </div>
-
-            {/* Search Bar */}
+            
             <div className="search-container">
                 <input
                     type="text"
                     placeholder="Search here"
-                    className="search-bar"
-                    onChange={(e) => onSearch(e.target.value)}
+                    className="search-input"
+                    value={searchTerm}
+                    onChange={(e) => onSearch(e)}
                 />
-                <span className="search-icon">🔍</span>
+                <button className="search-button" onClick={onSearchSubmit}>
+                    <span className="search-icon">🔍</span>
+                </button>
             </div>
         </div>
     );

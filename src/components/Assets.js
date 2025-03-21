@@ -16,7 +16,7 @@ const Assets = () => {
                     <p>Goods & Service</p>
                 </div>
 
-                <div className="asset-box" onClick={() => alert("Storage Clicked")}>
+                <div className="asset-box" onClick={() => navigate("/gudang")}>
                     <img src={storageImage} alt="Storage" />
                     <p>Storage</p>
                 </div>
