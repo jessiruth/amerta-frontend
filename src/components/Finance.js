@@ -15,15 +15,10 @@ const Finance = () => {
                     <p>Expense</p>
                 </div>
 
-                <div className="finance-box" onClick={() => alert("Storage Clicked")}>
+                <div className="finance-box" onClick={() => navigate("/revenue")}>
                     <img src={revenueImage} alt="Revenue" />
                     <p>Revenue</p>
                 </div>
-
-                {/* <div className="asset-box" onClick={() => navigate("/goods-transport")}>
-                    <img src={transportImage} alt="Goods Transport" />
-                    <p>Goods Transport</p>
-                </div> */}
             </div>
         </div>
     );
