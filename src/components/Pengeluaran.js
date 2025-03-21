@@ -14,10 +14,10 @@ const Pengeluaran = () => {
 
     const [error, setError] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [showConfirmation, setShowConfirmation] = useState(false);
     const navigate = useNavigate();
     const token = localStorage.getItem("token");
 
-    // Handle input changes
     const handleChange = (e) => {
         setFormData({
             ...formData,
@@ -25,52 +25,42 @@ const Pengeluaran = () => {
         });
     };
 
-    // Handle form submission (mirip Login.js)
-    const handleSubmit = async (e) => {
+    const handleFormSubmit = (e) => {
         e.preventDefault();
+        setShowConfirmation(true);
+    };
+
+    const handleConfirmSubmit = async () => {
+        setShowConfirmation(false);
         setError("");
         setIsSubmitting(true);
-    
+
         try {
-            console.log("Mengirim permintaan tambah pengeluaran...");
-    
-            // Ubah tanggal menjadi LocalDateTime format "YYYY-MM-DDTHH:MM:SS"
             const formattedTanggal = `${formData.tanggal}T00:00:00`;
-    
+
             const payload = {
                 ...formData,
-                tanggal: formattedTanggal, // Pastikan formatnya benar
+                tanggal: formattedTanggal,
             };
-    
-            console.log("Payload yang dikirim:", payload);
-    
+
             const response = await axios.post("http://localhost:8080/api/pengeluaran/create", payload, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
             });
-    
-            console.log("Response dari server:", response);
-    
+
             if (response.status === 200 || response.status === 201) {
-                console.log("Pengeluaran berhasil ditambahkan!");
                 alert("Pengeluaran berhasil ditambahkan!");
-                navigate("/expense"); // Redirect setelah sukses
+                navigate("/expense");
             } else {
-                console.log("Gagal menambahkan pengeluaran:", response.data);
                 setError("Gagal menambahkan pengeluaran. Silakan coba lagi.");
             }
         } catch (err) {
-            console.error("Terjadi kesalahan:", err);
-    
             if (err.response) {
-                console.log("Response error:", err.response);
                 setError(err.response.data.message || "Terjadi kesalahan saat menambahkan pengeluaran.");
             } else if (err.request) {
-                console.log("Request error:", err.request);
                 setError("Tidak ada respons dari server. Periksa koneksi Anda.");
             } else {
-                console.log("Error lainnya:", err.message);
                 setError("Terjadi kesalahan yang tidak diketahui.");
             }
         } finally {
@@ -78,12 +68,10 @@ const Pengeluaran = () => {
         }
     };
 
-    // Handle cancel with confirmation
     const handleCancel = () => {
-      if (window.confirm("Apakah Anda yakin ingin membatalkan penambahan pengeluaran?")) {
-          console.log("Membatalkan penambahan pengeluaran");
-          navigate("/expense");
-      }
+        if (window.confirm("Apakah Anda yakin ingin membatalkan penambahan pengeluaran?")) {
+            navigate("/expense");
+        }
     };
 
     return (
@@ -96,7 +84,7 @@ const Pengeluaran = () => {
 
                 {error && <p className="error">{error}</p>}
 
-                <form onSubmit={handleSubmit} className="expense-form">
+                <form onSubmit={handleFormSubmit} className="expense-form">
                     <div className="form-group">
                         <label>Jenis Pengeluaran</label>
                         <select name="jenisPengeluaran" value={formData.jenisPengeluaran} onChange={handleChange} required>
@@ -154,11 +142,53 @@ const Pengeluaran = () => {
                         <button type="button" className="cancel-button" onClick={handleCancel}>
                             Batal
                         </button>
-                        <button type="submit" className="submit-button" disabled={isSubmitting => navigate("/expense")}>
+                        <button type="submit" className="submit-button" disabled={isSubmitting}>
                             {isSubmitting ? "Menyimpan..." : "Simpan Pengeluaran"}
                         </button>
                     </div>
                 </form>
+
+                {/* Confirmation Dialog with Details */}
+                {showConfirmation && (
+                    <div className="confirmation-overlay">
+                        <div className="confirmation-dialog">
+                            <h3>Konfirmasi Pengeluaran</h3>
+                            <p>Apakah Anda yakin ingin menambahkan pengeluaran ini?</p>
+
+                            <div className="confirmation-details">
+                                <div className="detail-row">
+                                    <span className="detail-label">Jenis:</span>
+                                    <span className="detail-value">{formData.jenisPengeluaran}</span>
+                                </div>
+                                <div className="detail-row">
+                                    <span className="detail-label">Jumlah:</span>
+                                    <span className="detail-value">Rp {Number(formData.jumlah).toLocaleString("id-ID")}</span>
+                                </div>
+                                <div className="detail-row">
+                                    <span className="detail-label">Tanggal:</span>
+                                    <span className="detail-value">{formData.tanggal}</span>
+                                </div>
+                                <div className="detail-row">
+                                    <span className="detail-label">Penanggung Jawab:</span>
+                                    <span className="detail-value">{formData.penanggung_jawab}</span>
+                                </div>
+                                <div className="detail-row">
+                                    <span className="detail-label">Keterangan:</span>
+                                    <span className="detail-value">{formData.keterangan}</span>
+                                </div>
+                            </div>
+
+                            <div className="confirmation-actions">
+                                <button className="cancel-button" onClick={() => setShowConfirmation(false)}>
+                                    Batal
+                                </button>
+                                <button className="confirm-button" onClick={handleConfirmSubmit}>
+                                    Ya, Tambahkan
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                )}
             </div>
         </div>
     );
