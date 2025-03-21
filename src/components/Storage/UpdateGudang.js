@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { toast, ToastContainer } from 'react-toastify';
 import Navbar from '../Navbar';
@@ -14,7 +14,6 @@ const UpdateGudang = () => {
     const [showConfirmation, setShowConfirmation] = useState(false);
     const [confirmationType, setConfirmationType] = useState('save');
     const [kepalaGudangList, setKepalaGudangList] = useState([]);
-    const [originalData, setOriginalData] = useState(null);
     const [formData, setFormData] = useState({
         nama: '',
         deskripsi: '',
@@ -29,28 +28,16 @@ const UpdateGudang = () => {
     });
     const [errors, setErrors] = useState({});
 
-    useEffect(() => {
-        const token = localStorage.getItem("token");
-        if (!token) {
-            navigate("/");
-            return;
-        }
-
-        fetchGudangData(token);
-        fetchKepalaGudangList(token);
-    }, [navigate, namaGudang]);
-
-    const fetchGudangData = async (token) => {
+    const fetchGudangData = useCallback(async (token) => {
         setLoading(true);
         try {
             const response = await axiosInstance.get(`/api/gudang/${namaGudang}`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
-            
+    
             if (response.data && response.data.data) {
                 const gudangData = response.data.data;
-                setOriginalData(gudangData);
-                
+    
                 setFormData({
                     nama: gudangData.nama || '',
                     deskripsi: gudangData.deskripsi || '',
@@ -71,7 +58,18 @@ const UpdateGudang = () => {
         } finally {
             setLoading(false);
         }
-    };
+    }, [namaGudang, navigate]);
+
+    useEffect(() => {
+        const token = localStorage.getItem("token");
+        if (!token) {
+            navigate("/");
+            return;
+        }
+    
+        fetchGudangData(token);
+        fetchKepalaGudangList(token);
+    }, [navigate, namaGudang, fetchGudangData]);
 
     const fetchKepalaGudangList = async (token) => {
         try {
