@@ -192,10 +192,10 @@ const GudangDetail = () => {
                                 </thead>
                                 <tbody>
                                     {gudang.listBarang.map((barang) => (
-                                        <tr key={barang.kodeBarang}>
-                                            <td>{barang.kodeBarang}</td>
-                                            <td>{barang.namaBarang}</td>
-                                            <td>{barang.deskripsiBarang || '-'}</td>
+                                        <tr key={barang.id || barang.kodeBarang}>
+                                            <td>{barang.id || barang.kodeBarang}</td>
+                                            <td>{barang.nama || barang.namaBarang}</td>
+                                            <td>{barang.deskripsi || barang.deskripsiBarang || '-'}</td>
                                         </tr>
                                     ))}
                                 </tbody>
