@@ -1,0 +1,87 @@
+.add-employee-container {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+    padding: 100px 20px 20px;
+    background-color: #f8f9fa;
+}
+
+.form-box {
+    max-width: 900px;
+    width: 100%;
+    padding: 30px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    position: sticky; 
+    top: 80px; 
+}
+
+h2 {
+    text-align: center;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.subtitle {
+    text-align: center;
+    color: #666;
+    margin-bottom: 20px;
+}
+
+.error {
+    color: #e53935;
+    background-color: #ffebee;
+    padding: 10px;
+    border-radius: 4px;
+    margin-bottom: 15px;
+}
+
+.add-employee-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.form-row {
+    display: flex;
+    gap: 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+input,
+select {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.form-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.cancel-button {
+    background-color: #f5f5f5;
+}
+
+.submit-button {
+    background-color: #2196f3;
+    color: white;
+}
+
+.cancel-button:hover {
+    background-color: #e0e0e0;
+}
+
+.submit-button:hover {
+    background-color: #1976d2;
+}
