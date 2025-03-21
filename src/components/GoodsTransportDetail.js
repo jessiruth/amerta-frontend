@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import axios from "axios";
 import "../styles/GoodsTransportDetail.css";
+import axiosInstance from "../services/axiosInstance";
 
 const GoodsTransportDetail = () => {
     const { id } = useParams();
@@ -22,7 +22,7 @@ const GoodsTransportDetail = () => {
 
                 console.log(`Fetching data for ID: ${id}`);
 
-                const response = await axios.get(`http://localhost:8080/api/barang/transfer/${id}`, {
+                const response = await axiosInstance.get(`/api/barang/transfer/${id}`, {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },

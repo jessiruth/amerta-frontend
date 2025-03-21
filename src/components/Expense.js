@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import axiosInstance from "../services/axiosInstance";
 import Toolbar from "../components/ToolbarExpense";
 import "../styles/GoodsTransport.css";
 
@@ -20,7 +20,7 @@ const Expense = () => {
 
     const fetchData = useCallback(async () => {
         try {
-            const response = await axios.get("http://localhost:8080/api/pengeluaran/viewall", {
+            const response = await axiosInstance.get("/api/pengeluaran/viewall", {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
