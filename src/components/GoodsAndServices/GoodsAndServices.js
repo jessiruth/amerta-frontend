@@ -1,13 +1,14 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import Toolbar from "../components/Toolbar";
-import "../styles/GoodsAndServices.css";
+import Toolbar from "../ToolbarGoods";
+import "../../styles/GoodsAndServices.css";
 
 const GoodsAndServices = () => {
     const [allBarangList, setAllBarangList] = useState([]);
     const [displayBarangList, setDisplayBarangList] = useState([]);
     const [searchTerm, setSearchTerm] = useState("");
+    const [searchCategory, setSearchCategory] = useState("nama"); // Default: filter by nama
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage, setItemsPerPage] = useState(10);
     const [errorMessage, setErrorMessage] = useState("");
@@ -48,14 +49,42 @@ const GoodsAndServices = () => {
         }
     };
 
+    useEffect(() => {
+        if (!searchTerm) {
+            setDisplayBarangList(allBarangList);
+            return;
+        }
+
+        const lower = searchTerm.toLowerCase();
+        const filtered = allBarangList.filter((barang) => {
+            if (searchCategory === "nama") {
+                return barang.nama.toLowerCase().includes(lower);
+            } else if (searchCategory === "kategori") {
+                return barang.kategori.toLowerCase().includes(lower);
+            } else if (searchCategory === "merk") {
+                return barang.merk.toLowerCase().includes(lower);
+            } else {
+                return false;
+            }
+        });
+
+        setDisplayBarangList(filtered);
+    }, [searchTerm, searchCategory, allBarangList]);
+
     const handleSearch = (term) => {
         setSearchTerm(term);
         setCurrentPage(1);
+    };
 
-        const filtered = allBarangList.filter((barang) =>
-            barang.nama.toLowerCase().includes(term.toLowerCase())
-        );
-        setDisplayBarangList(filtered);
+    const handleFilterChange = (category) => {
+        setSearchCategory(category);
+    };
+
+    const handleRefresh = () => {
+        setSearchTerm("");
+        setSearchCategory("nama");
+        setCurrentPage(1);
+        fetchData();
     };
 
     const handleItemsPerPageChange = (event) => {
@@ -75,10 +104,11 @@ const GoodsAndServices = () => {
 
                 <Toolbar
                     onAdd={() => navigate("/goods-and-services/add")}
-                    onRefresh={fetchData}
-                    onFilter={() => alert("Fitur filter dalam pengembangan")}
+                    onRefresh={handleRefresh}
+                    onFilter={handleFilterChange}
                     onSearch={handleSearch}
-                    searchPlaceholder={"Search by name..."}
+                    selectedCategory={searchCategory}
+                    searchTerm={searchTerm}
                 />
 
                 <div className="pagination-controls">
@@ -134,35 +164,11 @@ const GoodsAndServices = () => {
                 </div>
 
                 <div className="pagination">
-                    <button 
-                        disabled={currentPage === 1} 
-                        onClick={() => setCurrentPage(1)}
-                    >
-                        First
-                    </button>
-
-                    <button 
-                        disabled={currentPage === 1} 
-                        onClick={() => setCurrentPage(currentPage - 1)}
-                    >
-                        Previous
-                    </button>
-
+                    <button disabled={currentPage === 1} onClick={() => setCurrentPage(1)}>First</button>
+                    <button disabled={currentPage === 1} onClick={() => setCurrentPage(currentPage - 1)}>Previous</button>
                     <span>Page {currentPage} of {totalPages}</span>
-
-                    <button 
-                        disabled={currentPage === totalPages} 
-                        onClick={() => setCurrentPage(currentPage + 1)}
-                    >
-                        Next
-                    </button>
-
-                    <button 
-                        disabled={currentPage === totalPages} 
-                        onClick={() => setCurrentPage(totalPages)}
-                    >
-                        Last
-                    </button>
+                    <button disabled={currentPage === totalPages} onClick={() => setCurrentPage(currentPage + 1)}>Next</button>
+                    <button disabled={currentPage === totalPages} onClick={() => setCurrentPage(totalPages)}>Last</button>
                 </div>
             </div>
         </div>

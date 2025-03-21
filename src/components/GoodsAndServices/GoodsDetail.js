@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
-import "../styles/GoodsDetail.css";
+import "../../styles/GoodsDetail.css";
 
 const GoodsDetail = () => {
     const { id } = useParams();
@@ -42,38 +42,40 @@ const GoodsDetail = () => {
                         <p><strong>Nama:</strong> {barang.nama}</p>
                         <p><strong>Kategori:</strong> {barang.kategori}</p>
                         <p><strong>Merk:</strong> {barang.merk}</p>
+                        <p><strong>Status:</strong> {barang.active ? "Aktif" : "Tidak Aktif"}</p>
                     </div>
                     <div className="info-section right">
                         <p><strong>Total Stok:</strong> {barang.totalStock}</p>
                         <p><strong>Tanggal Dibuat:</strong> {barang.createdDate}</p>
                         <p><strong>Terakhir Diperbarui:</strong> {barang.updatedDate}</p>
-                        <p><strong>Status:</strong> {barang.active ? "Aktif" : "Tidak Aktif"}</p>
                     </div>
                 </div>
 
-                <div className="stock-section">
+                <div className="stock-gudang-container">
                     <h3>Stok Per Gudang</h3>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Gudang</th>
-                                <th>Stok</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {barang.stockBarang.map((stock, index) => (
-                                <tr key={index}>
-                                    <td>{stock.namaGudang}</td>
-                                    <td>{stock.stock} unit</td>
+                    <div className="stock-gudang-table-wrapper">
+                        <table className="stock-gudang-table">
+                            <thead>
+                                <tr>
+                                    <th>Gudang</th>
+                                    <th>Stok</th>
                                 </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                {barang.stockBarang.map((stock, index) => (
+                                    <tr key={index}>
+                                        <td>{stock.namaGudang}</td>
+                                        <td>{stock.stock} unit</td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
 
-                <div className="button-container">
+                <div className="button-container-detail">
                     <button className="back-btn" onClick={() => navigate("/goods-and-services")}>Back</button>
-                    <button className="update-btn" onClick={() => alert("Update barang dalam pengembangan")}>Update</button>
+                    <button className="updt-btn" onClick={() => navigate(`/goods-and-services/update/${barang.id}`)}>Update</button>
                 </div>
             </div>
         </div>

@@ -41,11 +41,21 @@
 .toolbar-text {
     font-size: 12px;
     color: #3b82f6;
-    margin-top: 5px;
+    margin-top: 3px; 
 }
 
 .toolbar-btn:hover {
     transform: scale(1.05);
+}
+
+.filter-dropdown {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+    width: 180px; 
+    background-color: white;
+    cursor: pointer;
 }
 
 .search-container {
