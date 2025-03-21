@@ -9,6 +9,8 @@ import Finance from "./components/Finance";
 import Expense from "./components/Expense";
 import ExpenseDetail from "./components/ExpenseDetail";
 import GoodsTransportDetail from "./components/GoodsTransportDetail";
+import Revenue from "./components/Revenue";
+import RevenueDetail from "./components/RevenueDetail";
 
 function Layout() {
     const location = useLocation();
@@ -27,6 +29,8 @@ function Layout() {
                 <Route path="/expense" element={<Expense />} />
                 <Route path="/expense/detail/:id" element={<ExpenseDetail />} />
                 <Route path="/goods-transport/detail/:id" element={<GoodsTransportDetail />} />
+                <Route path="/revenue" element={<Revenue />} />
+                <Route path="/revenue/detail/:id" element={<RevenueDetail />} />
             </Routes>
         </div>
     );
