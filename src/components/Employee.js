@@ -1,8 +1,8 @@
 import { useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import Toolbar from "../components/Toolbar";
 import "../styles/Employee.css";
+import axiosInstance from "../services/axiosInstance";
 
 const Employee = () => {
     const [employees, setEmployees] = useState([]);
@@ -17,7 +17,7 @@ const Employee = () => {
 
     const fetchEmployees = useCallback(async () => {
         try {
-            const response = await axios.get("http://localhost:8080/api/user/all?role=", {
+            const response = await axiosInstance.get("/api/user/all?role=", {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
