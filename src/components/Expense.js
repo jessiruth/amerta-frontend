@@ -1,11 +1,14 @@
 import { useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import Toolbar from "./Toolbar";
+import Toolbar from "../components/ToolbarExpense";
 import "../styles/GoodsTransport.css";
 
 const Expense = () => {
     const [data, setData] = useState([]);
+    const [filteredData, setFilteredData] = useState([]);
+    const [searchTerm, setSearchTerm] = useState("");
+    const [searchCategory, setSearchCategory] = useState("all");
     const navigate = useNavigate();
     const token = localStorage.getItem("token");
 
@@ -41,15 +44,52 @@ const Expense = () => {
         fetchData();
     }, [fetchData]);
 
+    useEffect(() => {
+        const lower = searchTerm.toLowerCase();
+
+        const filtered = data.filter((item) => {
+            if (searchCategory === "id") {
+                return item.id.toLowerCase().includes(lower);
+            } else if (searchCategory === "pengeluaran") {
+                return item.jenisPengeluaran.toLowerCase().includes(lower);
+            } else if (searchCategory === "jumlah") {
+                const searchValue = searchTerm.replace(/[^0-9]/g, "");
+                if (searchValue === "") return true;
+                const jumlahValue = item.jumlah.toString();
+                return jumlahValue.includes(searchValue); 
+            } else if (searchCategory === "penanggung") {
+                return item.penanggung_jawab.toLowerCase().includes(lower);
+            } else {
+                return (
+                    item.id.toLowerCase().includes(lower) ||
+                    item.jenisPengeluaran.toLowerCase().includes(lower) ||
+                    item.jumlah.toString().includes(searchTerm.replace(/[^0-9]/g, "")) ||
+                    item.penanggung_jawab.toLowerCase().includes(lower)
+                );
+            }
+        });
+
+        setFilteredData(filtered);
+    }, [searchTerm, searchCategory, data]);
+
+    const handleRefresh = () => {
+        setSearchTerm("");
+        setSearchCategory("all");
+        setFilteredData(data);
+        fetchData();
+    };
+
     return (
         <div className="goods-transport-container">
             <h1 className="page-title">Expense</h1>
 
             <Toolbar
                 onAdd={() => navigate("/create-pengeluaran")}
-                onRefresh={fetchData}
-                onFilter={() => console.log("Filter Clicked")}
-                onSearch={(term) => console.log("Search:", term)}
+                onRefresh={handleRefresh}
+                onFilter={(category) => setSearchCategory(category)}
+                onSearch={(term) => setSearchTerm(term)}
+                selectedCategory={searchCategory}
+                searchTerm={searchTerm}
             />
 
             <table className="goods-transport-table">
@@ -63,8 +103,8 @@ const Expense = () => {
                     </tr>
                 </thead>
                 <tbody>
-                    {data.length > 0 ? (
-                        data.map((item) => (
+                    {filteredData.length > 0 ? (
+                        filteredData.map((item) => (
                             <tr key={item.id}>
                                 <td>{item.id}</td>
                                 <td>{item.jenisPengeluaran}</td>
