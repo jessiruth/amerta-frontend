@@ -1,0 +1,145 @@
+.page-container-detail {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+    background-color: #f5f5f5;
+}
+
+.page-title-detail {
+    font-size: 28px;
+    font-weight: bold;
+    color: #f7931e;
+    text-align: center;
+    margin: 20px 0;
+    font-family: 'Poppins', sans-serif;
+}
+
+.detail-container {
+    width: 60%;
+    max-width: 600px;
+    height: 65vh;
+    overflow-y: auto;
+    background-color: white;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 12px rgba(0, 0, 0, 0.15);
+}
+
+.detail-content {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 30px;
+    gap: 20px;
+}
+
+.info-section {
+    width: 50%;
+    text-align: left;
+}
+
+.info-section p {
+    font-size: 16px;
+    margin: 8px 0;
+    font-weight: 500;
+    color: #333;
+    font-family: 'Poppins', sans-serif;
+}
+
+.stock-gudang-container {
+    width: 100%;
+    margin-top: 30px;
+    text-align: center;
+}
+
+.stock-gudang-container h3 {
+    font-size: 20px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 15px;
+    font-family: 'Poppins', sans-serif;
+}
+
+.stock-gudang-table-wrapper {
+    max-height: 200px;
+    overflow-y: auto;
+    margin-top: 10px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+}
+
+.stock-gudang-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: white;
+}
+
+.stock-gudang-table th {
+    background-color: #f7931e;
+    color: white;
+    padding: 12px;
+    font-size: 14px;
+    text-align: center;
+    position: sticky;
+    top: 0;
+}
+
+.stock-gudang-table td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    font-size: 14px;
+    text-align: center;
+}
+
+.stock-gudang-table tr:hover {
+    background-color: #f9f9f9;
+}
+
+.button-container-detail {
+    display: flex;
+    justify-content: center;
+    margin-top: 30px;
+    gap: 15px;
+}
+
+.back-btn, .updt-btn {
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    border-radius: 5px;
+    transition: 0.2s ease;
+}
+
+.back-btn {
+    background-color: #5cb85c;
+    color: white;
+}
+
+.back-btn:hover {
+    background-color: #4cae4c;
+}
+
+.updt-btn {
+    background-color: #f7931e;
+    color: white;
+}
+
+.updt-btn:hover {
+    background-color: #d97816;
+}
+
+.loading-text {
+    text-align: center;
+    font-size: 18px;
+    margin-top: 50px;
+    color: #d9534f;
+}
+
+.stok-kosong {
+    color: red;
+    font-weight: bold;
+}
