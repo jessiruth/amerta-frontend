@@ -11,7 +11,7 @@ const AddEmployee = () => {
         ktpNumber: "", notes: "", role: ""
     });
 
-    const [error, setError] = useState("");
+    const [, setError] = useState("");
     const [validationErrors, setValidationErrors] = useState({});
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [showConfirmation, setShowConfirmation] = useState(false);

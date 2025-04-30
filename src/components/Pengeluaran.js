@@ -43,7 +43,7 @@ const Pengeluaran = () => {
                 tanggal: formattedTanggal,
             };
 
-            const response = await axiosInstance.post("http://localhost:8080/api/pengeluaran/create", payload, {
+            const response = await axiosInstance.post("/api/pengeluaran/create", payload, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import axios from "axios";
+import axiosInstance from "../services/axiosInstance";
 import "../styles/RevenueDetail.css";
 
 const RevenueDetail = () => {
@@ -22,7 +22,7 @@ const RevenueDetail = () => {
 
                 console.log(`Fetching data for ID: ${id}`);
 
-                const response = await axios.get(`http://localhost:8080/api/penerimaan/view/${id}`, {
+                const response = await axiosInstance.get(`/api/penerimaan/view/${id}`, {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },

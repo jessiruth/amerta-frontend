@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axiosInstance from '../../services/axiosInstance';
 import '../../styles/GudangDetail.css';
@@ -10,25 +10,14 @@ const GudangDetail = () => {
     const { namaGudang } = useParams();
     const navigate = useNavigate();
 
-    useEffect(() => {
-        const token = localStorage.getItem("token");
-
-        if (!token) {
-            navigate("/");
-            return;
-        }
-
-        fetchGudangDetail(token);
-    }, [namaGudang, navigate]);
-
-    const fetchGudangDetail = async (token) => {
+    const fetchGudangDetail = useCallback(async (token) => {
         setLoading(true);
         setError(null);
         try {
             const response = await axiosInstance.get(`/api/gudang/${namaGudang}`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
- 
+    
             if (response.data && response.data.data) {
                 setGudang(response.data.data);
             } else {
@@ -45,7 +34,18 @@ const GudangDetail = () => {
         } finally {
             setLoading(false);
         }
-    };
+    }, [namaGudang, navigate]);
+
+    useEffect(() => {
+        const token = localStorage.getItem("token");
+    
+        if (!token) {
+            navigate("/");
+            return;
+        }
+    
+        fetchGudangDetail(token);
+    }, [namaGudang, navigate, fetchGudangDetail]);
 
     const handleUpdateGudang = () => {
         navigate(`/gudang/update/${namaGudang}`);
@@ -192,10 +192,10 @@ const GudangDetail = () => {
                                 </thead>
                                 <tbody>
                                     {gudang.listBarang.map((barang) => (
-                                        <tr key={barang.kodeBarang}>
-                                            <td>{barang.kodeBarang}</td>
-                                            <td>{barang.namaBarang}</td>
-                                            <td>{barang.deskripsiBarang || '-'}</td>
+                                        <tr key={barang.id || barang.kodeBarang}>
+                                            <td>{barang.id || barang.kodeBarang}</td>
+                                            <td>{barang.nama || barang.namaBarang}</td>
+                                            <td>{barang.deskripsi || barang.deskripsiBarang || '-'}</td>
                                         </tr>
                                     ))}
                                 </tbody>

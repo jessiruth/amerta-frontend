@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import Navbar from "../Navbar";
 import Toolbar from "../ToolbarGudang";
 import axiosInstance from "../../services/axiosInstance";
 import "../../styles/GudangList.css";
@@ -14,15 +13,6 @@ const GudangList = () => {
 
     const navigate = useNavigate();
 
-    useEffect(() => {
-        const token = localStorage.getItem("token");
-        if (!token) {
-            navigate("/");
-            return;
-        }
-        fetchGudangList(token);
-    }, [navigate]);
-
     const fetchGudangList = useCallback(async (token) => {
         setLoading(true);
         try {
@@ -32,7 +22,7 @@ const GudangList = () => {
 
             if (response.data && response.data.data) {
                 setGudangList(response.data.data);
-                setFilteredData(response.data.data); // Set data awal
+                setFilteredData(response.data.data);
             }
         } catch (error) {
             console.error("Error fetching gudang list:", error);
@@ -40,6 +30,15 @@ const GudangList = () => {
             setLoading(false);
         }
     }, []);
+
+    useEffect(() => {
+        const token = localStorage.getItem("token");
+        if (!token) {
+            navigate("/");
+            return;
+        }
+        fetchGudangList(token);
+    }, [navigate, fetchGudangList]);
 
     useEffect(() => {
         const lower = searchTerm.toLowerCase();
@@ -80,7 +79,6 @@ const GudangList = () => {
 
     return (
         <div className="gudang-list-container">
-            <Navbar />
             <div className="gudang-list-content">
                 <h1 className="page-title">Storage</h1>
 

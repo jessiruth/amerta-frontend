@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import "../styles/Navbar.css";
 import logo from "../assets/Logo.png";
@@ -15,14 +15,14 @@ const AUTO_LOGOUT_TIME = 10 * 60 * 1000;
 const Navbar = () => {
     const navigate = useNavigate();
 
-    const handleLogout = () => {
+    const handleLogout = useCallback(() => {
         const confirmLogout = window.confirm("Are you sure you want to log out?");
         if (confirmLogout) {
             localStorage.removeItem("token");
             localStorage.removeItem("name");
             navigate("/");
         }
-    };
+    }, [navigate]);
 
     useEffect(() => {
         let timeout;
@@ -49,7 +49,7 @@ const Navbar = () => {
             window.removeEventListener("click", resetTimer);
             window.removeEventListener("scroll", resetTimer);
         };
-    }, []);
+    }, [handleLogout]);
 
     return (
         <div className="navbar-container">
