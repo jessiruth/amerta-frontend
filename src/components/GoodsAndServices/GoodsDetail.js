@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import axios from "axios";
+import axiosInstance from "../../services/axiosInstance";
 import "../../styles/GoodsDetail.css";
 
 const GoodsDetail = () => {
@@ -16,7 +16,7 @@ const GoodsDetail = () => {
             return;
         }
 
-        axios.get(`http://localhost:8080/api/barang/${id}`, {
+        axiosInstance.get(`/api/barang/${id}`, {
             headers: { Authorization: `Bearer ${token}` },
         })
         .then(response => {
@@ -28,16 +28,16 @@ const GoodsDetail = () => {
     }, [id, navigate]);
 
     if (!barang) {
-        return <h3 className="loading-text">Memuat data barang...</h3>;
+        return <h3 className="goods-detail-loading-text">Memuat data barang...</h3>;
     }
 
     return (
-        <div className="page-container-detail">
-            <h1 className="page-title-detail">View Goods - ID: {barang.id}</h1>
+        <div className="goods-detail-page-container">
+            <h1 className="goods-detail-page-title">View Goods - ID: {barang.id}</h1>
 
-            <div className="detail-container">
-                <div className="detail-content">
-                    <div className="info-section left">
+            <div className="goods-detail-container">
+                <div className="goods-detail-content">
+                    <div className="goods-detail-info left">
                         <p><strong>ID:</strong> {barang.id}</p>
                         <p><strong>Nama:</strong> {barang.nama}</p>
                         <p><strong>Kategori:</strong> {barang.kategori}</p>
@@ -46,7 +46,7 @@ const GoodsDetail = () => {
                         <p><strong>Total Stok:</strong> {barang.totalStock}</p>
                     </div>
 
-                    <div className="info-section right">
+                    <div className="goods-detail-info right">
                         <p><strong>Harga Beli:</strong> Rp{barang.hargaBeli?.toLocaleString("id-ID", { minimumFractionDigits: 2 })}</p>
                         <p><strong>Harga Jual:</strong> Rp{barang.hargaJual?.toLocaleString("id-ID", { minimumFractionDigits: 2 })}</p>
                         <p><strong>Tanggal Dibuat:</strong> {barang.createdDate}</p>
@@ -54,10 +54,10 @@ const GoodsDetail = () => {
                     </div>
                 </div>
 
-                <div className="stock-gudang-container">
+                <div className="goods-detail-stock-container">
                     <h3>Stok Per Gudang</h3>
-                    <div className="stock-gudang-table-wrapper">
-                        <table className="stock-gudang-table">
+                    <div className="goods-detail-stock-table-wrapper">
+                        <table className="goods-detail-stock-table">
                             <thead>
                                 <tr>
                                     <th>Gudang</th>
@@ -68,10 +68,9 @@ const GoodsDetail = () => {
                                 {barang.stockBarang.map((stock, index) => (
                                     <tr key={index}>
                                         <td>{stock.namaGudang}</td>
-                                        <td className={stock.stock === 0 ? "stok-kosong" : ""}>
+                                        <td className={stock.stock === 0 ? "goods-detail-stok-kosong" : ""}>
                                             {stock.stock} unit
                                         </td>
-
                                     </tr>
                                 ))}
                             </tbody>
@@ -79,9 +78,9 @@ const GoodsDetail = () => {
                     </div>
                 </div>
 
-                <div className="button-container-detail">
-                    <button className="back-btn" onClick={() => navigate("/goods-and-services")}>Back</button>
-                    <button className="updt-btn" onClick={() => navigate(`/goods-and-services/update/${barang.id}`)}>Update</button>
+                <div className="goods-detail-button-container">
+                    <button className="goods-detail-btn-back" onClick={() => navigate("/goods-and-services")}>Back</button>
+                    <button className="goods-detail-btn-update" onClick={() => navigate(`/goods-and-services/update/${barang.id}`)}>Update</button>
                 </div>
             </div>
         </div>

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import axios from "axios";
+import axiosInstance from "../../services/axiosInstance";
 import "../../styles/UpdateGoods.css";
 import DeleteIcon from "@mui/icons-material/Delete";
 import Modal from "@mui/material/Modal";
@@ -36,7 +36,7 @@ const UpdateGoods = () => {
 
     const fetchBarangDetail = async () => {
         try {
-            const response = await axios.get(`http://localhost:8080/api/barang/${id}`, {
+            const response = await axiosInstance.get(`/api/barang/${id}`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
 
@@ -50,7 +50,7 @@ const UpdateGoods = () => {
             setStokList(barang.stockBarang.map(stock => ({
                 stock: stock.stock,
                 namaGudang: stock.namaGudang,
-                isExisting: true // Penanda bahwa stok ini tidak bisa mengubah gudangnya
+                isExisting: true
             })));
         } catch (error) {
             console.error("Error fetching barang data:", error);
@@ -61,7 +61,7 @@ const UpdateGoods = () => {
 
     const fetchGudangOptions = async () => {
         try {
-            const response = await axios.get("http://localhost:8080/api/gudang/", {
+            const response = await axiosInstance.get("/api/gudang/", {
                 headers: { Authorization: `Bearer ${token}` }
             });
             setGudangOptions(response.data.data.map(gudang => gudang.nama));
@@ -88,10 +88,9 @@ const UpdateGoods = () => {
 
     const handleSubmit = (event) => {
         event.preventDefault();
-
         setErrorMessage("");
 
-        if (!nama || !kategori || !merk || stokList.length === 0 || !hargaBeli || !hargaJual) {
+        if (!nama || !kategori || !merk || !hargaBeli || !hargaJual || stokList.length === 0) {
             setErrorMessage("Semua field harus diisi!");
             setIsErrorModalOpen(true);
             return;
@@ -125,7 +124,7 @@ const UpdateGoods = () => {
         };
 
         try {
-            await axios.put(`http://localhost:8080/api/barang/update/${id}`, requestData, {
+            await axiosInstance.put(`/api/barang/update/${id}`, requestData, {
                 headers: {
                     "Content-Type": "application/json",
                     Authorization: `Bearer ${token}`
@@ -141,28 +140,28 @@ const UpdateGoods = () => {
     };
 
     return (
-        <div className="page-container-update-goods">
-            <div className="form-container">
-                <h1 className="page-title-update-goods">Update Goods & Service</h1>
+        <div className="update-goods-page-container">
+            <div className="update-goods-form-container">
+                <h1 className="update-goods-page-title">Update Goods & Service</h1>
 
-                <form onSubmit={handleSubmit}>
-                    <label>Nama Barang:</label>
+                <form className="update-goods-form" onSubmit={handleSubmit}>
+                    <label className="update-goods-label">Nama Barang:</label>
                     <input type="text" value={nama} onChange={(e) => setNama(e.target.value)} required />
 
-                    <label>Kategori:</label>
+                    <label className="update-goods-label">Kategori:</label>
                     <input type="text" value={kategori} onChange={(e) => setKategori(e.target.value)} required />
 
-                    <label>Merk:</label>
+                    <label className="update-goods-label">Merk:</label>
                     <input type="text" value={merk} onChange={(e) => setMerk(e.target.value)} required />
 
-                    <label>Harga Beli:</label>
-                    <input type="number" step="0.01" min="1" placeholder="contoh: 12000,50" value={hargaBeli} onChange={(e) => setHargaBeli(e.target.value)} required/>
+                    <label className="update-goods-label">Harga Beli:</label>
+                    <input type="number" step="0.01" min="1" placeholder="contoh: 12000.50" value={hargaBeli || ""} onChange={(e) => setHargaBeli(e.target.value)} required/>
 
-                    <label>Harga Jual:</label>
-                    <input type="number" step="0.01" min="1" placeholder="contoh: 15000,75" value={hargaJual} onChange={(e) => setHargaJual(e.target.value)} required/>
+                    <label className="update-goods-label">Harga Jual:</label>
+                    <input type="number" step="0.01" min="1" placeholder="contoh: 15000.75" value={hargaJual || ""} onChange={(e) => setHargaJual(e.target.value)} required/>
 
-                    <label>Status Barang:</label>
-                    <div className="radio-group">
+                    <label className="update-goods-label">Status Barang:</label>
+                    <div className="update-goods-radio-group">
                         <label>
                             <input type="radio" name="isActive" value="true" checked={isActive === true} onChange={(e) => setIsActive(e.target.value === "true")} />
                             Active
@@ -173,13 +172,13 @@ const UpdateGoods = () => {
                         </label>
                     </div>
 
-                    <div className="stock-section">
+                    <div className="update-goods-stock-section">
                         <h3>Stock Barang per Gudang:</h3>
-                        <button type="button" onClick={addStockRow} className="add-stock-btn">+ Add</button>
+                        <button type="button" onClick={addStockRow} className="update-goods-btn-stock-add">+ Add</button>
                     </div>
 
-                    <div className="scrollable-table">
-                        <table className="stock-table">
+                    <div className="update-goods-scrollable-table">
+                        <table className="update-goods-stock-table">
                             <thead>
                                 <tr>
                                     <th>Stock</th>
@@ -210,7 +209,7 @@ const UpdateGoods = () => {
                                             {!stok.isExisting && (
                                                 <button
                                                     type="button"
-                                                    className="delete-stock-btn"
+                                                    className="update-goods-btn-delete-stock"
                                                     onClick={() => removeStockRow(index)}
                                                     title="Hapus stok ini">
                                                     <DeleteIcon />
@@ -223,42 +222,43 @@ const UpdateGoods = () => {
                         </table>
                     </div>
 
-                    <div className="button-group">
-                        <button type="button" className="cancel-btn" onClick={() => navigate("/goods-and-services")}>Cancel</button>
-                        <button type="submit" className="save-btn">Update</button>
+                    <div className="update-goods-button-group">
+                        <button type="button" className="update-goods-btn-cancel" onClick={() => navigate("/goods-and-services")}>Cancel</button>
+                        <button type="submit" className="update-goods-btn-save">Update</button>
                     </div>
                 </form>
             </div>
 
-             <Modal open={isConfirmModalOpen} onClose={() => setIsConfirmModalOpen(false)}>
-                <Box className="modal-style">
-                    <Typography className="modal-header-confirm">Konfirmasi</Typography>
-                    <Typography className="modal-message">Apakah Anda yakin ingin menambahkan barang ini?</Typography>
-                    <div className="modal-actions">
-                        <Button className="modal-close-btn-confirm-success" onClick={() => setIsConfirmModalOpen(false)}>Cancel</Button>
-                        <Button className="modal-confirm-btn-confirm-success" onClick={confirmSubmit}>Confirm</Button>
+            {/* MODALS */}
+            <Modal open={isConfirmModalOpen} onClose={() => setIsConfirmModalOpen(false)}>
+                <Box className="update-goods-modal-style">
+                    <Typography className="update-goods-modal-header-confirm">Konfirmasi</Typography>
+                    <Typography className="update-goods-modal-message">Apakah Anda yakin ingin mengupdate barang ini?</Typography>
+                    <div className="update-goods-modal-actions">
+                        <Button className="update-goods-modal-btn-cancel" onClick={() => setIsConfirmModalOpen(false)}>Cancel</Button>
+                        <Button className="update-goods-modal-btn-confirm" onClick={confirmSubmit}>Confirm</Button>
                     </div>
                 </Box>
             </Modal>
 
             <Modal open={isSuccessModalOpen} onClose={() => navigate("/goods-and-services")}>
-                <Box className="modal-style">
-                    <Typography className="modal-header-success">Sukses!</Typography>
-                    <Typography className="modal-message">Barang berhasil ditambahkan.</Typography>
-                    <div className="modal-actions">
-                        <Button className="modal-close-btn-confirm-success" onClick={() => navigate("/goods-and-services")}>Close</Button>
+                <Box className="update-goods-modal-style">
+                    <Typography className="update-goods-modal-header-success">Sukses!</Typography>
+                    <Typography className="update-goods-modal-message">Barang berhasil diupdate.</Typography>
+                    <div className="update-goods-modal-actions">
+                        <Button className="update-goods-modal-btn-cancel" onClick={() => navigate("/goods-and-services")}>Close</Button>
                         {id && (
-                            <Button className="view-btn" onClick={() => navigate(`/goods-and-services/${id}`)}>View Barang</Button>
+                            <Button className="update-goods-modal-btn-view" onClick={() => navigate(`/goods-and-services/${id}`)}>View Barang</Button>
                         )}
                     </div>
                 </Box>
             </Modal>
 
             <Modal open={isErrorModalOpen} onClose={() => setIsErrorModalOpen(false)}>
-                <Box className="modal-style">
-                    <Typography className="modal-header-error">⚠ Error</Typography>
-                    <Typography className="modal-message">{errorMessage}</Typography>
-                    <Button className="modal-close-btn" onClick={() => setIsErrorModalOpen(false)}>Close</Button>
+                <Box className="update-goods-modal-style">
+                    <Typography className="update-goods-modal-header-error">⚠ Error</Typography>
+                    <Typography className="update-goods-modal-message">{errorMessage}</Typography>
+                    <Button className="update-goods-modal-btn-cancel" onClick={() => setIsErrorModalOpen(false)}>Close</Button>
                 </Box>
             </Modal>
         </div>
