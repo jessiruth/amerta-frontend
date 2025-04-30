@@ -19,6 +19,9 @@ import Revenue from "./components/Revenue";
 import RevenueDetail from "./components/RevenueDetail";
 import AddEmployee from "./components/AddEmployee";
 import AddGoodsTransport from "./components/AddGoodsTransport";
+import SalesFeature from "./components/Sales/Sales";
+import Customer from "./components/Customer";
+import AddCustomer from "./components/AddCustomer";
 
 
 import AddGudang from "./components/Storage/AddGudang";
@@ -62,6 +65,10 @@ function Layout() {
                 <Route path="/gudang" element={<GudangList />} />
                 <Route path="/gudang/:namaGudang" element={<GudangDetail />} />
                 <Route path="/gudang/update/:namaGudang" element={<UpdateGudang />} />
+                <Route path="/sales" element={<SalesFeature />} />
+                <Route path="/customer" element={<Customer />} />
+                <Route path="/customer/add" element={<AddCustomer />} />
+
             </Routes>
         </div>
     );
