@@ -73,7 +73,7 @@ const Penerimaan = () => {
 
     const handleCancel = () => {
         if (window.confirm("Apakah Anda yakin ingin membatalkan penambahan penerimaan?")) {
-            navigate("/income");
+            navigate("/revenue");
         }
     };
 
