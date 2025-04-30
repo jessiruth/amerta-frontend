@@ -19,6 +19,9 @@ import Revenue from "./components/Revenue";
 import RevenueDetail from "./components/RevenueDetail";
 import AddEmployee from "./components/AddEmployee";
 import AddGoodsTransport from "./components/AddGoodsTransport";
+import SalesFeature from "./components/Sales/SalesFeature";
+import Customer from "./components/Customer";
+import AddCustomer from "./components/AddCustomer";
 
 
 import AddGudang from "./components/Storage/AddGudang";
@@ -26,6 +29,7 @@ import GudangList from './components/Storage/GudangList';
 import GudangDetail from "./components/Storage/GudangDetail";
 import UpdateGudang from "./components/Storage/UpdateGudang";
 import CreatePenerimaan from "./components/Penerimaan";
+import PurchaseFeature from "./components/Purchase/PurchaseFeature";
 
 function Layout() {
     const location = useLocation();
@@ -62,6 +66,11 @@ function Layout() {
                 <Route path="/gudang" element={<GudangList />} />
                 <Route path="/gudang/:namaGudang" element={<GudangDetail />} />
                 <Route path="/gudang/update/:namaGudang" element={<UpdateGudang />} />
+                <Route path="/sales" element={<SalesFeature />} />\
+                <Route path="/purchases" element={<PurchaseFeature />} />
+                <Route path="/customer" element={<Customer />} />
+                <Route path="/customer/add" element={<AddCustomer />} />
+
             </Routes>
         </div>
     );

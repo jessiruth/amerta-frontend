@@ -13,6 +13,10 @@ const Company = () => {
                     <img src={employeeImage} alt="Employee" />
                     <p>Employee</p>
                 </div>
+                <div className="company-box" onClick={() => navigate("/customer")}>
+                    <img src={employeeImage} alt="Customer" />
+                    <p>Customer</p>
+                </div>
             </div>
         </div>
     );

@@ -74,10 +74,10 @@ const Navbar = () => {
                 <div className="nav-item" data-tooltip="Finance" onClick={() => navigate("/finance")}>
                     <img src={financeIcon} alt="Finance" className="nav-icon" />
                 </div>
-                <div className="nav-item" data-tooltip="Purchases">
+                <div className="nav-item" data-tooltip="Purchases" onClick={() => navigate("/purchases")}>
                     <img src={purchasesIcon} alt="Purchases" className="nav-icon" />
                 </div>
-                <div className="nav-item" data-tooltip="Sales">
+                <div className="nav-item" data-tooltip="Sales" onClick={() => navigate("/sales")}>
                     <img src={salesIcon} alt="Sales" className="nav-icon" />
                 </div>
                 <div className="nav-item" data-tooltip="Assets" onClick={() => navigate("/assets")}>
