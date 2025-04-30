@@ -18,7 +18,7 @@ const PurchaseFeature = () => {
             <div className="sales-feature-row">
                 <div className="asset-box" onClick={() => navigate("/purchase")}>
                     <img src={purchaseIcon} alt="Purchase" />
-                    <p>Purchase Offer</p>
+                    <p>Purchase</p>
                 </div>
                 <div className="asset-box" onClick={() => navigate("/purchase-order")}>
                     <img src={purchaseOrderIcon} alt="Purchase Order" />

@@ -17,7 +17,7 @@ const SalesFeature = () => {
             <div className="sales-feature-row">
                 <div className="asset-box" onClick={() => navigate("/sales")}>
                     <img src={salesIcon} alt="Sales" />
-                    <p>Sales Offer</p>
+                    <p>Sales</p>
                 </div>
                 <div className="asset-box" onClick={() => navigate("/sales-order")}>
                     <img src={salesOrderIcon} alt="Sales Order" />
