@@ -1,18 +1,18 @@
-.toolbar {
+.toolbar-goods {
     display: flex;
     align-items: center;
     gap: 15px;
     margin-bottom: 20px;
 }
 
-.toolbar-item {
+.toolbar-goods-item {
     display: flex;
     flex-direction: column;
     align-items: center;
     text-align: center;
 }
 
-.toolbar-btn {
+.toolbar-goods-btn {
     border: none;
     padding: 10px;
     border-radius: 5px;
@@ -25,40 +25,40 @@
     height: 45px;
 }
 
-.add-btn {
+.toolbar-goods-btn.add-btn {
     background-color: #3b82f6;
 }
 
-.white-btn {
+.toolbar-goods-btn.white-btn {
     background-color: white;
 }
 
-.toolbar-btn img {
+.toolbar-goods-btn img {
     width: 24px;
     height: 24px;
 }
 
-.toolbar-text {
+.toolbar-goods-text {
     font-size: 12px;
     color: #3b82f6;
-    margin-top: 3px; 
+    margin-top: 3px;
 }
 
-.toolbar-btn:hover {
+.toolbar-goods-btn:hover {
     transform: scale(1.05);
 }
 
-.filter-dropdown {
+.toolbar-goods-dropdown {
     padding: 8px;
     border: 1px solid #ccc;
     border-radius: 5px;
     font-size: 14px;
-    width: 180px; 
+    width: 180px;
     background-color: white;
     cursor: pointer;
 }
 
-.search-container {
+.toolbar-goods-search-container {
     display: flex;
     align-items: center;
     border: 2px solid #f7931e;
@@ -68,14 +68,14 @@
     height: 45px;
 }
 
-.search-bar {
+.toolbar-goods-search-bar {
     border: none;
     outline: none;
     width: 150px;
     font-size: 14px;
 }
 
-.search-icon {
+.toolbar-goods-search-icon {
     color: #f7931e;
     font-size: 20px;
     margin-left: 5px;

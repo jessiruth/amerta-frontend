@@ -21,6 +21,9 @@ const AddGoodsAndServices = () => {
     const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
     const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
     const [newBarangId, setNewBarangId] = useState(null);
+    const [hargaBeli, setHargaBeli] = useState(null);
+    const [hargaJual, setHargaJual] = useState(null);
+
 
     useEffect(() => {
         fetchGudangOptions();
@@ -69,11 +72,11 @@ const AddGoodsAndServices = () => {
             return;
         }
         
-        if (!nama || !kategori || !merk || stokList.length === 0) {
+        if (!nama || !kategori || !merk || stokList.length === 0 || !hargaBeli || !hargaJual) {
             setErrorMessage("Semua field harus diisi!");
             setIsErrorModalOpen(true);
             return;
-        }
+        }   
 
         for (let stok of stokList) {
             if (!stok.namaGudang) {
@@ -92,13 +95,16 @@ const AddGoodsAndServices = () => {
         const requestData = {
             nama,
             kategori,
-            isActive,
+            active: isActive,
             merk,
+            hargaBeli: parseFloat(hargaBeli),
+            hargaJual: parseFloat(hargaJual),
             listStockBarang: stokList.map(({ stock, namaGudang }) => ({
                 stock: parseInt(stock),
                 namaGudang
             }))
         };
+        
 
         try {
             const response = await axios.post("http://localhost:8080/api/barang/add", requestData, {
@@ -134,14 +140,21 @@ const AddGoodsAndServices = () => {
                     <label>Merk:</label>
                     <input type="text" value={merk} onChange={(e) => setMerk(e.target.value)} required />
 
+                    <label>Harga Beli:</label>
+                    <input type="number" step="0.01" min="1" placeholder="contoh: 12000,50" value={hargaBeli} onChange={(e) => setHargaBeli(e.target.value)} required/>
+
+                    <label>Harga Jual:</label>
+                    <input type="number" step="0.01" min="1" placeholder="contoh: 15000,75" value={hargaJual} onChange={(e) => setHargaJual(e.target.value)} required/>
+
                     <label>Status Barang:</label>
                     <div className="radio-group">
-                        <label>
-                            <input type="radio" name="isActive" value="true" checked={isActive === true} onChange={() => setIsActive(true)} />
+                    <label>
+                        <input type="radio" name="isActive" value="true" checked={isActive === true} onChange={(e) => setIsActive(e.target.value === "true")}/>
                             Active
                         </label>
+
                         <label>
-                            <input type="radio" name="isActive" value="false" checked={isActive === false} onChange={() => setIsActive(false)} />
+                        <input type="radio" name="isActive" value="false" checked={isActive === false} onChange={(e) => setIsActive(e.target.value === "true")}/>
                             Inactive
                         </label>
                     </div>

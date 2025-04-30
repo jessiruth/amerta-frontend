@@ -43,9 +43,12 @@ const GoodsDetail = () => {
                         <p><strong>Kategori:</strong> {barang.kategori}</p>
                         <p><strong>Merk:</strong> {barang.merk}</p>
                         <p><strong>Status:</strong> {barang.active ? "Aktif" : "Tidak Aktif"}</p>
-                    </div>
-                    <div className="info-section right">
                         <p><strong>Total Stok:</strong> {barang.totalStock}</p>
+                    </div>
+
+                    <div className="info-section right">
+                        <p><strong>Harga Beli:</strong> Rp{barang.hargaBeli?.toLocaleString("id-ID", { minimumFractionDigits: 2 })}</p>
+                        <p><strong>Harga Jual:</strong> Rp{barang.hargaJual?.toLocaleString("id-ID", { minimumFractionDigits: 2 })}</p>
                         <p><strong>Tanggal Dibuat:</strong> {barang.createdDate}</p>
                         <p><strong>Terakhir Diperbarui:</strong> {barang.updatedDate}</p>
                     </div>

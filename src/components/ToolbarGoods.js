@@ -22,42 +22,38 @@ const Toolbar = ({ onAdd, onRefresh, onFilter, onSearch, selectedCategory, searc
     };
 
     return (
-        <div className="toolbar">
-            {/* Add Button */}
-            <div className="toolbar-item">
-                <button className="toolbar-btn add-btn" onClick={onAdd}>
+        <div className="toolbar-goods">
+            <div className="toolbar-goods-item">
+                <button className="toolbar-goods-btn add-btn" onClick={onAdd}>
                     <img src={addIcon} alt="Add" />
                 </button>
-                <p className="toolbar-text">Add</p>
+                <p className="toolbar-goods-text">Add</p>
             </div>
 
-            {/* Refresh Button */}
-            <div className="toolbar-item">
-                <button className="toolbar-btn white-btn" onClick={onRefresh}>
+            <div className="toolbar-goods-item">
+                <button className="toolbar-goods-btn white-btn" onClick={onRefresh}>
                     <img src={refreshIcon} alt="Refresh" />
                 </button>
-                <p className="toolbar-text">Refresh</p>
+                <p className="toolbar-goods-text">Refresh</p>
             </div>
 
-            {/* Filter Dropdown */}
-            <div className="toolbar-item filter-container">
-                <select className="filter-dropdown" onChange={handleCategoryChange} value={selectedCategory}>
+            <div className="toolbar-goods-item filter-container">
+                <select className="toolbar-goods-dropdown" onChange={handleCategoryChange} value={selectedCategory}>
                     <option value="nama">Filter: Nama</option>
                     <option value="kategori">Filter: Kategori</option>
                     <option value="merk">Filter: Merk</option>
                 </select>
             </div>
 
-            {/* Search Bar */}
-            <div className="search-container">
-                <input 
-                    type="text" 
-                    placeholder={`Search by ${selectedCategory}`} 
-                    className="search-bar" 
-                    value={inputValue} 
-                    onChange={handleSearchChange} 
+            <div className="toolbar-goods-search-container">
+                <input
+                    type="text"
+                    placeholder={`Search by ${selectedCategory}`}
+                    className="toolbar-goods-search-bar"
+                    value={inputValue}
+                    onChange={handleSearchChange}
                 />
-                <SearchIcon className="search-icon" />
+                <SearchIcon className="toolbar-goods-search-icon" />
             </div>
         </div>
     );
