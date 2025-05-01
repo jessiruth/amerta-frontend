@@ -18,7 +18,7 @@ const AddSalesOrder = () => {
     const [products, setProducts] = useState([]);
     const [gudangs, setGudangs] = useState([]);
     const [errors, setErrors] = useState({});
-    const [showConfirmation, setShowConfirmation] = useState(false);
+    const [showConfirmation, setShowConfirmation] = useState(null);
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
@@ -115,9 +115,13 @@ const AddSalesOrder = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        if (validateForm()) setShowConfirmation(true);
-        else toast.error("Mohon perbaiki kesalahan pada formulir.");
+        if (validateForm()) {
+            setShowConfirmation("submit");
+        } else {
+            toast.error("Mohon perbaiki kesalahan pada formulir.");
+        }
     };
+
 
     const confirmSubmit = async () => {
         const token = localStorage.getItem("token");
@@ -186,8 +190,6 @@ const AddSalesOrder = () => {
                     <div className="form-section">
                         <h3>Daftar Item</h3>
                         {formData.items.map((item, index) => {
-                            const selectedProduct = products.find(p => p.id === item.barangId);
-                            const stock = selectedProduct?.stockBarang?.find(s => s.namaGudang === formData.gudangTujuan)?.stock || 0;
                             return (
                                 <div key={index} className="form-row item-entry">
                                     <div className="form-group">
@@ -237,7 +239,7 @@ const AddSalesOrder = () => {
                 {showConfirmation && (
                     <div className="modal-overlay">
                         <div className="modal-content">
-                            {loading ? (
+                            {loading && showConfirmation === "submit" ? (
                                 <>
                                     <div className="modal-header">
                                         <h3>Menyimpan Data</h3>
@@ -252,32 +254,28 @@ const AddSalesOrder = () => {
                             ) : (
                                 <>
                                     <div className="modal-header">
-                                        <h3>{formData.customerId ? "Konfirmasi Sales Order" : "Konfirmasi"}</h3>
-                                        <button
-                                            className="close-button"
-                                            onClick={() => setShowConfirmation(false)}
-                                        >
-                                            &times;
-                                        </button>
+                                        <h3>{showConfirmation === "submit" ? "Konfirmasi Sales Order" : "Konfirmasi Batal"}</h3>
+                                        <button className="close-button" onClick={() => setShowConfirmation(null)}>&times;</button>
                                     </div>
                                     <div className="modal-body">
-                                        <p>Apakah Anda yakin ingin {formData.customerId ? `menyimpan Sales Order untuk customer ini?` : 'membatalkan formulir ini'}?</p>
-                                        {!formData.customerId && (
-                                            <p className="warning-text">Semua data yang telah dimasukkan akan hilang.</p>
+                                        {showConfirmation === "submit" ? (
+                                            <p>Apakah Anda yakin ingin menyimpan Sales Order ini?</p>
+                                        ) : (
+                                            <>
+                                                <p>Apakah Anda yakin ingin membatalkan formulir ini?</p>
+                                                <p className="warning-text">Semua data yang telah dimasukkan akan hilang.</p>
+                                            </>
                                         )}
                                     </div>
                                     <div className="modal-footer">
-                                        <button
-                                            className="secondary-btn"
-                                            onClick={() => setShowConfirmation(false)}
-                                        >
+                                        <button className="secondary-btn" onClick={() => setShowConfirmation(null)}>
                                             Kembali
                                         </button>
                                         <button
-                                            className={formData.customerId ? "primary-btn" : "danger-btn"}
-                                            onClick={formData.customerId ? confirmSubmit : () => navigate("/sales-order")}
+                                            className={showConfirmation === "submit" ? "primary-btn" : "danger-btn"}
+                                            onClick={showConfirmation === "submit" ? confirmSubmit : () => navigate("/sales-order")}
                                         >
-                                            {formData.customerId ? "Ya, Simpan" : "Ya, Batalkan"}
+                                            {showConfirmation === "submit" ? "Ya, Simpan" : "Ya, Batalkan"}
                                         </button>
                                     </div>
                                 </>
@@ -285,7 +283,6 @@ const AddSalesOrder = () => {
                         </div>
                     </div>
                 )}
-
             </div>
         </div>
     );
