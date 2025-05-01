@@ -66,7 +66,7 @@ const DetailPurchaseOrder = () => {
 
     const handleBack = () => navigate("/purchase-order");
 
-    // Sesuaikan dengan status purchase
+    // Sesuaikan dengan status purchase @Audric
     const handleUpdate = () => {
         const status = data.status;
         if (status === "CREATED") navigate(`/purchase-order/confirm/${data.id}`);

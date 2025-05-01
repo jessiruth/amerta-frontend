@@ -37,6 +37,8 @@ import DetailSalesOrder from "./components/Sales/DetailSalesOrder";
 import AddSalesOrder from "./components/Sales/AddSalesOrder";
 import ConfirmSalesOrder from "./components/Sales/ConfirmSalesOrder";
 import ShippingSalesOrder from "./components/Sales/ShipSalesOrder";
+import ConfirmShippingSalesOrder from "./components/Sales/ConfirmShippingSalesOrder";
+import PaymentSalesOrder from "./components/Sales/PaymentSalesOrder";
 
 function Layout() {
     const location = useLocation();
@@ -49,6 +51,7 @@ function Layout() {
                 <Route path="/" element={<Login />} />
                 <Route path="/home" element={<Home />} />
                 <Route path="/assets" element={<Assets />} />
+
                 <Route path="/goods-and-services" element={<GoodsAndServices />} />
                 <Route path="/goods-transport" element={<GoodsTransport />} />
                 <Route path="/goods-and-services/:id" element={<GoodsDetail />} />
@@ -56,36 +59,45 @@ function Layout() {
                 <Route path="/goods-and-services/update/:id" element={<UpdateGoods />} />
                 <Route path="/good-and-services" element={<GoodsAndServices />} />
                 <Route path="/goods-transport" element={<GoodsTransport />} />
+                <Route path="/goods-transport/add" element={<AddGoodsTransport />} />
+                <Route path="/goods-transport/detail/:id" element={<GoodsTransportDetail />} />
                 <Route path="/good-and-services/:id" element={<GoodsDetail />} />
+
                 <Route path="/company" element={<Company />} />
                 <Route path="/employee" element={<Employee />} />
+                <Route path="/employee/add" element={<AddEmployee />} />
+
                 <Route path="/create-pengeluaran" element={<CreatePengeluaran />} />
                 <Route path="/create-penerimaan" element={<CreatePenerimaan />} />
+
                 <Route path="/finance" element={<Finance />} />
                 <Route path="/expense" element={<Expense />} />
                 <Route path="/expense/detail/:id" element={<ExpenseDetail />} />
-                <Route path="/goods-transport/detail/:id" element={<GoodsTransportDetail />} />
                 <Route path="/revenue" element={<Revenue />} />
                 <Route path="/revenue/detail/:id" element={<RevenueDetail />} />
-                <Route path="/employee/add" element={<AddEmployee />} />
-                <Route path="/goods-transport/add" element={<AddGoodsTransport />} />
+        
+
                 <Route path="/gudang/add" element={<AddGudang />} />
                 <Route path="/gudang" element={<GudangList />} />
                 <Route path="/gudang/:namaGudang" element={<GudangDetail />} />
                 <Route path="/gudang/update/:namaGudang" element={<UpdateGudang />} />
-                <Route path="/sales" element={<SalesFeature />} />\
-                <Route path="/purchases" element={<PurchaseFeature />} />
+        
                 <Route path="/customer" element={<Customer />} />
                 <Route path="/customer/add" element={<AddCustomer />} />
+
+                <Route path="/purchases" element={<PurchaseFeature />} />
                 <Route path="/purchase/completed" element={<Purchase/>} />
                 <Route path="/purchase-order" element={<PurchaseOrder/>} />
+
+                <Route path="/sales" element={<SalesFeature />} />\
                 <Route path="/sales/completed" element={<Sales/>} />
                 <Route path="/sales-order" element={<SalesOrder/>} />
                 <Route path="/sales-order/detail/:id" element={<DetailSalesOrder />} />
                 <Route path="/sales-order/add" element={<AddSalesOrder />} />
                 <Route path="/sales-order/confirm/:id" element={<ConfirmSalesOrder />} />
                 <Route path="/sales-order/shipping/:id" element={<ShippingSalesOrder />} />
-
+                <Route path="/sales-order/confirm-shipping/:id" element={<ConfirmShippingSalesOrder />} />
+                <Route path="/sales-order/payment/:id" element={<PaymentSalesOrder />} />
             </Routes>
         </div>
     );
