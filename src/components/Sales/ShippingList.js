@@ -128,7 +128,7 @@ const ShippingList = () => {
                                 <th>Nomor Resi</th>
                                 <th>Biaya Kirim</th>
                                 <th>Status</th>
-                                <th>Aksi</th>
+                                <th>Surat Jalan</th>
                             </tr>
                         </thead>
                         <tbody>

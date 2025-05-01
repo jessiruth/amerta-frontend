@@ -76,7 +76,7 @@ const DetailShipping = () => {
         <div className="gudang-form-container">
             <div className="gudang-form-content">
                 <div className="page-header">
-                    <h1 className="page-title">Detail Pengiriman</h1>
+                    <h1 className="page-title">Surat Jalan</h1>
                     <button className="print-btn" onClick={() => window.print()}>Print</button>
                 </div>
 
