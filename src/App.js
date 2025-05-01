@@ -23,8 +23,6 @@ import SalesFeature from "./components/Sales/SalesFeature";
 import Customer from "./components/Customer";
 import AddCustomer from "./components/AddCustomer";
 import SalesOrder from "./components/Sales/SalesOrder";
-
-
 import AddGudang from "./components/Storage/AddGudang";
 import GudangList from './components/Storage/GudangList';
 import GudangDetail from "./components/Storage/GudangDetail";
@@ -44,6 +42,8 @@ import PaymentSalesOrder from "./components/Sales/PaymentSalesOrder";
 import PaymentPurchaseOrder from "./components/Purchase/PaymentPurchaseOrder";
 import CompletePurchaseOrder from "./components/Purchase/CompletePurchaseOrder";
 import AddPurchaseOrder from "./components/Purchase/AddPurchaseOrder";
+import ShippingList from "./components/Sales/ShippingList";
+import DetailShipping from "./components/Sales/ShippingDetail";
 
 function Layout() {
     const location = useLocation();
@@ -98,6 +98,8 @@ function Layout() {
                 <Route path="/purchase-order/add" element={<AddPurchaseOrder />} />
                 <Route path="/sales-order/confirm-shipping/:id" element={<ConfirmShippingSalesOrder />} />
                 <Route path="/sales-order/payment/:id" element={<PaymentSalesOrder />} />
+                <Route path="/shipping" element={<ShippingList />} />
+                <Route path="/shipping/detail/:id" element={<DetailShipping />} />
 
             </Routes>
         </div>
