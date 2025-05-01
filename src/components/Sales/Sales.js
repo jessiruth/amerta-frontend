@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "../../services/axiosInstance";
-import Toolbar from "./ToolbarSalesOrder";
-import "../../styles/GoodsTransport.css"; // Reuse existing table style
+import Toolbar from "./ToolbarSales";
+import "../../styles/GoodsTransport.css";
 
-const SalesOrder = () => {
+const Sales = () => {
     const [data, setData] = useState([]);
     const [filteredData, setFilteredData] = useState([]);
     const [searchTerm, setSearchTerm] = useState("");
@@ -34,6 +34,7 @@ const SalesOrder = () => {
           setLoading(true);
           try {
             const response = await axiosInstance.get("/api/sales-order/viewall", {
+              params: { status: "COMPLETED" },
               headers: { Authorization: `Bearer ${token}` },
             });
       
@@ -49,15 +50,14 @@ const SalesOrder = () => {
             setData(dataWithCustomerNames);
             setFilteredData(dataWithCustomerNames);
           } catch (error) {
-            console.error("Error fetching sales orders:", error);
+            console.error("Error fetching sales:", error);
           } finally {
             setLoading(false);
           }
         };
       
         fetchData();
-      }, [token]); // warning now gone ✅
-      
+      }, [token]);
 
     useEffect(() => {
         const lower = searchTerm.toLowerCase();
@@ -66,15 +66,16 @@ const SalesOrder = () => {
                 return item.id.toString().toLowerCase().includes(lower);
             } else if (searchCategory === "customer") {
                 return item.customerName.toLowerCase().includes(lower);
-            } else if (searchCategory === "status") {
-                return item.status.toLowerCase().includes(lower);
             } else if (searchCategory === "date") {
                 return item.salesDate.toLowerCase().includes(lower);
+            } else if (searchCategory === "price") {
+                return item.totalPrice.toString().toLowerCase().includes(lower);
             } else {
                 return (
+                    item.id.toString().toLowerCase().includes(lower) ||
                     item.customerName.toLowerCase().includes(lower) ||
                     item.salesDate.toLowerCase().includes(lower) ||
-                    item.status.toLowerCase().includes(lower)
+                    item.totalPrice.toString().toLowerCase().includes(lower)
                 );
             }
         });
@@ -90,10 +91,9 @@ const SalesOrder = () => {
 
     return (
         <div className="gudang-list-container">
-            <h1 className="page-title">Sales Order</h1>
+            <h1 className="page-title">Sales</h1>
 
             <Toolbar
-                onAdd={() => navigate("/sales-order/add")}
                 onRefresh={handleRefresh}
                 onFilter={(category) => setSearchCategory(category)}
                 onSearch={(term) => setSearchTerm(term)}
@@ -103,7 +103,7 @@ const SalesOrder = () => {
 
             <div className="table-container">
                 <div className="table-header">
-                    <h2>Sales Order Table</h2>
+                    <h2>Sales</h2>
                 </div>
 
                 {loading ? (
@@ -118,7 +118,6 @@ const SalesOrder = () => {
                                 <th>Nama Customer</th>
                                 <th>Tanggal</th>
                                 <th>Total Harga</th>
-                                <th>Status</th>
                                 <th>Aksi</th>
                             </tr>
                         </thead>
@@ -130,7 +129,6 @@ const SalesOrder = () => {
                                         <td>{order.customerName}</td>
                                         <td>{order.salesDate}</td>
                                         <td>Rp {parseFloat(order.totalPrice).toLocaleString("id-ID")}</td>
-                                        <td>{order.status}</td>
                                         <td>
                                             <button
                                                 className="detail-btn"
@@ -143,7 +141,7 @@ const SalesOrder = () => {
                                 ))
                             ) : (
                                 <tr>
-                                    <td colSpan="6" className="no-data">Tidak ada data</td>
+                                    <td colSpan="5" className="no-data">Tidak ada data</td>
                                 </tr>
                             )}
                         </tbody>
@@ -154,4 +152,4 @@ const SalesOrder = () => {
     );
 };
 
-export default SalesOrder;
+export default Sales;

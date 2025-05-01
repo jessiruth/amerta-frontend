@@ -16,7 +16,7 @@ const PurchaseFeature = () => {
 
             {/* Baris pertama */}
             <div className="sales-feature-row">
-                <div className="asset-box" onClick={() => navigate("/purchase")}>
+                <div className="asset-box" onClick={() => navigate("/purchase/completed")}>
                     <img src={purchaseIcon} alt="Purchase" />
                     <p>Purchase</p>
                 </div>

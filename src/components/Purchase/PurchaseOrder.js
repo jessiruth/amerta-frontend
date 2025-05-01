@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "../../services/axiosInstance";
-import Toolbar from "./ToolbarSalesOrder";
-import "../../styles/GoodsTransport.css"; // Reuse existing table style
+import Toolbar from "./ToolbarPurchaseOrder";
+import "../../styles/GoodsTransport.css";
 
-const SalesOrder = () => {
+const PurchaseOrder = () => {
     const [data, setData] = useState([]);
     const [filteredData, setFilteredData] = useState([]);
     const [searchTerm, setSearchTerm] = useState("");
@@ -33,14 +33,14 @@ const SalesOrder = () => {
       
           setLoading(true);
           try {
-            const response = await axiosInstance.get("/api/sales-order/viewall", {
+            const response = await axiosInstance.get("/api/purchase-order/viewall", {
               headers: { Authorization: `Bearer ${token}` },
             });
       
-            const salesOrders = response.data?.data || [];
+            const purchaseOrders = response.data?.data || [];
       
             const dataWithCustomerNames = await Promise.all(
-              salesOrders.map(async (order) => {
+              purchaseOrders.map(async (order) => {
                 const customerName = await fetchCustomerName(order.customerId);
                 return { ...order, customerName };
               })
@@ -49,7 +49,7 @@ const SalesOrder = () => {
             setData(dataWithCustomerNames);
             setFilteredData(dataWithCustomerNames);
           } catch (error) {
-            console.error("Error fetching sales orders:", error);
+            console.error("Error fetching purchase orders:", error);
           } finally {
             setLoading(false);
           }
@@ -69,11 +69,11 @@ const SalesOrder = () => {
             } else if (searchCategory === "status") {
                 return item.status.toLowerCase().includes(lower);
             } else if (searchCategory === "date") {
-                return item.salesDate.toLowerCase().includes(lower);
+                return item.purchaseDate.toLowerCase().includes(lower);
             } else {
                 return (
                     item.customerName.toLowerCase().includes(lower) ||
-                    item.salesDate.toLowerCase().includes(lower) ||
+                    item.purchaseDate.toLowerCase().includes(lower) ||
                     item.status.toLowerCase().includes(lower)
                 );
             }
@@ -90,10 +90,10 @@ const SalesOrder = () => {
 
     return (
         <div className="gudang-list-container">
-            <h1 className="page-title">Sales Order</h1>
+            <h1 className="page-title">Purchase Order</h1>
 
             <Toolbar
-                onAdd={() => navigate("/sales-order/add")}
+                onAdd={() => navigate("/purchase-order/add")}
                 onRefresh={handleRefresh}
                 onFilter={(category) => setSearchCategory(category)}
                 onSearch={(term) => setSearchTerm(term)}
@@ -103,7 +103,7 @@ const SalesOrder = () => {
 
             <div className="table-container">
                 <div className="table-header">
-                    <h2>Sales Order Table</h2>
+                    <h2>Purchase Order</h2>
                 </div>
 
                 {loading ? (
@@ -115,7 +115,7 @@ const SalesOrder = () => {
                         <thead>
                             <tr>
                                 <th>ID</th>
-                                <th>Nama Customer</th>
+                                <th>Nama Vendor</th>
                                 <th>Tanggal</th>
                                 <th>Total Harga</th>
                                 <th>Status</th>
@@ -128,13 +128,13 @@ const SalesOrder = () => {
                                     <tr key={order.id}>
                                         <td>{order.id}</td>
                                         <td>{order.customerName}</td>
-                                        <td>{order.salesDate}</td>
+                                        <td>{order.purchaseDate}</td>
                                         <td>Rp {parseFloat(order.totalPrice).toLocaleString("id-ID")}</td>
                                         <td>{order.status}</td>
                                         <td>
                                             <button
                                                 className="detail-btn"
-                                                onClick={() => navigate(`/sales-order/detail/${order.id}`)}
+                                                onClick={() => navigate(`/purchase-order/detail/${order.id}`)}
                                             >
                                                 Detail
                                             </button>
@@ -154,4 +154,4 @@ const SalesOrder = () => {
     );
 };
 
-export default SalesOrder;
+export default PurchaseOrder;

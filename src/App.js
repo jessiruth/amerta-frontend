@@ -22,8 +22,8 @@ import AddGoodsTransport from "./components/AddGoodsTransport";
 import SalesFeature from "./components/Sales/SalesFeature";
 import Customer from "./components/Customer";
 import AddCustomer from "./components/AddCustomer";
+import Sales from "./components/Sales/Sales";
 import SalesOrder from "./components/Sales/SalesOrder";
-
 
 import AddGudang from "./components/Storage/AddGudang";
 import GudangList from './components/Storage/GudangList';
@@ -31,6 +31,8 @@ import GudangDetail from "./components/Storage/GudangDetail";
 import UpdateGudang from "./components/Storage/UpdateGudang";
 import CreatePenerimaan from "./components/Penerimaan";
 import PurchaseFeature from "./components/Purchase/PurchaseFeature";
+import Purchase from "./components/Purchase/Purchase";
+import PurchaseOrder from "./components/Purchase/PurchaseOrder";
 import DetailSalesOrder from "./components/Sales/DetailSalesOrder";
 import AddSalesOrder from "./components/Sales/AddSalesOrder";
 import ConfirmSalesOrder from "./components/Sales/ConfirmSalesOrder";
@@ -75,6 +77,9 @@ function Layout() {
                 <Route path="/purchases" element={<PurchaseFeature />} />
                 <Route path="/customer" element={<Customer />} />
                 <Route path="/customer/add" element={<AddCustomer />} />
+                <Route path="/purchase/completed" element={<Purchase/>} />
+                <Route path="/purchase-order" element={<PurchaseOrder/>} />
+                <Route path="/sales/completed" element={<Sales/>} />
                 <Route path="/sales-order" element={<SalesOrder/>} />
                 <Route path="/sales-order/detail/:id" element={<DetailSalesOrder />} />
                 <Route path="/sales-order/add" element={<AddSalesOrder />} />
