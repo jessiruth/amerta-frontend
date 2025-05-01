@@ -70,9 +70,9 @@ const DetailPurchaseOrder = () => {
     const handleUpdate = () => {
         const status = data.status;
         if (status === "CREATED") navigate(`/purchase-order/confirm/${data.id}`);
-        else if (status === "CONFIRMED") navigate(`/purchase-order/shipping/${data.id}`);
-        else if (status === "IN SHIPPING") navigate(`/purchase-order/confirm-shipping/${data.id}`);
-        else if (status === "SHIPPED") navigate(`/purchase-order/payment/${data.id}`);
+        else if (status === "CONFIRMED") navigate(`/purchase-order/delivery/${data.id}`);
+        else if (status === "IN DELIVERY") navigate(`/purchase-order/confirm-delivery/${data.id}`);
+        else if (status === "PAID") navigate(`/purchase-order/payment/${data.id}`);
     };
 
     const getSubtotal = (barangId, qty, tax) => {
@@ -97,7 +97,7 @@ const DetailPurchaseOrder = () => {
 
                 <div className="action-buttons">
                     <button className="back-btn" onClick={handleBack}>Kembali</button>
-                    {["CREATED", "CONFIRMED", "IN SHIPPING", "SHIPPED"].includes(data.status) && (
+                    {["CREATED", "CONFIRMED", "IN DELIVERY", "PAID"].includes(data.status) && (
                         <button className="update-btn" onClick={handleUpdate}>Lanjutkan</button>
                     )}
                     <button className="print-btn" onClick={() => window.print()}>
@@ -155,40 +155,8 @@ const DetailPurchaseOrder = () => {
                     </div>
                 </div>
 
-                {/* Invoice */}
-                {data.invoice && (
-                    <div className="detail-card">
-                        <div className="section-header">
-                            <h2 className="section-title">Faktur</h2>
-                        </div>
-
-                        <div className="section-content">
-                            <div className="detail-row">
-                                <span className="detail-label">Tanggal Invoice:</span>
-                                <span className="detail-value">{formatDate(data.invoice.invoiceDate)}</span>
-                            </div>
-                            <div className="detail-row">
-                                <span className="detail-label">Status Invoice:</span>
-                                <span className="detail-value">{data.invoice.invoiceStatus}</span>
-                            </div>
-                            <div className="detail-row">
-                                <span className="detail-label">Total Tagihan:</span>
-                                <span className="detail-value">Rp {parseFloat(data.invoice.totalAmount).toLocaleString("id-ID")}</span>
-                            </div>
-                            <div className="detail-row">
-                                <span className="detail-label">Jatuh Tempo:</span>
-                                <span className="detail-value">{formatDate(data.invoice.dueDate)}</span>
-                            </div>
-                            <div className="detail-row">
-                                <span className="detail-label">Sisa Tagihan:</span>
-                                <span className="detail-value">Rp {parseFloat(data.invoice.remainingAmount).toLocaleString("id-ID")}</span>
-                            </div>
-                        </div>
-                    </div>
-                )}
-
                 {/* Pengiriman */}
-                {data.shipping && (
+                {data.delivery && (
                     <div className="detail-card">
                         <div className="section-header">
                             <h2 className="section-title">Pengiriman</h2>
@@ -197,19 +165,19 @@ const DetailPurchaseOrder = () => {
                         <div className="section-content">
                             <div className="detail-row">
                                 <span className="detail-label">Tanggal Pengiriman:</span>
-                                <span className="detail-value">{formatDate(data.shipping.deliveryDate)}</span>
+                                <span className="detail-value">{formatDate(data.delivery.deliveryDate)}</span>
                             </div>
                             <div className="detail-row">
                                 <span className="detail-label">Status:</span>
-                                <span className="detail-value">{data.shipping.deliveryStatus}</span>
+                                <span className="detail-value">{data.delivery.deliveryStatus}</span>
                             </div>
                             <div className="detail-row">
                                 <span className="detail-label">Nomor Resi:</span>
-                                <span className="detail-value">{data.shipping.trackingNumber}</span>
+                                <span className="detail-value">{data.delivery.trackingNumber}</span>
                             </div>
                             <div className="detail-row">
                                 <span className="detail-label">Biaya Kirim:</span>
-                                <span className="detail-value">Rp {parseFloat(data.shipping.deliveryFee).toLocaleString("id-ID")}</span>
+                                <span className="detail-value">Rp {parseFloat(data.delivery.deliveryFee).toLocaleString("id-ID")}</span>
                             </div>
                         </div>
                     </div>
