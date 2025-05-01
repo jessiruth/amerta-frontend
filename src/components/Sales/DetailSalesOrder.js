@@ -99,6 +99,9 @@ const DetailSalesOrder = () => {
                     {["CREATED", "CONFIRMED", "IN SHIPPING", "SHIPPED"].includes(data.status) && (
                         <button className="update-btn" onClick={handleUpdate}>Lanjutkan</button>
                     )}
+                    <button className="print-btn" onClick={() => window.print()}>
+                        Print
+                    </button>
                 </div>
 
                 <div className="detail-card">

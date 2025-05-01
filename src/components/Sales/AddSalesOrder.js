@@ -134,11 +134,18 @@ const AddSalesOrder = () => {
                     gudangTujuan: formData.gudangTujuan
                 }))
             };
-            await axiosInstance.post("/api/sales-order/add", payload, {
+            const response = await axiosInstance.post("/api/sales-order/add", payload, {
                 headers: { Authorization: `Bearer ${token}` },
             });
+            const newId = response.data?.data?.id;
             toast.success("Sales Order berhasil ditambahkan!");
-            setTimeout(() => navigate("/sales-order"), 1500);
+            setTimeout(() => {
+                if (newId) {
+                    navigate(`/sales-order/detail/${newId}`);
+                } else {
+                    navigate("/sales-order");
+                }
+            }, 1500);
         } catch {
             toast.error("Gagal menambahkan Sales Order.");
         } finally {
