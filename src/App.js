@@ -39,6 +39,10 @@ import DetailPurchaseOrder from "./components/Purchase/DetailPurchaseOrder";
 import ShippingSalesOrder from "./components/Sales/ShipSalesOrder";
 import ConfirmPurchaseOrder from "./components/Purchase/ConfirmPurchaseOrder";
 import DeliveryPurchaseOrder from "./components/Purchase/DeliveryPurchaseOrder";
+import ConfirmShippingSalesOrder from "./components/Sales/ConfirmShippingSalesOrder";
+import PaymentSalesOrder from "./components/Sales/PaymentSalesOrder";
+import PaymentPurchaseOrder from "./components/Purchase/PaymentPurchaseOrder";
+import CompletePurchaseOrder from "./components/Purchase/CompletePurchaseOrder";
 
 function Layout() {
     const location = useLocation();
@@ -88,8 +92,13 @@ function Layout() {
                 <Route path="/purchase-order" element={<PurchaseOrder/>} />
                 <Route path="/purchase-order/detail/:id" element={<DetailPurchaseOrder />} />
                 <Route path="/purchase-order/confirm/:id" element={<ConfirmPurchaseOrder />} /> 
+                <Route path="/purchase-order/payment/:id" element={<PaymentPurchaseOrder />} />
                 <Route path="/purchase-order/delivery/:id" element={<DeliveryPurchaseOrder />} />
+                <Route path="/purchase-order/complete/:id" element={<CompletePurchaseOrder />} />
 
+
+                <Route path="/sales-order/confirm-shipping/:id" element={<ConfirmShippingSalesOrder />} />
+                <Route path="/sales-order/payment/:id" element={<PaymentSalesOrder />} />
 
             </Routes>
         </div>

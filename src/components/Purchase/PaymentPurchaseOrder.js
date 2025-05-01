@@ -2,20 +2,19 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axiosInstance from "../../services/axiosInstance";
 import "../../styles/GudangDetail.css";
-import "../../styles/AddSalesOrder.css";
 
-const DeliveryPurchaseOrder = () => {
+const PaymentPurchaseOrder = () => {
     const { id } = useParams();
     const navigate = useNavigate();
-
     const [data, setData] = useState(null);
     const [vendorName, setVendorName] = useState("");
-    const [deliveryDate, setDeliveryDate] = useState(new Date().toISOString().split("T")[0]);
-    const [deliveryFee, setDeliveryFee] = useState("");
-    const [inputErrors, setInputErrors] = useState({});
+    const [paymentDate, setPaymentDate] = useState(new Date().toISOString().split("T")[0]);
+    const [paymentMethod, setPaymentMethod] = useState("CASH");
+    const [totalAmountPayed, setTotalAmountPayed] = useState("");
     const [modalType, setModalType] = useState(null);
     const [successModal, setSuccessModal] = useState(false);
     const [loading, setLoading] = useState(true);
+    const [inputErrors, setInputErrors] = useState({});
 
     useEffect(() => {
         const fetchData = async () => {
@@ -26,15 +25,15 @@ const DeliveryPurchaseOrder = () => {
                 const res = await axiosInstance.get(`/api/purchase-order/${id}`, {
                     headers: { Authorization: `Bearer ${token}` },
                 });
-                const poData = res.data?.data;
-                setData(poData);
+                const order = res.data?.data;
+                setData(order);
 
-                const vendorRes = await axiosInstance.get(`/api/customer/${poData.customerId}`, {
+                const vendorRes = await axiosInstance.get(`/api/customer/${order.customerId}`, {
                     headers: { Authorization: `Bearer ${token}` },
                 });
                 setVendorName(vendorRes.data?.data?.name || "Unknown");
             } catch {
-                console.error("Gagal memuat data PO");
+                setData(null);
             } finally {
                 setLoading(false);
             }
@@ -50,24 +49,13 @@ const DeliveryPurchaseOrder = () => {
             year: "numeric",
         });
 
-    const validateInputs = () => {
-        const errors = {};
-        if (!deliveryFee || Number(deliveryFee) < 0) {
-            errors.deliveryFee = "Biaya kirim harus >= 0";
-        }
-        if (new Date(deliveryDate) < new Date(data.purchaseDate)) {
-            errors.deliveryDate = "Tanggal pengiriman tidak boleh sebelum tanggal pembelian.";
-        }
-        setInputErrors(errors);
-        return Object.keys(errors).length === 0;
-    };
-
-    const handleSubmit = async () => {
+    const handlePayment = async () => {
         const token = localStorage.getItem("token");
         try {
-            await axiosInstance.put(`/api/purchase-order/delivery/${id}`, {
-                deliveryDate,
-                deliveryFee: Number(deliveryFee),
+            await axiosInstance.put(`/api/purchase-order/payment/${id}`, {
+                paymentDate,
+                paymentMethod,
+                totalAmountPayed: parseFloat(totalAmountPayed),
             }, {
                 headers: { Authorization: `Bearer ${token}` },
             });
@@ -75,18 +63,32 @@ const DeliveryPurchaseOrder = () => {
             setSuccessModal(true);
         } catch {
             setModalType(null);
-            alert("Gagal memproses pengiriman.");
         }
     };
 
+    const validateInputs = () => {
+        const errors = {};
+        if (new Date(paymentDate) < new Date(data.invoice?.invoiceDate)) {
+            errors.paymentDate = "Tanggal pembayaran tidak boleh sebelum tanggal invoice.";
+        }
+        if (!totalAmountPayed || parseFloat(totalAmountPayed) <= 0) {
+            errors.totalAmountPayed = "Jumlah dibayar harus lebih dari 0.";
+        }
+        if (parseFloat(totalAmountPayed) > data.invoice?.remainingAmount) {
+            errors.totalAmountPayed = "Jumlah dibayar tidak boleh lebih dari sisa tagihan.";
+        }
+        setInputErrors(errors);
+        return Object.keys(errors).length === 0;
+    };
+
     if (loading) return <p>Loading...</p>;
-    if (!data) return <p>Data tidak ditemukan.</p>;
+    if (!data) return <p>Data tidak ditemukan</p>;
 
     return (
         <div className="gudang-form-container">
             <div className="gudang-form-content">
                 <div className="page-header">
-                    <h1 className="page-title">Pengiriman Purchase Order</h1>
+                    <h1 className="page-title">Pembayaran Purchase Order</h1>
                 </div>
 
                 <div className="detail-card">
@@ -95,7 +97,6 @@ const DeliveryPurchaseOrder = () => {
                         <div className="detail-row"><span className="detail-label">ID:</span><span className="detail-value">{data.id}</span></div>
                         <div className="detail-row"><span className="detail-label">Vendor:</span><span className="detail-value">{vendorName}</span></div>
                         <div className="detail-row"><span className="detail-label">Tanggal:</span><span className="detail-value">{formatDate(data.purchaseDate)}</span></div>
-                        <div className="detail-row"><span className="detail-label">Total Harga:</span><span className="detail-value">Rp{parseFloat(data.totalPrice).toLocaleString("id-ID", { minimumFractionDigits: 2 })}</span></div>
                         <div className="detail-row"><span className="detail-label">Status:</span><span className="detail-value">{data.status}</span></div>
                     </div>
                 </div>
@@ -113,53 +114,63 @@ const DeliveryPurchaseOrder = () => {
                     </div>
                 )}
 
-                {data.payment && (
+                {data.status === "CONFIRMED" && (
                     <div className="detail-card">
-                        <div className="section-header"><h2 className="section-title">Pembayaran</h2></div>
+                        <div className="section-header"><h2 className="section-title">Input Pembayaran</h2></div>
                         <div className="section-content">
-                            <div className="detail-row"><span className="detail-label">Tanggal:</span><span className="detail-value">{formatDate(data.payment.paymentDate)}</span></div>
-                            <div className="detail-row"><span className="detail-label">Metode:</span><span className="detail-value">{data.payment.paymentMethod}</span></div>
-                            <div className="detail-row"><span className="detail-label">Status:</span><span className="detail-value">{data.payment.paymentStatus}</span></div>
-                            <div className="detail-row"><span className="detail-label">Jumlah Dibayar:</span><span className="detail-value">Rp{parseFloat(data.payment.totalAmountPayed).toLocaleString("id-ID", { minimumFractionDigits: 2 })}</span></div>
+                            <div className="form-row">
+                                <div className="form-group">
+                                    <label>Tanggal Pembayaran</label>
+                                    <input type="date" value={paymentDate} onChange={(e) => setPaymentDate(e.target.value)} />
+                                    {inputErrors.paymentDate && <span className="error-message">{inputErrors.paymentDate}</span>}
+                                </div>
+                                <div className="form-group">
+                                    <label>Metode Pembayaran</label>
+                                    <select value={paymentMethod} onChange={(e) => setPaymentMethod(e.target.value)}>
+                                        <option value="CASH">CASH</option>
+                                        <option value="TRANSFER">TRANSFER</option>
+                                    </select>
+                                </div>
+                                <div className="form-group">
+                                    <label>Jumlah Dibayar</label>
+                                    <input
+                                        type="number"
+                                        step="0.01"
+                                        min="1"
+                                        placeholder="Contoh: 12000.50"
+                                        value={totalAmountPayed}
+                                        onChange={(e) => setTotalAmountPayed(e.target.value)}
+                                    />
+                                    {inputErrors.totalAmountPayed && <span className="error-message">{inputErrors.totalAmountPayed}</span>}
+                                </div>
+                            </div>
                         </div>
                     </div>
                 )}
 
-                <div className="detail-card">
-                    <div className="section-header"><h2 className="section-title">Input Pengiriman</h2></div>
-                    <div className="section-content">
-                        <div className="form-row">
-                            <div className="form-group">
-                                <label>Tanggal Pengiriman</label>
-                                <input type="date" value={deliveryDate} onChange={(e) => setDeliveryDate(e.target.value)} />
-                                {inputErrors.deliveryDate && <span className="error-message">{inputErrors.deliveryDate}</span>}
-                            </div>
-                            <div className="form-group">
-                                <label>Biaya Kirim</label>
-                                <input type="number" value={deliveryFee} onChange={(e) => setDeliveryFee(e.target.value)} />
-                                {inputErrors.deliveryFee && <span className="error-message">{inputErrors.deliveryFee}</span>}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
                 <div className="form-actions">
-                    <button className="cancel-btn" onClick={() => setModalType("cancel")}>Batal</button>
-                    <button className="submit-btn" onClick={() => {
-                        if (validateInputs()) setModalType("confirm");
-                    }}>Kirim</button>
+                    {data.status === "CONFIRMED" ? (
+                        <>
+                            <button className="cancel-btn" onClick={() => setModalType("cancel")}>Batal</button>
+                            <button className="submit-btn" onClick={() => {
+                                if (validateInputs()) setModalType("confirm");
+                            }}>Bayar</button>
+                        </>
+                    ) : (
+                        <button className="cancel-btn" onClick={() => navigate("/purchase-order")}>Kembali</button>
+                    )}
                 </div>
 
                 {modalType && (
                     <div className="modal-overlay">
                         <div className="modal-content">
                             <div className="modal-header">
-                                <h3>{modalType === "confirm" ? "Konfirmasi Pengiriman" : "Batalkan Proses"}</h3>
+                                <h3>{modalType === "confirm" ? "Konfirmasi Pembayaran" : "Batalkan Proses"}</h3>
                                 <button className="close-button" onClick={() => setModalType(null)}>&times;</button>
                             </div>
                             <div className="modal-body">
                                 {modalType === "confirm" ? (
-                                    <p>Apakah Anda yakin ingin memulai pengiriman?</p>
+                                    <p>Apakah Anda yakin ingin melakukan pembayaran?</p>
                                 ) : (
                                     <>
                                         <p>Apakah Anda yakin ingin membatalkan proses ini?</p>
@@ -172,11 +183,11 @@ const DeliveryPurchaseOrder = () => {
                                 <button
                                     className={modalType === "confirm" ? "primary-btn" : "danger-btn"}
                                     onClick={() => {
-                                        if (modalType === "confirm") handleSubmit();
+                                        if (modalType === "confirm") handlePayment();
                                         else navigate("/purchase-order");
                                     }}
                                 >
-                                    {modalType === "confirm" ? "Ya, Kirim" : "Ya, Batalkan"}
+                                    {modalType === "confirm" ? "Ya, Bayar" : "Ya, Batalkan"}
                                 </button>
                             </div>
                         </div>
@@ -187,11 +198,11 @@ const DeliveryPurchaseOrder = () => {
                     <div className="modal-overlay">
                         <div className="modal-content">
                             <div className="modal-header">
-                                <h3>Pengiriman Dimulai</h3>
+                                <h3>Pembayaran Berhasil</h3>
                                 <button className="close-button" onClick={() => setSuccessModal(false)}>&times;</button>
                             </div>
                             <div className="modal-body">
-                                <p>Pengiriman berhasil dimulai. Anda akan diarahkan ke halaman detail purchase order.</p>
+                                <p>Pembayaran telah diterima. Anda akan diarahkan ke detail Purchase Order.</p>
                             </div>
                             <div className="modal-footer">
                                 <button className="primary-btn" onClick={() => navigate(`/purchase-order/detail/${id}`)}>OK</button>
@@ -204,4 +215,4 @@ const DeliveryPurchaseOrder = () => {
     );
 };
 
-export default DeliveryPurchaseOrder;
+export default PaymentPurchaseOrder;
