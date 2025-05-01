@@ -71,7 +71,7 @@ const DetailPurchaseOrder = () => {
         if (status === "CREATED") navigate(`/purchase-order/confirm/${data.id}`);
         else if (status === "CONFIRMED") navigate(`/purchase-order/payment/${data.id}`);
         else if (status === "PAID") navigate(`/purchase-order/delivery/${data.id}`);
-        else if (status === "IN DELIVERY") navigate(`/purchase-order/complete/${data.id}`);
+        else if (status === "IN DELIVERY") navigate(`/purchase-order/complete-delivery/${data.id}`);
     };
 
     const getSubtotal = (barangId, qty, tax) => {
