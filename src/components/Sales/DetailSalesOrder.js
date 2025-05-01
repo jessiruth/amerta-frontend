@@ -112,7 +112,7 @@ const DetailSalesOrder = () => {
                         <div className="detail-row"><span className="detail-label">Customer:</span><span className="detail-value">{customerName}</span></div>
                         <div className="detail-row"><span className="detail-label">Tanggal Sales:</span><span className="detail-value">{formatDate(data.salesDate)}</span></div>
                         <div className="detail-row"><span className="detail-label">Status:</span><span className="detail-value">{data.status}</span></div>
-                        <div className="detail-row"><span className="detail-label">Total Harga:</span><span className="detail-value">Rp {parseFloat(data.totalPrice).toLocaleString("id-ID")}</span></div>
+                        <div className="detail-row"><span className="detail-label">Total Profit:</span><span className="detail-value">Rp {parseFloat(data.totalPrice).toLocaleString("id-ID")}</span></div>
                     </div>
                 </div>
 
