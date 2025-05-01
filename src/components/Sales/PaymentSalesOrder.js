@@ -214,11 +214,11 @@ const PaymentSalesOrder = () => {
                         <div className="section-content">
                             <div className="detail-row">
                                 <span className="detail-label">Tanggal Pengiriman:</span>
-                                <span className="detail-value">{formatDate(data.shipping.deliveryDate)}</span>
+                                <span className="detail-value">{formatDate(data.shipping.shippingDate)}</span>
                             </div>
                             <div className="detail-row">
                                 <span className="detail-label">Status:</span>
-                                <span className="detail-value">{data.shipping.deliveryStatus}</span>
+                                <span className="detail-value">{data.shipping.shippingStatus}</span>
                             </div>
                             <div className="detail-row">
                                 <span className="detail-label">Nomor Resi:</span>
@@ -226,7 +226,7 @@ const PaymentSalesOrder = () => {
                             </div>
                             <div className="detail-row">
                                 <span className="detail-label">Biaya Kirim:</span>
-                                <span className="detail-value">Rp {parseFloat(data.shipping.deliveryFee).toLocaleString("id-ID")}</span>
+                                <span className="detail-value">Rp {parseFloat(data.shipping.shippingFee).toLocaleString("id-ID")}</span>
                             </div>
                         </div>
                     </div>
