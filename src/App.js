@@ -38,6 +38,8 @@ import ShippingSalesOrder from "./components/Sales/ShipSalesOrder";
 import ConfirmShippingSalesOrder from "./components/Sales/ConfirmShippingSalesOrder";
 import SalesReceipt from "./components/SalesReceipt";
 import SalesReceiptDetail from "./components/SalesReceiptDetail";
+import PurchaseReceipt from "./components/PurchaseReceipt";
+import PurchaseReceiptDetail from "./components/PurchaseReceiptDetail";
 
 function Layout() {
     const location = useLocation();
@@ -86,6 +88,8 @@ function Layout() {
                 <Route path="/sales-order/confirm-shipping/:id" element={<ConfirmShippingSalesOrder />} />
                 <Route path="/sales-receipt" element={<SalesReceipt/>} />
                 <Route path="/sales-receipt/detail/:id" element={<SalesReceiptDetail />} />
+                <Route path="/purchase-receipt" element={<PurchaseReceipt/>} />
+                <Route path="/purhcase-receipt/detail/:id" element={<PurchaseReceiptDetail />} />
 
             </Routes>
         </div>
