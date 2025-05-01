@@ -11,10 +11,10 @@ const ConfirmSalesOrder = () => {
     const [customerName, setCustomerName] = useState("");
     const [invoiceDate, setInvoiceDate] = useState(new Date().toISOString().split("T")[0]);
     const [paymentTerms, setPaymentTerms] = useState(30);
+    const [itemPrices, setItemPrices] = useState({});
     const [loading, setLoading] = useState(true);
     const [modalType, setModalType] = useState(null);
     const [inputErrors, setInputErrors] = useState({});
-
 
     useEffect(() => {
         const token = localStorage.getItem("token");
@@ -32,6 +32,21 @@ const ConfirmSalesOrder = () => {
                     headers: { Authorization: `Bearer ${token}` },
                 });
                 setCustomerName(customerRes.data?.data?.name || "Unknown");
+
+                const prices = {};
+                await Promise.all(
+                    order.items.map(async (item) => {
+                        try {
+                            const res = await axiosInstance.get(`/api/barang/${item.barangId}`, {
+                                headers: { Authorization: `Bearer ${token}` },
+                            });
+                            prices[item.barangId] = res.data?.data?.hargaJual || 0;
+                        } catch {
+                            prices[item.barangId] = 0;
+                        }
+                    })
+                );
+                setItemPrices(prices);
             } catch {
                 alert("Gagal memuat detail Sales Order");
             } finally {
@@ -77,7 +92,15 @@ const ConfirmSalesOrder = () => {
         return Object.keys(errors).length === 0;
     };
 
+    const getSubtotal = (barangId, qty, tax) => {
+        const harga = itemPrices[barangId] || 0;
+        const subtotal = harga * qty;
+        return subtotal + (subtotal * (tax || 0) / 100);
+    };
 
+    const getTotal = () =>
+        data.items.reduce((total, item) =>
+            total + getSubtotal(item.barangId, item.quantity, item.tax), 0);
 
     if (loading) return <p>Loading...</p>;
     if (!data) return <p>Data tidak ditemukan</p>;
@@ -110,47 +133,68 @@ const ConfirmSalesOrder = () => {
                                     <th>Qty</th>
                                     <th>Gudang Tujuan</th>
                                     <th>Pajak</th>
+                                    <th>Harga Satuan</th>
+                                    <th>Subtotal</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {data.items.map(item => (
-                                    <tr key={item.id}>
-                                        <td>{item.barangId}</td>
-                                        <td>{item.quantity}</td>
-                                        <td>{item.gudangTujuan}</td>
-                                        <td>{item.pajak || item.tax || 0}%</td>
-                                    </tr>
-                                ))}
+                                {data.items.map(item => {
+                                    const harga = itemPrices[item.barangId] || 0;
+                                    const subtotal = getSubtotal(item.barangId, item.quantity, item.tax);
+                                    return (
+                                        <tr key={item.id}>
+                                            <td>{item.barangId}</td>
+                                            <td>{item.quantity}</td>
+                                            <td>{item.gudangTujuan}</td>
+                                            <td>{item.pajak || item.tax || 0}%</td>
+                                            <td>Rp {parseFloat(harga).toLocaleString("id-ID")}</td>
+                                            <td>Rp {parseFloat(subtotal).toLocaleString("id-ID")}</td>
+                                        </tr>
+                                    );
+                                })}
                             </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colSpan="5" style={{ textAlign: "right", fontWeight: "bold" }}>Total</td>
+                                    <td style={{ fontWeight: "bold" }}>Rp {parseFloat(getTotal()).toLocaleString("id-ID")}</td>
+                                </tr>
+                            </tfoot>
                         </table>
                     </div>
                 </div>
 
-                <div className="detail-card">
-                    <div className="section-header"><h2 className="section-title">Input Konfirmasi</h2></div>
-                    <div className="section-content">
-                        <div className="form-row">
-                            <div className="form-group">
-                                <label>Tanggal Invoice</label>
-                                <input type="date" value={invoiceDate} onChange={(e) => setInvoiceDate(e.target.value)} />
-                                {inputErrors.invoiceDate && <span className="error-message">{inputErrors.invoiceDate}</span>}
-                            </div>
-                            <div className="form-group">
-                                <label>Jangka Waktu Pembayaran (hari)</label>
-                                <input type="number" min="1" value={paymentTerms} onChange={(e) => setPaymentTerms(e.target.value)} />
-                                {inputErrors.paymentTerms && <span className="error-message">{inputErrors.paymentTerms}</span>}
+                {/* Input Konfirmasi hanya jika status CREATED */}
+                {data.status === "CREATED" && (
+                    <div className="detail-card">
+                        <div className="section-header"><h2 className="section-title">Input Konfirmasi</h2></div>
+                        <div className="section-content">
+                            <div className="form-row">
+                                <div className="form-group">
+                                    <label>Tanggal Invoice</label>
+                                    <input type="date" value={invoiceDate} onChange={(e) => setInvoiceDate(e.target.value)} />
+                                    {inputErrors.invoiceDate && <span className="error-message">{inputErrors.invoiceDate}</span>}
+                                </div>
+                                <div className="form-group">
+                                    <label>Jangka Waktu Pembayaran (hari)</label>
+                                    <input type="number" min="1" value={paymentTerms} onChange={(e) => setPaymentTerms(e.target.value)} />
+                                    {inputErrors.paymentTerms && <span className="error-message">{inputErrors.paymentTerms}</span>}
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-
+                )}
 
                 <div className="form-actions">
-                    <button className="cancel-btn" onClick={() => setModalType("cancel")}>Batal</button>
-                    <button className="submit-btn" onClick={() => {
-                        if (validateInputs()) setModalType("confirm");
-                    }}
-                    >Konfirmasi</button>
+                    {data.status === "CREATED" ? (
+                        <>
+                            <button className="cancel-btn" onClick={() => setModalType("cancel")}>Batal</button>
+                            <button className="submit-btn" onClick={() => {
+                                if (validateInputs()) setModalType("confirm");
+                            }}>Konfirmasi</button>
+                        </>
+                    ) : (
+                        <button className="cancel-btn" onClick={() => navigate("/sales-order")}>Kembali</button>
+                    )}
                 </div>
 
                 {modalType && (
