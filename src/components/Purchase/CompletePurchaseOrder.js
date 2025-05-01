@@ -76,7 +76,7 @@ const CompletePurchaseOrder = () => {
     const handleComplete = async () => {
         const token = localStorage.getItem("token");
         try {
-            await axiosInstance.put(`/api/purchase-order/complete/${id}`, {}, {
+            await axiosInstance.put(`/api/purchase-order/complete-delivery/${id}`, {}, {
                 headers: { Authorization: `Bearer ${token}` },
             });
             setModalType(null);
