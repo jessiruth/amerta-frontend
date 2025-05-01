@@ -36,11 +36,19 @@ import PurchaseOrder from "./components/Purchase/PurchaseOrder";
 import DetailSalesOrder from "./components/Sales/DetailSalesOrder";
 import AddSalesOrder from "./components/Sales/AddSalesOrder";
 import ConfirmSalesOrder from "./components/Sales/ConfirmSalesOrder";
+import DetailPurchaseOrder from "./components/Purchase/DetailPurchaseOrder";
 import ShippingSalesOrder from "./components/Sales/ShipSalesOrder";
+import ConfirmPurchaseOrder from "./components/Purchase/ConfirmPurchaseOrder";
+import DeliveryPurchaseOrder from "./components/Purchase/DeliveryPurchaseOrder";
 import ConfirmShippingSalesOrder from "./components/Sales/ConfirmShippingSalesOrder";
 import PaymentSalesOrder from "./components/Sales/PaymentSalesOrder";
+import PaymentPurchaseOrder from "./components/Purchase/PaymentPurchaseOrder";
+import CompletePurchaseOrder from "./components/Purchase/CompletePurchaseOrder";
+import AddPurchaseOrder from "./components/Purchase/AddPurchaseOrder";
 import ShippingList from "./components/Sales/ShippingList";
 import DetailShipping from "./components/Sales/ShippingDetail";
+import DeliveryList from "./components/Purchase/DeliveryList";
+import DetailDelivery from "./components/Purchase/DeliveryDetail";
 
 function Layout() {
     const location = useLocation();
@@ -77,7 +85,6 @@ function Layout() {
                 <Route path="/expense/detail/:id" element={<ExpenseDetail />} />
                 <Route path="/revenue" element={<Revenue />} />
                 <Route path="/revenue/detail/:id" element={<RevenueDetail />} />
-        
 
                 <Route path="/gudang/add" element={<AddGudang />} />
                 <Route path="/gudang" element={<GudangList />} />
@@ -86,10 +93,6 @@ function Layout() {
         
                 <Route path="/customer" element={<Customer />} />
                 <Route path="/customer/add" element={<AddCustomer />} />
-
-                <Route path="/purchases" element={<PurchaseFeature />} />
-                <Route path="/purchase/completed" element={<Purchase/>} />
-                <Route path="/purchase-order" element={<PurchaseOrder/>} />
 
                 <Route path="/sales" element={<SalesFeature />} />\
                 <Route path="/sales/completed" element={<Sales/>} />
@@ -100,8 +103,22 @@ function Layout() {
                 <Route path="/sales-order/shipping/:id" element={<ShippingSalesOrder />} />
                 <Route path="/sales-order/confirm-shipping/:id" element={<ConfirmShippingSalesOrder />} />
                 <Route path="/sales-order/payment/:id" element={<PaymentSalesOrder />} />
+
+                <Route path="/purchases" element={<PurchaseFeature />} />
+                <Route path="/purchase/completed" element={<Purchase/>} />
+                <Route path="/purchase-order" element={<PurchaseOrder/>} />
+                <Route path="/purchase-order/detail/:id" element={<DetailPurchaseOrder />} />
+                <Route path="/purchase-order/add" element={<AddPurchaseOrder />} />
+                <Route path="/purchase-order/confirm/:id" element={<ConfirmPurchaseOrder />} /> 
+                <Route path="/purchase-order/delivery/:id" element={<DeliveryPurchaseOrder />} />
+                <Route path="/purchase-order/complete-delivery/:id" element={<CompletePurchaseOrder />} />
+                <Route path="/purchase-order/payment/:id" element={<PaymentPurchaseOrder />} />
+    
                 <Route path="/shipping" element={<ShippingList />} />
                 <Route path="/shipping/detail/:id" element={<DetailShipping />} />
+
+                <Route path="/delivery-note" element={<DeliveryList />} />
+                <Route path="/delivery/detail/:id" element={<DetailDelivery />} />
 
             </Routes>
         </div>

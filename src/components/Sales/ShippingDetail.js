@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import axiosInstance from "../../services/axiosInstance";
 import "../../styles/GudangDetail.css";
 
-const DetailShipping = () => {
+const ShippingDetail = () => {
     const { id } = useParams();
     const navigate = useNavigate();
     const [data, setData] = useState(null);
@@ -76,7 +76,7 @@ const DetailShipping = () => {
         <div className="gudang-form-container">
             <div className="gudang-form-content">
                 <div className="page-header">
-                    <h1 className="page-title">Detail Pengiriman</h1>
+                    <h1 className="page-title">Surat Jalan</h1>
                     <button className="print-btn" onClick={() => window.print()}>Print</button>
                 </div>
 
@@ -154,4 +154,4 @@ const DetailShipping = () => {
     );
 };
 
-export default DetailShipping;
+export default ShippingDetail;
