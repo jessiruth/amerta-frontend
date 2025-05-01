@@ -41,7 +41,6 @@ const ToolbarGoodsTransport = ({ onAdd, onRefresh, onFilter, onSearch, selectedC
             {/* Filter Dropdown */}
             <div className="toolbar-item filter-container">
                 <select className="filter-dropdown" onChange={handleCategoryChange} value={selectedCategory}>
-                    <option value="all">Filter: All Fields</option>
                     <option value="tanggal">Filter: Tanggal Pemindahan</option>
                     <option value="asal">Filter: Gudang Asal</option>
                     <option value="tujuan">Filter: Gudang Tujuan</option>

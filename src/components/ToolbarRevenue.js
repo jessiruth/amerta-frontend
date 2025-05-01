@@ -41,7 +41,6 @@ const ToolbarRevenue = ({ onAdd, onRefresh, onFilter, onSearch, selectedCategory
             {/* Filter Dropdown */}
             <div className="toolbar-item filter-container">
                 <select className="filter-dropdown" onChange={handleCategoryChange} value={selectedCategory}>
-                    <option value="all">Filter: All Fields</option>
                     <option value="penerimaan">Filter: Jenis Penerimaan</option>
                     <option value="jumlah">Filter: Jumlah</option>
                     <option value="sumber">Filter: Sumber Penerimaan</option>

@@ -41,7 +41,6 @@ const ToolbarGudang = ({ onAdd, onRefresh, onFilter, onSearch, selectedCategory,
             {/* Filter Dropdown */}
             <div className="toolbar-item filter-container">
                 <select className="filter-dropdown" onChange={handleCategoryChange} value={selectedCategory}>
-                    <option value="all">Filter: All Fields</option>
                     <option value="nama">Filter: Nama</option>
                     <option value="kota">Filter: Kota</option>
                     <option value="provinsi">Filter: Provinsi</option>

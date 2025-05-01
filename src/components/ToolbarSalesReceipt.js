@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react";
 import "../styles/Toolbar.css";
-import addIcon from "../assets/Add.png";
 import refreshIcon from "../assets/Refresh.png";
 
-const ToolbarExpense = ({ onAdd, onRefresh, onFilter, onSearch, selectedCategory, searchTerm }) => {
+const ToolbarSalesReceipt = ({ onRefresh, onFilter, onSearch, selectedCategory, searchTerm }) => {
     const [inputValue, setInputValue] = useState("");
 
     useEffect(() => {
@@ -22,14 +21,6 @@ const ToolbarExpense = ({ onAdd, onRefresh, onFilter, onSearch, selectedCategory
 
     return (
         <div className="toolbar">
-            {/* Add Button */}
-            <div className="toolbar-item">
-                <button className="toolbar-btn add-btn" onClick={onAdd}>
-                    <img src={addIcon} alt="Add" />
-                </button>
-                <p className="toolbar-text">Add</p>
-            </div>
-
             {/* Refresh Button */}
             <div className="toolbar-item">
                 <button className="toolbar-btn white-btn" onClick={onRefresh}>
@@ -41,9 +32,9 @@ const ToolbarExpense = ({ onAdd, onRefresh, onFilter, onSearch, selectedCategory
             {/* Filter Dropdown */}
             <div className="toolbar-item filter-container">
                 <select className="filter-dropdown" onChange={handleCategoryChange} value={selectedCategory}>
-                    <option value="pengeluaran">Filter: Jenis Pengeluaran</option>
-                    <option value="jumlah">Filter: Jumlah</option>
-                    <option value="penanggung">Filter: Penanggung Jawab</option>
+                    <option value="id">Filter: ID Sales Receipt</option>
+                    <option value="date">Filter: Receipt Date</option>
+                    <option value="amount">Filter: Amount</option>
                 </select>
             </div>
 
@@ -51,7 +42,7 @@ const ToolbarExpense = ({ onAdd, onRefresh, onFilter, onSearch, selectedCategory
             <div className="search-container">
                 <input
                     type="text"
-                    placeholder={`Search by ${selectedCategory}`}
+                    placeholder={`Cari berdasarkan ${selectedCategory}`}
                     className="search-bar"
                     value={inputValue}
                     onChange={handleSearchChange}
@@ -62,4 +53,4 @@ const ToolbarExpense = ({ onAdd, onRefresh, onFilter, onSearch, selectedCategory
     );
 };
 
-export default ToolbarExpense;
+export default ToolbarSalesReceipt;
