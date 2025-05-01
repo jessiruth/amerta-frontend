@@ -140,7 +140,7 @@ const PaymentSalesOrder = () => {
                                 <tr>
                                     <th>Kode Barang</th>
                                     <th>Qty</th>
-                                    <th>Gudang Tujuan</th>
+                                    <th>Gudang Asal</th>
                                     <th>Pajak</th>
                                     <th>Harga Satuan</th>
                                     <th>Subtotal</th>
