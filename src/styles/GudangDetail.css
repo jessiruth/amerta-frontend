@@ -35,7 +35,8 @@
     margin-bottom: 25px;
 }
 
-.update-btn, .back-btn {
+.update-btn,
+.back-btn {
     padding: 10px 16px;
     border-radius: 6px;
     font-weight: 500;
@@ -185,65 +186,74 @@
         margin-top: 60px;
         width: 100%;
     }
-    
+
     .page-title {
         font-size: 20px;
     }
-    
-    .update-btn, .back-btn {
+
+    .update-btn,
+    .back-btn {
         padding: 8px 12px;
         font-size: 13px;
     }
-    
+
     .detail-row {
         flex-direction: column;
         margin-bottom: 20px;
     }
-    
+
     .detail-label {
         width: 100%;
         margin-bottom: 5px;
     }
 }
 
-/* Print styles */
 @media print {
-    body {
-        -webkit-print-color-adjust: exact !important;
-        print-color-adjust: exact !important;
+
+    /* Sembunyikan elemen navigasi dan tombol aksi saat print */
+    .sidebar,
+    .navbar,
+    .action-buttons,
+    .print-btn,
+    .back-btn,
+    .update-btn,
+    .cancel-btn,
+    .submit-btn,
+    .form-actions {
+        display: none !important;
     }
 
+    .navbar-container,
+    .navbar-left,
+    .navbar-top,
+    .logout-btn {
+        display: none !important;
+        visibility: hidden;
+    }
+
+    /* Pastikan konten utama memenuhi lebar halaman */
+    .gudang-detail-container,
+    .gudang-detail-content,
+    .detail-card {
+        width: 100% !important;
+        max-width: 100% !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+
+    .barang-table th,
+    .barang-table td {
+        font-size: 12px !important;
+        padding: 6px !important;
+    }
+
+    /* Hilangkan margin halaman dari browser (opsional) */
     @page {
-        size: landscape;
         margin: 1cm;
     }
-
-    nav, .navbar, .back-btn, .update-btn, .print-btn {
-        display: none !important;
-    }
-
-    .gudang-detail-container {
-        box-shadow: none !important;
-        background: white !important;
-    }
-
-    .detail-card {
-        page-break-inside: avoid;
-    }
-
-    .detail-card .section-header {
-        margin-top: 1rem;
-    }
-
-    .action-buttons {
-        display: none !important;
-    }
-
-    .gudang-detail-content {
-        margin-left: 100px !important;
-    }
-    
 }
+
 
 .print-btn {
     background-color: #17a2b8;
@@ -260,4 +270,3 @@
 .print-btn:hover {
     background-color: #138496;
 }
-
