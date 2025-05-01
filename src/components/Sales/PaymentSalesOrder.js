@@ -3,15 +3,19 @@ import { useParams, useNavigate } from "react-router-dom";
 import axiosInstance from "../../services/axiosInstance";
 import "../../styles/GudangDetail.css";
 
-const ConfirmShippingSalesOrder = () => {
+const PaymentSalesOrder = () => {
     const { id } = useParams();
     const navigate = useNavigate();
     const [data, setData] = useState(null);
     const [customerName, setCustomerName] = useState("");
     const [itemPrices, setItemPrices] = useState({});
-    const [loading, setLoading] = useState(true);
+    const [paymentDate, setPaymentDate] = useState(new Date().toISOString().split("T")[0]);
+    const [paymentMethod, setPaymentMethod] = useState("CASH");
+    const [totalAmountPayed, setTotalAmountPayed] = useState("");
     const [modalType, setModalType] = useState(null);
     const [successModal, setSuccessModal] = useState(false);
+    const [loading, setLoading] = useState(true);
+    const [inputErrors, setInputErrors] = useState({});
 
     useEffect(() => {
         const token = localStorage.getItem("token");
@@ -30,7 +34,6 @@ const ConfirmShippingSalesOrder = () => {
                 });
                 setCustomerName(customerRes.data?.data?.name || "Unknown");
 
-                // Ambil harga jual per barang
                 const prices = {};
                 await Promise.all(
                     order.items.map(async (item) => {
@@ -72,18 +75,42 @@ const ConfirmShippingSalesOrder = () => {
         data.items.reduce((total, item) =>
             total + getSubtotal(item.barangId, item.quantity, item.tax), 0);
 
-    const handleConfirmShipping = async () => {
+    const handlePayment = async () => {
         const token = localStorage.getItem("token");
         try {
-            await axiosInstance.put(`/api/sales-order/confirm-shipping/${id}`, null, {
+            await axiosInstance.put(`/api/sales-order/payment/${id}`, {
+                paymentDate,
+                paymentMethod,
+                totalAmountPayed: parseFloat(totalAmountPayed),
+            }, {
                 headers: { Authorization: `Bearer ${token}` },
             });
             setModalType(null);
             setSuccessModal(true);
         } catch {
-            alert("Gagal mengkonfirmasi pengiriman.");
+            alert("Gagal memproses pembayaran.");
         }
     };
+
+    const validateInputs = () => {
+        const errors = {};
+
+        if (new Date(paymentDate) < new Date(data.invoice?.invoiceDate)) {
+            errors.paymentDate = "Tanggal pembayaran tidak boleh sebelum tanggal invoice.";
+        }
+
+        if (!totalAmountPayed || parseFloat(totalAmountPayed) <= 0) {
+            errors.totalAmountPayed = "Jumlah dibayar harus lebih dari 0.";
+        }
+
+        if (parseFloat(totalAmountPayed) > data.invoice?.remainingAmount) {
+            errors.totalAmountPayed = "Jumlah dibayar tidak boleh lebih dari sisa tagihan.";
+        }
+
+        setInputErrors(errors);
+        return Object.keys(errors).length === 0;
+    };
+
 
     if (loading) return <p>Loading...</p>;
     if (!data) return <p>Data tidak ditemukan</p>;
@@ -92,10 +119,9 @@ const ConfirmShippingSalesOrder = () => {
         <div className="gudang-form-container">
             <div className="gudang-form-content">
                 <div className="page-header">
-                    <h1 className="page-title">Konfirmasi Pengiriman Sales Order</h1>
+                    <h1 className="page-title">Pembayaran Sales Order</h1>
                 </div>
 
-                {/* Informasi Utama */}
                 <div className="detail-card">
                     <div className="section-header"><h2 className="section-title">Informasi Utama</h2></div>
                     <div className="section-content">
@@ -106,7 +132,6 @@ const ConfirmShippingSalesOrder = () => {
                     </div>
                 </div>
 
-                {/* Daftar Item */}
                 <div className="detail-card">
                     <div className="section-header"><h2 className="section-title">Daftar Item</h2></div>
                     <div className="section-content">
@@ -115,7 +140,7 @@ const ConfirmShippingSalesOrder = () => {
                                 <tr>
                                     <th>Kode Barang</th>
                                     <th>Qty</th>
-                                    <th>Gudang Asal</th>
+                                    <th>Gudang Tujuan</th>
                                     <th>Pajak</th>
                                     <th>Harga Satuan</th>
                                     <th>Subtotal</th>
@@ -147,14 +172,21 @@ const ConfirmShippingSalesOrder = () => {
                     </div>
                 </div>
 
-                {/* Faktur */}
+                {/* Invoice */}
                 {data.invoice && (
                     <div className="detail-card">
-                        <div className="section-header"><h2 className="section-title">Faktur</h2></div>
+                        <div className="section-header">
+                            <h2 className="section-title">Faktur</h2>
+                        </div>
+
                         <div className="section-content">
                             <div className="detail-row">
                                 <span className="detail-label">Tanggal Invoice:</span>
                                 <span className="detail-value">{formatDate(data.invoice.invoiceDate)}</span>
+                            </div>
+                            <div className="detail-row">
+                                <span className="detail-label">Status Invoice:</span>
+                                <span className="detail-value">{data.invoice.invoiceStatus}</span>
                             </div>
                             <div className="detail-row">
                                 <span className="detail-label">Total Tagihan:</span>
@@ -165,8 +197,8 @@ const ConfirmShippingSalesOrder = () => {
                                 <span className="detail-value">{formatDate(data.invoice.dueDate)}</span>
                             </div>
                             <div className="detail-row">
-                                <span className="detail-label">Status Faktur:</span>
-                                <span className="detail-value">{data.invoice.invoiceStatus}</span>
+                                <span className="detail-label">Sisa Tagihan:</span>
+                                <span className="detail-value">Rp {parseFloat(data.invoice.remainingAmount).toLocaleString("id-ID")}</span>
                             </div>
                         </div>
                     </div>
@@ -200,35 +232,112 @@ const ConfirmShippingSalesOrder = () => {
                     </div>
                 )}
 
-                {/* Tombol Aksi */}
+                {/* Pembayaran */}
+                {data.payment && (
+                    <div className="detail-card">
+                        <div className="section-header">
+                            <h2 className="section-title">Pembayaran</h2>
+                        </div>
+
+                        <div className="section-content">
+                            <div className="detail-row">
+                                <span className="detail-label">Tanggal:</span>
+                                <span className="detail-value">{formatDate(data.payment.paymentDate)}</span>
+                            </div>
+                            <div className="detail-row">
+                                <span className="detail-label">Metode:</span>
+                                <span className="detail-value">{data.payment.paymentMethod}</span>
+                            </div>
+                            <div className="detail-row">
+                                <span className="detail-label">Status:</span>
+                                <span className="detail-value">{data.payment.paymentStatus}</span>
+                            </div>
+                            <div className="detail-row">
+                                <span className="detail-label">Jumlah Dibayar:</span>
+                                <span className="detail-value">Rp {parseFloat(data.payment.totalAmountPayed).toLocaleString("id-ID")}</span>
+                            </div>
+                            <div className="detail-row">
+                                <span className="detail-label">Sisa Tagihan:</span>
+                                <span className="detail-value">Rp {parseFloat(data.invoice.remainingAmount).toLocaleString("id-ID")}</span>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                {/* Receipt */}
+                {data.receipt && (
+                    <div className="detail-card">
+                        <div className="section-header">
+                            <h2 className="section-title">Nota Penerimaan</h2>
+                        </div>
+
+                        <div className="section-content">
+                            <div className="detail-row">
+                                <span className="detail-label">Tanggal Nota:</span>
+                                <span className="detail-value">{formatDate(data.receipt.receiptDate)}</span>
+                            </div>
+                            <div className="detail-row">
+                                <span className="detail-label">Jumlah Diterima:</span>
+                                <span className="detail-value">Rp {parseFloat(data.receipt.amountPayed).toLocaleString("id-ID")}</span>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                {data.status === "SHIPPED" && (
+                    <div className="detail-card">
+                        <div className="section-header"><h2 className="section-title">Input Pembayaran</h2></div>
+                        <div className="section-content">
+                            <div className="form-row">
+                                <div className="form-group">
+                                    <label>Tanggal Pembayaran</label>
+                                    <input type="date" value={paymentDate} onChange={(e) => setPaymentDate(e.target.value)} />
+                                    {inputErrors.paymentDate && <span className="error-message">{inputErrors.paymentDate}</span>}
+                                </div>
+                                <div className="form-group">
+                                    <label>Metode Pembayaran</label>
+                                    <select value={paymentMethod} onChange={(e) => setPaymentMethod(e.target.value)}>
+                                        <option value="CASH">CASH</option>
+                                        <option value="TRANSFER">TRANSFER</option>
+                                    </select>
+                                </div>
+                                <div className="form-group">
+                                    <label>Jumlah Dibayar</label>
+                                    <input type="number" value={totalAmountPayed} onChange={(e) => setTotalAmountPayed(e.target.value)} />
+                                    {inputErrors.totalAmountPayed && <span className="error-message">{inputErrors.totalAmountPayed}</span>}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
                 <div className="form-actions">
-                    {data.status === "IN SHIPPING" ? (
+                    {data.status === "SHIPPED" ? (
                         <>
                             <button className="cancel-btn" onClick={() => setModalType("cancel")}>Batal</button>
-                            <button className="submit-btn" onClick={() => setModalType("confirm")}>
-                                Konfirmasi Pengiriman Selesai
-                            </button>
+                            <button className="submit-btn" onClick={() => {
+                                if (validateInputs()) setModalType("confirm");
+                            }}>Bayar</button>
                         </>
                     ) : (
                         <button className="cancel-btn" onClick={() => navigate("/sales-order")}>Kembali</button>
                     )}
                 </div>
 
-                {/* Modal Konfirmasi */}
                 {modalType && (
                     <div className="modal-overlay">
                         <div className="modal-content">
                             <div className="modal-header">
-                                <h3>{modalType === "confirm" ? "Konfirmasi Pengiriman Selesai" : "Batalkan Proses"}</h3>
+                                <h3>{modalType === "confirm" ? "Konfirmasi Pembayaran" : "Batalkan Proses"}</h3>
                                 <button className="close-button" onClick={() => setModalType(null)}>&times;</button>
                             </div>
                             <div className="modal-body">
                                 {modalType === "confirm" ? (
-                                    <p>Apakah Anda yakin pengiriman telah selesai?</p>
+                                    <p>Apakah Anda yakin ingin melakukan pembayaran?</p>
                                 ) : (
                                     <>
                                         <p>Apakah Anda yakin ingin membatalkan proses ini?</p>
-                                        <p className="warning-text">Tidak ada data yang akan diubah.</p>
+                                        <p className="warning-text">Semua data input akan hilang.</p>
                                     </>
                                 )}
                             </div>
@@ -237,27 +346,26 @@ const ConfirmShippingSalesOrder = () => {
                                 <button
                                     className={modalType === "confirm" ? "primary-btn" : "danger-btn"}
                                     onClick={() => {
-                                        if (modalType === "confirm") handleConfirmShipping();
+                                        if (modalType === "confirm") handlePayment();
                                         else navigate("/sales-order");
                                     }}
                                 >
-                                    {modalType === "confirm" ? "Ya, Konfirmasi" : "Ya, Batalkan"}
+                                    {modalType === "confirm" ? "Ya, Bayar" : "Ya, Batalkan"}
                                 </button>
                             </div>
                         </div>
                     </div>
                 )}
 
-                {/* Modal Sukses */}
                 {successModal && (
                     <div className="modal-overlay">
                         <div className="modal-content">
                             <div className="modal-header">
-                                <h3>Pengiriman Dikonfirmasi</h3>
+                                <h3>Pembayaran Berhasil</h3>
                                 <button className="close-button" onClick={() => setSuccessModal(false)}>&times;</button>
                             </div>
                             <div className="modal-body">
-                                <p>Pengiriman telah dikonfirmasi selesai. Anda akan diarahkan ke detail Sales Order.</p>
+                                <p>Pembayaran telah diterima. Anda akan diarahkan ke detail Sales Order.</p>
                             </div>
                             <div className="modal-footer">
                                 <button className="primary-btn" onClick={() => navigate(`/sales-order/detail/${id}`)}>OK</button>
@@ -265,9 +373,10 @@ const ConfirmShippingSalesOrder = () => {
                         </div>
                     </div>
                 )}
+
             </div>
         </div>
     );
 };
 
-export default ConfirmShippingSalesOrder;
+export default PaymentSalesOrder;

@@ -36,6 +36,7 @@ import AddSalesOrder from "./components/Sales/AddSalesOrder";
 import ConfirmSalesOrder from "./components/Sales/ConfirmSalesOrder";
 import ShippingSalesOrder from "./components/Sales/ShipSalesOrder";
 import ConfirmShippingSalesOrder from "./components/Sales/ConfirmShippingSalesOrder";
+import PaymentSalesOrder from "./components/Sales/PaymentSalesOrder";
 
 function Layout() {
     const location = useLocation();
@@ -82,6 +83,7 @@ function Layout() {
                 <Route path="/sales-order/confirm/:id" element={<ConfirmSalesOrder />} />
                 <Route path="/sales-order/shipping/:id" element={<ShippingSalesOrder />} />
                 <Route path="/sales-order/confirm-shipping/:id" element={<ConfirmShippingSalesOrder />} />
+                <Route path="/sales-order/payment/:id" element={<PaymentSalesOrder />} />
 
             </Routes>
         </div>
