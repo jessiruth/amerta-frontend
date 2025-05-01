@@ -205,3 +205,59 @@
         margin-bottom: 5px;
     }
 }
+
+/* Print styles */
+@media print {
+    body {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+
+    @page {
+        size: landscape;
+        margin: 1cm;
+    }
+
+    nav, .navbar, .back-btn, .update-btn, .print-btn {
+        display: none !important;
+    }
+
+    .gudang-detail-container {
+        box-shadow: none !important;
+        background: white !important;
+    }
+
+    .detail-card {
+        page-break-inside: avoid;
+    }
+
+    .detail-card .section-header {
+        margin-top: 1rem;
+    }
+
+    .action-buttons {
+        display: none !important;
+    }
+
+    .gudang-detail-content {
+        margin-left: 100px !important;
+    }
+    
+}
+
+.print-btn {
+    background-color: #17a2b8;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 10px 16px;
+    font-weight: 500;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.print-btn:hover {
+    background-color: #138496;
+}
+
