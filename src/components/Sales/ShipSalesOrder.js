@@ -4,17 +4,15 @@ import axiosInstance from "../../services/axiosInstance";
 import "../../styles/GudangDetail.css";
 import "../../styles/AddSalesOrder.css";
 
-const ConfirmSalesOrder = () => {
+const ShippingSalesOrder = () => {
     const { id } = useParams();
     const navigate = useNavigate();
     const [data, setData] = useState(null);
     const [customerName, setCustomerName] = useState("");
-    const [invoiceDate, setInvoiceDate] = useState(new Date().toISOString().split("T")[0]);
-    const [paymentTerms, setPaymentTerms] = useState(30);
-    const [loading, setLoading] = useState(true);
+    const [shippingDate, setShippingDate] = useState(new Date().toISOString().split("T")[0]);
+    const [shippingFee, setShippingFee] = useState("");
     const [modalType, setModalType] = useState(null);
-    const [inputErrors, setInputErrors] = useState({});
-
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const token = localStorage.getItem("token");
@@ -25,10 +23,10 @@ const ConfirmSalesOrder = () => {
                 const res = await axiosInstance.get(`/api/sales-order/${id}`, {
                     headers: { Authorization: `Bearer ${token}` },
                 });
-                const order = res.data?.data;
-                setData(order);
+                const soData = res.data?.data;
+                setData(soData);
 
-                const customerRes = await axiosInstance.get(`/api/customer/${order.customerId}`, {
+                const customerRes = await axiosInstance.get(`/api/customer/${soData.customerId}`, {
                     headers: { Authorization: `Bearer ${token}` },
                 });
                 setCustomerName(customerRes.data?.data?.name || "Unknown");
@@ -42,6 +40,22 @@ const ConfirmSalesOrder = () => {
         fetchData();
     }, [id, navigate]);
 
+    const handleSubmit = async () => {
+        const token = localStorage.getItem("token");
+        try {
+            await axiosInstance.put(`/api/sales-order/shipping/${id}`, {
+                shippingDate,
+                shippingFee: Number(shippingFee),
+            }, {
+                headers: { Authorization: `Bearer ${token}` },
+            });
+            alert("Shipping dimulai.");
+            navigate(`/sales-order/detail/${id}`);
+        } catch {
+            alert("Gagal memulai pengiriman.");
+        }
+    };
+
     const formatDate = (date) =>
         new Date(date).toLocaleDateString("id-ID", {
             day: "numeric",
@@ -49,46 +63,17 @@ const ConfirmSalesOrder = () => {
             year: "numeric",
         });
 
-    const handleConfirm = async () => {
-        const token = localStorage.getItem("token");
-        try {
-            await axiosInstance.put(`/api/sales-order/confirm/${id}`, {
-                invoiceDate,
-                paymentTerms: Number(paymentTerms),
-            }, {
-                headers: { Authorization: `Bearer ${token}` },
-            });
-            alert("Sales Order berhasil dikonfirmasi.");
-            navigate(`/sales-order/detail/${id}`);
-        } catch {
-            alert("Gagal mengkonfirmasi Sales Order.");
-        }
-    };
-
-    const validateInputs = () => {
-        const errors = {};
-        if (new Date(invoiceDate) < new Date(data.salesDate)) {
-            errors.invoiceDate = "Tanggal invoice tidak boleh lebih awal dari tanggal sales.";
-        }
-        if (!paymentTerms || Number(paymentTerms) < 1) {
-            errors.paymentTerms = "Jangka waktu pembayaran minimal 1 hari.";
-        }
-        setInputErrors(errors);
-        return Object.keys(errors).length === 0;
-    };
-
-
-
     if (loading) return <p>Loading...</p>;
-    if (!data) return <p>Data tidak ditemukan</p>;
+    if (!data) return <p>Data tidak ditemukan.</p>;
 
     return (
         <div className="gudang-form-container">
             <div className="gudang-form-content">
                 <div className="page-header">
-                    <h1 className="page-title">Konfirmasi Sales Order</h1>
+                    <h1 className="page-title">Shipping Sales Order</h1>
                 </div>
 
+                {/* Detail Sales Order */}
                 <div className="detail-card">
                     <div className="section-header"><h2 className="section-title">Informasi Utama</h2></div>
                     <div className="section-content">
@@ -126,43 +111,37 @@ const ConfirmSalesOrder = () => {
                     </div>
                 </div>
 
-                <div className="detail-card">
-                    <div className="section-header"><h2 className="section-title">Input Konfirmasi</h2></div>
-                    <div className="section-content">
-                        <div className="form-row">
-                            <div className="form-group">
-                                <label>Tanggal Invoice</label>
-                                <input type="date" value={invoiceDate} onChange={(e) => setInvoiceDate(e.target.value)} />
-                                {inputErrors.invoiceDate && <span className="error-message">{inputErrors.invoiceDate}</span>}
-                            </div>
-                            <div className="form-group">
-                                <label>Jangka Waktu Pembayaran (hari)</label>
-                                <input type="number" min="1" value={paymentTerms} onChange={(e) => setPaymentTerms(e.target.value)} />
-                                {inputErrors.paymentTerms && <span className="error-message">{inputErrors.paymentTerms}</span>}
-                            </div>
+                {/* Input Shipping */}
+                <div className="form-section">
+                    <h3>Input Pengiriman</h3>
+                    <div className="form-row">
+                        <div className="form-group">
+                            <label>Tanggal Pengiriman</label>
+                            <input type="date" value={shippingDate} onChange={(e) => setShippingDate(e.target.value)} />
+                        </div>
+                        <div className="form-group">
+                            <label>Biaya Kirim</label>
+                            <input type="number" value={shippingFee} onChange={(e) => setShippingFee(e.target.value)} />
                         </div>
                     </div>
                 </div>
 
-
                 <div className="form-actions">
                     <button className="cancel-btn" onClick={() => setModalType("cancel")}>Batal</button>
-                    <button className="submit-btn" onClick={() => {
-                        if (validateInputs()) setModalType("confirm");
-                    }}
-                    >Konfirmasi</button>
+                    <button className="submit-btn" onClick={() => setModalType("confirm")}>Kirim</button>
                 </div>
 
+                {/* Modal Confirmation */}
                 {modalType && (
                     <div className="modal-overlay">
                         <div className="modal-content">
                             <div className="modal-header">
-                                <h3>{modalType === "confirm" ? "Konfirmasi Sales Order" : "Batalkan Konfirmasi"}</h3>
+                                <h3>{modalType === "confirm" ? "Konfirmasi Pengiriman" : "Batalkan Proses"}</h3>
                                 <button className="close-button" onClick={() => setModalType(null)}>&times;</button>
                             </div>
                             <div className="modal-body">
                                 {modalType === "confirm" ? (
-                                    <p>Apakah Anda yakin ingin mengkonfirmasi Sales Order ini?</p>
+                                    <p>Apakah Anda yakin ingin memulai pengiriman?</p>
                                 ) : (
                                     <>
                                         <p>Apakah Anda yakin ingin membatalkan proses ini?</p>
@@ -175,11 +154,11 @@ const ConfirmSalesOrder = () => {
                                 <button
                                     className={modalType === "confirm" ? "primary-btn" : "danger-btn"}
                                     onClick={() => {
-                                        if (modalType === "confirm") handleConfirm();
+                                        if (modalType === "confirm") handleSubmit();
                                         else navigate("/sales-order");
                                     }}
                                 >
-                                    {modalType === "confirm" ? "Ya, Konfirmasi" : "Ya, Batalkan"}
+                                    {modalType === "confirm" ? "Ya, Kirim" : "Ya, Batalkan"}
                                 </button>
                             </div>
                         </div>
@@ -190,4 +169,4 @@ const ConfirmSalesOrder = () => {
     );
 };
 
-export default ConfirmSalesOrder;
+export default ShippingSalesOrder;

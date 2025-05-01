@@ -162,6 +162,13 @@ const DetailPurchaseOrder = () => {
                             <div className="detail-row"><span className="detail-label">Total Tagihan:</span><span className="detail-value">Rp{parseFloat(data.invoice.totalAmount).toLocaleString("id-ID", { minimumFractionDigits: 2 })}</span></div>
                             <div className="detail-row"><span className="detail-label">Jatuh Tempo:</span><span className="detail-value">{formatDate(data.invoice.dueDate)}</span></div>
                             <div className="detail-row"><span className="detail-label">Sisa Tagihan:</span><span className="detail-value">Rp{parseFloat(data.invoice.remainingAmount).toLocaleString("id-ID", { minimumFractionDigits: 2 })}</span></div>
+
+                            {/* Tombol navigasi ke halaman detail Faktur */}
+                            <div style={{ marginTop: "15px" }}>
+                                <button className="update-btn" onClick={() => navigate(`/purchase-invoice/detail/${data.invoice.id}`)}>
+                                    Lihat Detail Faktur
+                                </button>
+                            </div>
                         </div>
                     </div>
                 )}
@@ -176,6 +183,13 @@ const DetailPurchaseOrder = () => {
                             <div className="detail-row"><span className="detail-label">Status:</span><span className="detail-value">{data.delivery.deliveryStatus}</span></div>
                             <div className="detail-row"><span className="detail-label">Nomor Resi:</span><span className="detail-value">{data.delivery.trackingNumber}</span></div>
                             <div className="detail-row"><span className="detail-label">Biaya Kirim:</span><span className="detail-value">Rp{parseFloat(data.delivery.deliveryFee).toLocaleString("id-ID", { minimumFractionDigits: 2 })}</span></div>
+
+                            {/* Tombol navigasi ke halaman detail Surat Jalan */}
+                            <div style={{ marginTop: "15px" }}>
+                                <button className="update-btn" onClick={() => navigate(`/purchase-delivery/detail/${data.delivery.id}`)}>
+                                    Lihat Detail Surat Jalan
+                                </button>
+                            </div>
                         </div>
                     </div>
                 )}
@@ -190,6 +204,13 @@ const DetailPurchaseOrder = () => {
                             <div className="detail-row"><span className="detail-label">Metode:</span><span className="detail-value">{data.payment.paymentMethod}</span></div>
                             <div className="detail-row"><span className="detail-label">Status:</span><span className="detail-value">{data.payment.paymentStatus}</span></div>
                             <div className="detail-row"><span className="detail-label">Jumlah Dibayar:</span><span className="detail-value">Rp{parseFloat(data.payment.totalAmountPayed).toLocaleString("id-ID", { minimumFractionDigits: 2 })}</span></div>
+
+                            {/* Tombol navigasi ke halaman detail Pembayaran */}
+                            <div style={{ marginTop: "15px" }}>
+                                <button className="update-btn" onClick={() => navigate(`/purchase-payment/detail/${data.payment.id}`)}>
+                                    Lihat Detail Pembayaran
+                                </button>
+                            </div>
                         </div>
                     </div>
                 )}
@@ -202,6 +223,13 @@ const DetailPurchaseOrder = () => {
                         <div className="section-content">
                             <div className="detail-row"><span className="detail-label">Tanggal Nota:</span><span className="detail-value">{formatDate(data.receipt.receiptDate)}</span></div>
                             <div className="detail-row"><span className="detail-label">Jumlah Diterima:</span><span className="detail-value">Rp{parseFloat(data.receipt.amountPayed).toLocaleString("id-ID", { minimumFractionDigits: 2 })}</span></div>
+
+                            {/* Tombol navigasi ke halaman detail Nota */}
+                            <div style={{ marginTop: "15px" }}>
+                                <button className="update-btn" onClick={() => navigate(`/purchase-receipt/detail/${data.receipt.id}`)}>
+                                    Lihat Detail Nota
+                                </button>
+                            </div>
                         </div>
                     </div>
                 )}
