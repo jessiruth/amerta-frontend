@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import "../../styles/Toolbar.css";
 import refreshIcon from "../../assets/Refresh.png";
+import SearchIcon from "@mui/icons-material/Search";
 
 const ToolbarPurchase = ({ onRefresh, onFilter, onSearch, selectedCategory, searchTerm }) => {
     const [inputValue, setInputValue] = useState("");
@@ -33,7 +34,7 @@ const ToolbarPurchase = ({ onRefresh, onFilter, onSearch, selectedCategory, sear
             <div className="toolbar-item filter-container">
                 <select className="filter-dropdown" onChange={handleCategoryChange} value={selectedCategory}>
                     <option value="all">Filter: Semua Kolom</option>
-                    <option value="id">Filter: ID Sales Order</option>
+                    <option value="id">Filter: ID PO</option>
                     <option value="customer">Filter: Nama Vendor</option>
                     <option value="date">Filter: Tanggal</option>
                     <option value="price">Filter: Total Harga</option>
@@ -44,12 +45,12 @@ const ToolbarPurchase = ({ onRefresh, onFilter, onSearch, selectedCategory, sear
             <div className="search-container">
                 <input
                     type="text"
-                    placeholder={`Cari berdasarkan ${selectedCategory}`}
+                    placeholder={`Search by ${selectedCategory}`}
                     className="search-bar"
                     value={inputValue}
                     onChange={handleSearchChange}
                 />
-                <span className="search-icon">🔍</span>
+                <SearchIcon className="toolbar-purchase-order-search-icon" />
             </div>
         </div>
     );

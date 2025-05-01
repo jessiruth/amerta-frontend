@@ -1,9 +1,17 @@
-import { useEffect, useState } from "react";
-import "../../styles/Toolbar.css";
+import { useState, useEffect } from "react";
+import "../../styles/ToolbarPurchaseOrder.css";
 import addIcon from "../../assets/Add.png";
 import refreshIcon from "../../assets/Refresh.png";
+import SearchIcon from "@mui/icons-material/Search";
 
-const ToolbarPurchaseOrder = ({ onAdd, onRefresh, onFilter, onSearch, selectedCategory, searchTerm }) => {
+const ToolbarPurchaseOrder = ({
+    onAdd,
+    onRefresh,
+    onFilter,
+    onSearch,
+    selectedCategory,
+    searchTerm,
+}) => {
     const [inputValue, setInputValue] = useState("");
 
     useEffect(() => {
@@ -21,45 +29,44 @@ const ToolbarPurchaseOrder = ({ onAdd, onRefresh, onFilter, onSearch, selectedCa
     };
 
     return (
-        <div className="toolbar">
-            {/* Add Button */}
-            <div className="toolbar-item">
-                <button className="toolbar-btn add-btn" onClick={onAdd}>
+        <div className="toolbar-purchase-order">
+            <div className="toolbar-purchase-order-item">
+                <button className="toolbar-purchase-order-btn add-btn" onClick={onAdd}>
                     <img src={addIcon} alt="Add" />
                 </button>
-                <p className="toolbar-text">Add</p>
+                <p className="toolbar-purchase-order-text">Add</p>
             </div>
 
-            {/* Refresh Button */}
-            <div className="toolbar-item">
-                <button className="toolbar-btn white-btn" onClick={onRefresh}>
+            <div className="toolbar-purchase-order-item">
+                <button className="toolbar-purchase-order-btn white-btn" onClick={onRefresh}>
                     <img src={refreshIcon} alt="Refresh" />
                 </button>
-                <p className="toolbar-text">Refresh</p>
+                <p className="toolbar-purchase-order-text">Refresh</p>
             </div>
 
-            {/* Filter Dropdown */}
-            <div className="toolbar-item filter-container">
-                <select className="filter-dropdown" onChange={handleCategoryChange} value={selectedCategory}>
+            <div className="toolbar-purchase-order-item filter-container">
+                <select
+                    className="toolbar-purchase-order-dropdown"
+                    onChange={handleCategoryChange}
+                    value={selectedCategory}>
                     <option value="all">Filter: Semua Kolom</option>
-                    <option value="id">Filter: ID Sales Order</option>
-                    <option value="customer">Filter: Nama Vendor</option>
-                    <option value="date">Filter: Tanggal</option>
+                    <option value="id">Filter: ID PO</option>
+                    <option value="vendor">Filter: Vendor</option>
+                    <option value="date">Filter: Tanggal Beli</option>
                     <option value="price">Filter: Total Harga</option>
                     <option value="status">Filter: Status</option>
                 </select>
             </div>
 
-            {/* Search Bar */}
-            <div className="search-container">
+            <div className="toolbar-purchase-order-search-container">
                 <input
                     type="text"
-                    placeholder={`Cari berdasarkan ${selectedCategory}`}
-                    className="search-bar"
+                    placeholder={`Search by ${selectedCategory}`}
+                    className="toolbar-purchase-order-search-bar"
                     value={inputValue}
                     onChange={handleSearchChange}
                 />
-                <span className="search-icon">🔍</span>
+                <SearchIcon className="toolbar-purchase-order-search-icon" />
             </div>
         </div>
     );

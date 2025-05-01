@@ -115,7 +115,7 @@ const Purchase = () => {
                         <thead>
                             <tr>
                                 <th>ID</th>
-                                <th>Nama Customer</th>
+                                <th>Vendor</th>
                                 <th>Tanggal</th>
                                 <th>Total Harga</th>
                                 <th>Aksi</th>

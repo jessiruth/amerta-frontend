@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "../../services/axiosInstance";
-import Toolbar from "./ToolbarSalesOrder";
-import "../../styles/GoodsTransport.css"; // Reuse existing table style
+import ToolbarSalesOrder from "./ToolbarSalesOrder";
+import "../../styles/GoodsTransport.css";
 
 const SalesOrder = () => {
     const [data, setData] = useState([]);
@@ -92,7 +92,7 @@ const SalesOrder = () => {
         <div className="gudang-list-container">
             <h1 className="page-title">Sales Order</h1>
 
-            <Toolbar
+            <ToolbarSalesOrder
                 onAdd={() => navigate("/sales-order/add")}
                 onRefresh={handleRefresh}
                 onFilter={(category) => setSearchCategory(category)}

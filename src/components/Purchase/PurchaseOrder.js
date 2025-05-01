@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "../../services/axiosInstance";
 import "../../styles/GoodsTransport.css";
-import ToolbarPurchaseOrder from "../../components/ToolbarPurchaseOrder";
+import ToolbarPurchaseOrder from "./ToolbarPurchaseOrder";
 import "../../styles/GoodsTransport.css";
 
 const PurchaseOrder = () => {

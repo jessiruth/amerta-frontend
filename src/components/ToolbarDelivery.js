@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import "../styles/Toolbar.css";
 import refreshIcon from "../assets/Refresh.png";
 
-const ToolbarShipping = ({ onRefresh, onFilter, onSearch, selectedCategory, searchTerm }) => {
+const ToolbarDelivery = ({ onRefresh, onFilter, onSearch, selectedCategory, searchTerm }) => {
     const [inputValue, setInputValue] = useState("");
 
     useEffect(() => {
@@ -55,4 +55,4 @@ const ToolbarShipping = ({ onRefresh, onFilter, onSearch, selectedCategory, sear
     );
 };
 
-export default ToolbarShipping;
+export default ToolbarDelivery;
