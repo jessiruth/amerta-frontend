@@ -50,7 +50,7 @@ const Customer = () => {
                 onSearch={(term) => console.log("Search:", term)}
             />
 
-            <table className="customer-table">
+            <table className="employee-table"> {/* harusnya employee-table big man */}
                 <thead>
                     <tr>
                         <th>Nama</th>

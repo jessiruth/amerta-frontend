@@ -20,7 +20,6 @@ const GoodsAndServices = () => {
 
     const fetchData = async () => {
         setErrorMessage("");
-
         const token = localStorage.getItem("token");
         if (!token) {
             setErrorMessage("Unauthorized: Anda harus login terlebih dahulu.");
@@ -40,7 +39,6 @@ const GoodsAndServices = () => {
             }
         } catch (error) {
             console.error("Error fetching data:", error);
-
             if (error.response && error.response.data && error.response.data.message) {
                 setErrorMessage(error.response.data.message);
             } else {
@@ -98,9 +96,9 @@ const GoodsAndServices = () => {
     const totalPages = Math.ceil(displayBarangList.length / itemsPerPage);
 
     return (
-        <div className="page-container-goods">
-            <div className="goods-container">
-                <h1 className="page-title-goods">Goods & Services</h1>
+        <div className="goods-page-container">
+            <div className="goods-main-container">
+                <h1 className="goods-page-title">Goods & Services</h1>
 
                 <Toolbar
                     onAdd={() => navigate("/goods-and-services/add")}
@@ -111,7 +109,7 @@ const GoodsAndServices = () => {
                     searchTerm={searchTerm}
                 />
 
-                <div className="pagination-controls">
+                <div className="goods-pagination-controls">
                     <label>Items per page:</label>
                     <select value={itemsPerPage} onChange={handleItemsPerPageChange}>
                         <option value="10">10</option>
@@ -119,10 +117,10 @@ const GoodsAndServices = () => {
                     </select>
                 </div>
 
-                <div className="table-container">
+                <div className="goods-table-container">
                     {errorMessage ? (
-                        <div className="no-data-container">
-                            <h3 className="no-data-text">{errorMessage}</h3>
+                        <div className="goods-no-data-container">
+                            <h3 className="goods-no-data-text">{errorMessage}</h3>
                         </div>
                     ) : currentItems.length > 0 ? (
                         <table>
@@ -146,7 +144,7 @@ const GoodsAndServices = () => {
                                         <td>{barang.totalStock}</td>
                                         <td>
                                             <button 
-                                                className="detail-btn" 
+                                                className="goods-detail-btn"
                                                 onClick={() => navigate(`/goods-and-services/${barang.id}`)}
                                             >
                                                 Details
@@ -157,13 +155,13 @@ const GoodsAndServices = () => {
                             </tbody>
                         </table>
                     ) : (
-                        <div className="no-data-container">
-                            <h3 className="no-data-text">Tidak ada data barang tersedia.</h3>
+                        <div className="goods-no-data-container">
+                            <h3 className="goods-no-data-text">Tidak ada data barang tersedia.</h3>
                         </div>
                     )}
                 </div>
 
-                <div className="pagination">
+                <div className="goods-pagination">
                     <button disabled={currentPage === 1} onClick={() => setCurrentPage(1)}>First</button>
                     <button disabled={currentPage === 1} onClick={() => setCurrentPage(currentPage - 1)}>Previous</button>
                     <span>Page {currentPage} of {totalPages}</span>
@@ -172,7 +170,7 @@ const GoodsAndServices = () => {
                 </div>
             </div>
         </div>
-    );    
+    );
 };
 
 export default GoodsAndServices;

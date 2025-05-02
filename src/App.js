@@ -23,8 +23,6 @@ import SalesFeature from "./components/Sales/SalesFeature";
 import Customer from "./components/Customer";
 import AddCustomer from "./components/AddCustomer";
 import SalesOrder from "./components/Sales/SalesOrder";
-
-
 import AddGudang from "./components/Storage/AddGudang";
 import GudangList from './components/Storage/GudangList';
 import GudangDetail from "./components/Storage/GudangDetail";
@@ -34,7 +32,11 @@ import PurchaseFeature from "./components/Purchase/PurchaseFeature";
 import DetailSalesOrder from "./components/Sales/DetailSalesOrder";
 import AddSalesOrder from "./components/Sales/AddSalesOrder";
 import ConfirmSalesOrder from "./components/Sales/ConfirmSalesOrder";
+import PurchaseOrder from "./components/Purchase/PurchaseOrder";
+import DetailPurchaseOrder from "./components/Purchase/DetailPurchaseOrder";
 import ShippingSalesOrder from "./components/Sales/ShipSalesOrder";
+import ConfirmPurchaseOrder from "./components/Purchase/ConfirmPurchaseOrder";
+import DeliveryPurchaseOrder from "./components/Purchase/DeliveryPurchaseOrder";
 import ConfirmShippingSalesOrder from "./components/Sales/ConfirmShippingSalesOrder";
 <<<<<<< HEAD
 import SalesReceipt from "./components/SalesReceipt";
@@ -43,6 +45,9 @@ import PurchaseReceipt from "./components/PurchaseReceipt";
 import PurchaseReceiptDetail from "./components/PurchaseReceiptDetail";
 =======
 import PaymentSalesOrder from "./components/Sales/PaymentSalesOrder";
+import PaymentPurchaseOrder from "./components/Purchase/PaymentPurchaseOrder";
+import CompletePurchaseOrder from "./components/Purchase/CompletePurchaseOrder";
+import AddPurchaseOrder from "./components/Purchase/AddPurchaseOrder";
 import ShippingList from "./components/Sales/ShippingList";
 import DetailShipping from "./components/Sales/ShippingDetail";
 >>>>>>> e29e4293b079740868827090f640cf4429db7dfc
@@ -91,6 +96,13 @@ function Layout() {
                 <Route path="/sales-order/add" element={<AddSalesOrder />} />
                 <Route path="/sales-order/confirm/:id" element={<ConfirmSalesOrder />} />
                 <Route path="/sales-order/shipping/:id" element={<ShippingSalesOrder />} />
+                <Route path="/purchase-order" element={<PurchaseOrder/>} />
+                <Route path="/purchase-order/detail/:id" element={<DetailPurchaseOrder />} />
+                <Route path="/purchase-order/confirm/:id" element={<ConfirmPurchaseOrder />} /> 
+                <Route path="/purchase-order/payment/:id" element={<PaymentPurchaseOrder />} />
+                <Route path="/purchase-order/delivery/:id" element={<DeliveryPurchaseOrder />} />
+                <Route path="/purchase-order/complete/:id" element={<CompletePurchaseOrder />} />
+                <Route path="/purchase-order/add" element={<AddPurchaseOrder />} />
                 <Route path="/sales-order/confirm-shipping/:id" element={<ConfirmShippingSalesOrder />} />
 <<<<<<< HEAD
                 <Route path="/sales-receipt" element={<SalesReceipt/>} />
