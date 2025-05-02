@@ -119,7 +119,7 @@ const ConfirmSalesOrder = () => {
                         <div className="detail-row"><span className="detail-label">ID:</span><span className="detail-value">{data.id}</span></div>
                         <div className="detail-row"><span className="detail-label">Customer:</span><span className="detail-value">{customerName}</span></div>
                         <div className="detail-row"><span className="detail-label">Tanggal:</span><span className="detail-value">{formatDate(data.salesDate)}</span></div>
-                        <div className="detail-row"><span className="detail-label">Total Harga:</span><span className="detail-value">Rp {parseFloat(data.totalPrice).toLocaleString("id-ID")}</span></div>
+                        <div className="detail-row"><span className="detail-label">Total Harga:</span><span className="detail-value">Rp{parseFloat(data.totalPrice).toLocaleString("id-ID", { minimumFractionDigits: 2 })}</span></div>
                         <div className="detail-row"><span className="detail-label">Status:</span><span className="detail-value">{data.status}</span></div>
                     </div>
                 </div>
@@ -148,8 +148,8 @@ const ConfirmSalesOrder = () => {
                                             <td>{item.quantity}</td>
                                             <td>{item.gudangTujuan}</td>
                                             <td>{item.pajak || item.tax || 0}%</td>
-                                            <td>Rp {parseFloat(harga).toLocaleString("id-ID")}</td>
-                                            <td>Rp {parseFloat(subtotal).toLocaleString("id-ID")}</td>
+                                            <td>Rp{parseFloat(harga).toLocaleString("id-ID", { minimumFractionDigits: 2 })}</td>
+                                            <td>Rp{parseFloat(subtotal).toLocaleString("id-ID", { minimumFractionDigits: 2 })}</td>
                                         </tr>
                                     );
                                 })}
@@ -157,7 +157,7 @@ const ConfirmSalesOrder = () => {
                             <tfoot>
                                 <tr>
                                     <td colSpan="5" style={{ textAlign: "right", fontWeight: "bold" }}>Total</td>
-                                    <td style={{ fontWeight: "bold" }}>Rp {parseFloat(getTotal()).toLocaleString("id-ID")}</td>
+                                    <td style={{ fontWeight: "bold" }}>Rp{parseFloat(getTotal()).toLocaleString("id-ID", { minimumFractionDigits: 2 })}</td>
                                 </tr>
                             </tfoot>
                         </table>
@@ -242,7 +242,7 @@ const ConfirmSalesOrder = () => {
                                 <p>Sales Order berhasil dikonfirmasi. Anda akan diarahkan ke halaman detail.</p>
                             </div>
                             <div className="modal-footer">
-                                <button className="primary-btn" onClick={() => navigate(`/sales-order/detail/${id}`)}>OK</button>
+                                <button className="primary-btn" onClick={() => navigate(`/sales/completed/detail/${id}`)}>OK</button>
                             </div>
                         </div>
                     </div>

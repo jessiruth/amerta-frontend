@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "../../services/axiosInstance";
-import ToolbarSalesOrder from "./ToolbarSales";
+import "../../styles/GoodsTransport.css";
+import ToolbarPurchaseOrder from "./ToolbarPurchaseOrder";
 import "../../styles/GoodsTransport.css";
 
-const SalesOrder = () => {
+const Purchase = () => {
     const [data, setData] = useState([]);
     const [filteredData, setFilteredData] = useState([]);
     const [searchTerm, setSearchTerm] = useState("");
@@ -20,60 +21,63 @@ const SalesOrder = () => {
 
     useEffect(() => {
         const fetchData = async () => {
-          const fetchCustomerName = async (id) => {
+            const fetchVendorName = async (id) => {
+                try {
+                    const response = await axiosInstance.get(`/api/customer/${id}`, {
+                        headers: { Authorization: `Bearer ${token}` },
+                    });
+                    return response.data?.data?.name || "Unknown";
+                } catch {
+                    return "Unknown";
+                }
+            };
+
+            setLoading(true);
             try {
-              const response = await axiosInstance.get(`/api/customer/${id}`, {
-                headers: { Authorization: `Bearer ${token}` },
-              });
-              return response.data?.data?.name || "Unknown";
-            } catch {
-              return "Unknown";
+                const response = await axiosInstance.get("/api/purchase-order/viewall", {
+                    headers: { Authorization: `Bearer ${token}` },
+                });
+
+                const purchaseOrders = response.data?.data || [];
+
+                const dataWithVendorNames = await Promise.all(
+                    purchaseOrders.map(async (po) => {
+                        const vendorName = await fetchVendorName(po.customerId); // assuming customerId is vendor
+                        return { ...po, vendorName };
+                    })
+                );
+
+                setData(dataWithVendorNames);
+                setFilteredData(dataWithVendorNames);
+            } catch (error) {
+                console.error("Error fetching purchase orders:", error);
+            } finally {
+                setLoading(false);
             }
-          };
-      
-          setLoading(true);
-          try {
-            const response = await axiosInstance.get("/api/sales-order/viewall", {
-              headers: { Authorization: `Bearer ${token}` },
-            });
-      
-            const salesOrders = response.data?.data || [];
-      
-            const dataWithCustomerNames = await Promise.all(
-              salesOrders.map(async (order) => {
-                const customerName = await fetchCustomerName(order.customerId);
-                return { ...order, customerName };
-              })
-            );
-      
-            setData(dataWithCustomerNames);
-            setFilteredData(dataWithCustomerNames);
-          } catch (error) {
-            console.error("Error fetching sales orders:", error);
-          } finally {
-            setLoading(false);
-          }
         };
-      
+
         fetchData();
-      }, [token]); // warning now gone ✅
-      
+    }, [token]);
 
     useEffect(() => {
         const lower = searchTerm.toLowerCase();
         const filtered = data.filter((item) => {
             if (searchCategory === "id") {
-                return item.id.toString().toLowerCase().includes(lower);
-            } else if (searchCategory === "customer") {
-                return item.customerName.toLowerCase().includes(lower);
+                return item.id.toLowerCase().includes(lower);
+            } else if (searchCategory === "vendor") {
+                return item.vendorName.toLowerCase().includes(lower);
+            } else if (searchCategory === "date") {
+                return item.purchaseDate.toLowerCase().includes(lower);
+            } else if (searchCategory === "price") {
+                return item.totalPrice.toString().toLowerCase().includes(lower);
             } else if (searchCategory === "status") {
                 return item.status.toLowerCase().includes(lower);
-            } else if (searchCategory === "date") {
-                return item.salesDate.toLowerCase().includes(lower);
             } else {
                 return (
-                    item.customerName.toLowerCase().includes(lower) ||
-                    item.salesDate.toLowerCase().includes(lower) ||
+                    item.id.toLowerCase().includes(lower) ||
+                    item.vendorName.toLowerCase().includes(lower) ||
+                    item.purchaseDate.toLowerCase().includes(lower) ||
+                    item.totalPrice.toString().toLowerCase().includes(lower) ||
                     item.status.toLowerCase().includes(lower)
                 );
             }
@@ -90,10 +94,10 @@ const SalesOrder = () => {
 
     return (
         <div className="gudang-list-container">
-            <h1 className="page-title">Sales Order</h1>
+            <h1 className="page-title">Purchase</h1>
 
-            <ToolbarSalesOrder
-                onAdd={() => navigate("/sales-order/add")}
+            <ToolbarPurchaseOrder
+                onAdd={() => navigate("/purchase-order/add")}
                 onRefresh={handleRefresh}
                 onFilter={(category) => setSearchCategory(category)}
                 onSearch={(term) => setSearchTerm(term)}
@@ -103,7 +107,7 @@ const SalesOrder = () => {
 
             <div className="table-container">
                 <div className="table-header">
-                    <h2>Sales Order Table</h2>
+                    <h2>Purchase</h2>
                 </div>
 
                 {loading ? (
@@ -115,8 +119,8 @@ const SalesOrder = () => {
                         <thead>
                             <tr>
                                 <th>ID</th>
-                                <th>Nama Customer</th>
-                                <th>Tanggal</th>
+                                <th>Vendor</th>
+                                <th>Tanggal Beli</th>
                                 <th>Total Harga</th>
                                 <th>Status</th>
                                 <th>Aksi</th>
@@ -124,17 +128,17 @@ const SalesOrder = () => {
                         </thead>
                         <tbody>
                             {filteredData.length > 0 ? (
-                                filteredData.map((order) => (
-                                    <tr key={order.id}>
-                                        <td>{order.id}</td>
-                                        <td>{order.customerName}</td>
-                                        <td>{order.salesDate}</td>
-                                        <td>Rp{parseFloat(order.totalPrice).toLocaleString("id-ID", { minimumFractionDigits: 2 })}</td>
-                                        <td>{order.status}</td>
+                                filteredData.map((po) => (
+                                    <tr key={po.id}>
+                                        <td>{po.id}</td>
+                                        <td>{po.vendorName}</td>
+                                        <td>{po.purchaseDate}</td>
+                                        <td>Rp{parseFloat(po.totalPrice).toLocaleString("id-ID", { minimumFractionDigits: 2 })}</td>
+                                        <td>{po.status}</td>
                                         <td>
                                             <button
                                                 className="detail-btn"
-                                                onClick={() => navigate(`/sales-order/detail/${order.id}`)}
+                                                onClick={() => navigate(`/purchase/completed/detail/${po.id}`)}
                                             >
                                                 Detail
                                             </button>
@@ -154,4 +158,4 @@ const SalesOrder = () => {
     );
 };
 
-export default SalesOrder;
+export default Purchase;

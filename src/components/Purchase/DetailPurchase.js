@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import axiosInstance from "../../services/axiosInstance";
 import "../../styles/GudangDetail.css";
 
-const DetailPurchaseOrder = () => {
+const DetailPurchase = () => {
     const { id } = useParams();
     const navigate = useNavigate();
     const [data, setData] = useState(null);
@@ -64,7 +64,7 @@ const DetailPurchaseOrder = () => {
             year: "numeric",
         });
 
-    const handleBack = () => navigate("/purchase-order");
+    const handleBack = () => navigate("/purchase/completed");
 
     const handleUpdate = () => {
         const status = data.status;
@@ -106,12 +106,14 @@ const DetailPurchaseOrder = () => {
         <div className="gudang-detail-container">
             <div className="gudang-detail-content">
                 <div className="page-header">
-                    <h1 className="page-title">Purchase Order</h1>
                     <h1 className="page-title">{data.id}</h1>
                 </div>
 
                 <div className="action-buttons">
                     <button className="back-btn" onClick={handleBack}>Kembali</button>
+                    {["CREATED", "CONFIRMED", "PAID", "IN DELIVERY"].includes(data.status) && (
+                        <button className="update-btn" onClick={handleUpdate}>{getNextButtonLabel(data.status)}</button>
+                    )}
                     <button className="print-btn" onClick={() => window.print()}>Print</button>
                 </div>
 
@@ -124,6 +126,11 @@ const DetailPurchaseOrder = () => {
                         <div className="detail-row"><span className="detail-label">Tanggal Beli:</span><span className="detail-value">{formatDate(data.purchaseDate)}</span></div>
                         <div className="detail-row"><span className="detail-label">Status:</span><span className="detail-value">{data.status}</span></div>
                         <div className="detail-row"><span className="detail-label">Total Harga:</span><span className="detail-value">Rp{parseFloat(data.totalPrice).toLocaleString("id-ID", { minimumFractionDigits: 2 })}</span></div>
+                        <div style={{ marginTop: "15px" }}>
+                                <button className="update-btn" onClick={() => navigate(`/purchase-order/detail/${data.id}`)}>
+                                    Lihat Detail Purchase Order
+                                </button>
+                        </div>
                     </div>
                 </div>
 
@@ -164,9 +171,85 @@ const DetailPurchaseOrder = () => {
                         </table>
                     </div>
                 </div>
+
+                {data.invoice && (
+                    <div className="detail-card">
+                        <div className="section-header">
+                            <h2 className="section-title">Faktur</h2>
+                        </div>
+                        <div className="section-content">
+                            <div className="detail-row"><span className="detail-label">Tanggal Invoice:</span><span className="detail-value">{formatDate(data.invoice.invoiceDate)}</span></div>
+                            <div className="detail-row"><span className="detail-label">Status Invoice:</span><span className="detail-value">{data.invoice.invoiceStatus}</span></div>
+                            <div className="detail-row"><span className="detail-label">Total Tagihan:</span><span className="detail-value">Rp{parseFloat(data.invoice.totalAmount).toLocaleString("id-ID", { minimumFractionDigits: 2 })}</span></div>
+                            <div className="detail-row"><span className="detail-label">Jatuh Tempo:</span><span className="detail-value">{formatDate(data.invoice.dueDate)}</span></div>
+                            <div className="detail-row"><span className="detail-label">Sisa Tagihan:</span><span className="detail-value">Rp{parseFloat(data.invoice.remainingAmount).toLocaleString("id-ID", { minimumFractionDigits: 2 })}</span></div>
+
+                            {/* Tombol navigasi ke halaman detail Faktur */}
+                            <div style={{ marginTop: "15px" }}>
+                                <button className="update-btn" onClick={() => navigate(`/purchase-invoice/detail/${data.id}`)}>
+                                    Lihat Detail Faktur
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                {data.delivery && (
+                    <div className="detail-card">
+                        <div className="section-header">
+                            <h2 className="section-title">Surat Jalan</h2>
+                        </div>
+                        <div className="section-content">
+                            <div className="detail-row"><span className="detail-label">Tanggal Pengiriman:</span><span className="detail-value">{formatDate(data.delivery.deliveryDate)}</span></div>
+                            <div className="detail-row"><span className="detail-label">Status:</span><span className="detail-value">{data.delivery.deliveryStatus}</span></div>
+                            <div className="detail-row"><span className="detail-label">Nomor Resi:</span><span className="detail-value">{data.delivery.trackingNumber}</span></div>
+                            <div className="detail-row"><span className="detail-label">Biaya Kirim:</span><span className="detail-value">Rp{parseFloat(data.delivery.deliveryFee).toLocaleString("id-ID", { minimumFractionDigits: 2 })}</span></div>
+
+                            {/* Tombol navigasi ke halaman detail Surat Jalan */}
+                            <div style={{ marginTop: "15px" }}>
+                                <button className="update-btn" onClick={() => navigate(`/delivery/detail/${data.id}`)}>
+                                    Lihat Detail Surat Jalan
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                {data.payment && (
+                    <div className="detail-card">
+                        <div className="section-header">
+                            <h2 className="section-title">Pembayaran</h2>
+                        </div>
+                        <div className="section-content">
+                            <div className="detail-row"><span className="detail-label">Tanggal:</span><span className="detail-value">{formatDate(data.payment.paymentDate)}</span></div>
+                            <div className="detail-row"><span className="detail-label">Metode:</span><span className="detail-value">{data.payment.paymentMethod}</span></div>
+                            <div className="detail-row"><span className="detail-label">Status:</span><span className="detail-value">{data.payment.paymentStatus}</span></div>
+                            <div className="detail-row"><span className="detail-label">Jumlah Dibayar:</span><span className="detail-value">Rp{parseFloat(data.payment.totalAmountPayed).toLocaleString("id-ID", { minimumFractionDigits: 2 })}</span></div>
+                        </div>
+                    </div>
+                )}
+
+                {data.receipt && (
+                    <div className="detail-card">
+                        <div className="section-header">
+                            <h2 className="section-title">Nota Penerimaan</h2>
+                        </div>
+                        <div className="section-content">
+                            <div className="detail-row"><span className="detail-label">Tanggal Nota:</span><span className="detail-value">{formatDate(data.receipt.receiptDate)}</span></div>
+                            <div className="detail-row"><span className="detail-label">Jumlah Diterima:</span><span className="detail-value">Rp{parseFloat(data.receipt.amountPayed).toLocaleString("id-ID", { minimumFractionDigits: 2 })}</span></div>
+
+                            {/* Tombol navigasi ke halaman detail Nota */}
+                            <div style={{ marginTop: "15px" }}>
+                                <button className="update-btn" onClick={() => navigate(`/purchase-receipt/detail/${data.id}`)}>
+                                    Lihat Detail Nota
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                )}
             </div>
         </div>
     );
 };
 
-export default DetailPurchaseOrder;
+export default DetailPurchase;

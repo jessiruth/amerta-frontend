@@ -104,7 +104,7 @@ const AddPurchaseOrder = () => {
         const comboPajak = new Map();
 
         if (!formData.purchaseDate) newErrors.purchaseDate = "Tanggal wajib diisi";
-        if (!formData.customerId) newErrors.customerId = "Supplier wajib dipilih";
+        if (!formData.customerId) newErrors.customerId = "Vendor wajib dipilih";
         if (formData.items.length === 0) newErrors.items = "Minimal satu item harus ditambahkan";
 
         formData.items.forEach((item, index) => {
@@ -152,7 +152,7 @@ const AddPurchaseOrder = () => {
             const newId = response.data?.data?.id;
             toast.success("Purchase Order berhasil ditambahkan!");
             setTimeout(() => {
-                navigate(`/purchase-order/detail/${newId}`);
+                navigate(`/purchase/completed/detail/${newId}`);
             }, 1500);
         } catch {
             toast.error("Gagal menambahkan Purchase Order.");

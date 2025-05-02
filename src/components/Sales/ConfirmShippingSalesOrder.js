@@ -131,8 +131,8 @@ const ConfirmShippingSalesOrder = () => {
                                             <td>{item.quantity}</td>
                                             <td>{item.gudangTujuan}</td>
                                             <td>{item.tax || 0}%</td>
-                                            <td>Rp {parseFloat(harga).toLocaleString("id-ID")}</td>
-                                            <td>Rp {parseFloat(subtotal).toLocaleString("id-ID")}</td>
+                                            <td>Rp{parseFloat(harga).toLocaleString("id-ID", { minimumFractionDigits: 2 })}</td>
+                                            <td>Rp{parseFloat(subtotal).toLocaleString("id-ID", { minimumFractionDigits: 2 })}</td>
                                         </tr>
                                     );
                                 })}
@@ -140,7 +140,7 @@ const ConfirmShippingSalesOrder = () => {
                             <tfoot>
                                 <tr>
                                     <td colSpan="5" style={{ textAlign: "right", fontWeight: "bold" }}>Total</td>
-                                    <td style={{ fontWeight: "bold" }}>Rp {parseFloat(getTotal()).toLocaleString("id-ID")}</td>
+                                    <td style={{ fontWeight: "bold" }}>Rp{parseFloat(getTotal()).toLocaleString("id-ID", { minimumFractionDigits: 2 })}</td>
                                 </tr>
                             </tfoot>
                         </table>
@@ -158,7 +158,7 @@ const ConfirmShippingSalesOrder = () => {
                             </div>
                             <div className="detail-row">
                                 <span className="detail-label">Total Tagihan:</span>
-                                <span className="detail-value">Rp {parseFloat(data.invoice.totalAmount).toLocaleString("id-ID")}</span>
+                                <span className="detail-value">Rp{parseFloat(data.invoice.totalAmount).toLocaleString("id-ID", { minimumFractionDigits: 2 })}</span>
                             </div>
                             <div className="detail-row">
                                 <span className="detail-label">Jatuh Tempo:</span>
@@ -182,11 +182,11 @@ const ConfirmShippingSalesOrder = () => {
                         <div className="section-content">
                             <div className="detail-row">
                                 <span className="detail-label">Tanggal Pengiriman:</span>
-                                <span className="detail-value">{formatDate(data.shipping.deliveryDate)}</span>
+                                <span className="detail-value">{formatDate(data.shipping.shippingDate)}</span>
                             </div>
                             <div className="detail-row">
                                 <span className="detail-label">Status:</span>
-                                <span className="detail-value">{data.shipping.deliveryStatus}</span>
+                                <span className="detail-value">{data.shipping.shippingStatus}</span>
                             </div>
                             <div className="detail-row">
                                 <span className="detail-label">Nomor Resi:</span>
@@ -194,7 +194,7 @@ const ConfirmShippingSalesOrder = () => {
                             </div>
                             <div className="detail-row">
                                 <span className="detail-label">Biaya Kirim:</span>
-                                <span className="detail-value">Rp {parseFloat(data.shipping.deliveryFee).toLocaleString("id-ID")}</span>
+                                <span className="detail-value">Rp{parseFloat(data.shipping.shippingFee).toLocaleString("id-ID", { minimumFractionDigits: 2 })}</span>
                             </div>
                         </div>
                     </div>
@@ -260,7 +260,7 @@ const ConfirmShippingSalesOrder = () => {
                                 <p>Pengiriman telah dikonfirmasi selesai. Anda akan diarahkan ke detail Sales Order.</p>
                             </div>
                             <div className="modal-footer">
-                                <button className="primary-btn" onClick={() => navigate(`/sales-order/detail/${id}`)}>OK</button>
+                                <button className="primary-btn" onClick={() => navigate(`/sales/completed/detail/${id}`)}>OK</button>
                             </div>
                         </div>
                     </div>

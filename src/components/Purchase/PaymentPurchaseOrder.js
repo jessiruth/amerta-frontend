@@ -205,7 +205,7 @@ const PaymentPurchaseOrder = () => {
                                 <p>Pembayaran telah diterima. Anda akan diarahkan ke detail Purchase Order.</p>
                             </div>
                             <div className="modal-footer">
-                                <button className="primary-btn" onClick={() => navigate(`/purchase-order/detail/${id}`)}>OK</button>
+                                <button className="primary-btn" onClick={() => navigate(`/purchase/completed/detail/${id}`)}>OK</button>
                             </div>
                         </div>
                     </div>

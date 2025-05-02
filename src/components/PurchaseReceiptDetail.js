@@ -64,7 +64,7 @@ const PurchaseReceiptDetail = () => {
             year: "numeric",
         });
 
-    const handleBack = () => navigate("/purchase-order");
+    const handleBack = () => navigate("/purchase-receipt");
 
     const getSubtotal = (barangId, qty, tax) => {
         const harga = itemPrices[barangId] || 0;
@@ -74,7 +74,7 @@ const PurchaseReceiptDetail = () => {
 
     const getTotalHargaBarang = () =>
         data.items.reduce((total, item) =>
-            total + getSubtotal(item.barangId, item.quantity, item.pajak), 0);
+            total + getSubtotal(item.barangId, item.quantity, item.tax), 0);
 
     if (loading) return <div className="loading-container"><p>Loading...</p></div>;
     if (error || !data) return <div className="error-container"><p>{error}</p></div>;
@@ -83,6 +83,7 @@ const PurchaseReceiptDetail = () => {
         <div className="gudang-detail-container">
             <div className="gudang-detail-content">
                 <div className="page-header">
+                    <h1 className="page-title">Purchase Receipt</h1>
                     <h1 className="page-title">{data.receipt.id}</h1>
                 </div>
 
@@ -125,9 +126,9 @@ const PurchaseReceiptDetail = () => {
                                         <td>{item.barangId}</td>
                                         <td>{item.quantity}</td>
                                         <td>{item.gudangTujuan}</td>
-                                        <td>{item.pajak || 0}%</td>
+                                        <td>{item.tax || 0}%</td>
                                         <td>Rp{parseFloat(itemPrices[item.barangId] || 0).toLocaleString("id-ID", { minimumFractionDigits: 2 })}</td>
-                                        <td>Rp{parseFloat(getSubtotal(item.barangId, item.quantity, item.pajak)).toLocaleString("id-ID", { minimumFractionDigits: 2 })}</td>
+                                        <td>Rp{parseFloat(getSubtotal(item.barangId, item.quantity, item.tax)).toLocaleString("id-ID", { minimumFractionDigits: 2 })}</td>
                                     </tr>
                                 ))}
                             </tbody>

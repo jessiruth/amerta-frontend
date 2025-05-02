@@ -71,12 +71,12 @@ const CompletePurchaseOrder = () => {
 
     const getTotalHargaBarang = () =>
         data.items.reduce((total, item) =>
-            total + getSubtotal(item.barangId, item.quantity, item.pajak), 0);
+            total + getSubtotal(item.barangId, item.quantity, item.tax), 0);
 
     const handleComplete = async () => {
         const token = localStorage.getItem("token");
         try {
-            await axiosInstance.put(`/api/purchase-order/complete/${id}`, {}, {
+            await axiosInstance.put(`/api/purchase-order/complete-delivery/${id}`, {}, {
                 headers: { Authorization: `Bearer ${token}` },
             });
             setModalType(null);
@@ -135,9 +135,9 @@ const CompletePurchaseOrder = () => {
                                         <td>{item.barangId}</td>
                                         <td>{item.quantity}</td>
                                         <td>{item.gudangTujuan}</td>
-                                        <td>{item.pajak || 0}%</td>
+                                        <td>{item.tax || 0}%</td>
                                         <td>Rp{parseFloat(itemPrices[item.barangId] || 0).toLocaleString("id-ID", { minimumFractionDigits: 2 })}</td>
-                                        <td>Rp{parseFloat(getSubtotal(item.barangId, item.quantity, item.pajak)).toLocaleString("id-ID", { minimumFractionDigits: 2 })}</td>
+                                        <td>Rp{parseFloat(getSubtotal(item.barangId, item.quantity, item.tax)).toLocaleString("id-ID", { minimumFractionDigits: 2 })}</td>
                                     </tr>
                                 ))}
                             </tbody>
@@ -193,7 +193,7 @@ const CompletePurchaseOrder = () => {
 
                 {/* Tombol Aksi */}
                 <div className="form-actions">
-                    <button className="cancel-btn" onClick={() => navigate("/purchase-order")}>Batal</button>
+                    <button className="cancel-btn" onClick={() => navigate("/purchase/completed")}>Batal</button>
                     <button className="submit-btn" onClick={() => setModalType("confirm")}>Selesaikan</button>
                 </div>
 
@@ -228,7 +228,7 @@ const CompletePurchaseOrder = () => {
                                 <p>Purchase Order berhasil diselesaikan. Anda akan diarahkan ke halaman detail.</p>
                             </div>
                             <div className="modal-footer">
-                                <button className="primary-btn" onClick={() => navigate(`/purchase-order/detail/${id}`)}>OK</button>
+                                <button className="primary-btn" onClick={() => navigate(`/purchase/completed/detail/${id}`)}>OK</button>
                             </div>
                         </div>
                     </div>

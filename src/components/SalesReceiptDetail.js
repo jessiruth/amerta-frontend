@@ -83,6 +83,7 @@ const SalesReceiptDetail = () => {
         <div className="gudang-detail-container">
             <div className="gudang-detail-content">
                 <div className="page-header">
+                    <h1 className="page-title">Sales Receipt</h1>
                     <h1 className="page-title">{data.receipt.id}</h1>
                 </div>
 

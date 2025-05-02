@@ -91,14 +91,12 @@ const DetailSalesOrder = () => {
         <div className="gudang-detail-container">
             <div className="gudang-detail-content">
                 <div className="page-header">
+                    <h1 className="page-title">Sales Order</h1>
                     <h1 className="page-title">{data.id}</h1>
                 </div>
 
                 <div className="action-buttons">
                     <button className="back-btn" onClick={handleBack}>Kembali</button>
-                    {["CREATED", "CONFIRMED", "IN SHIPPING", "SHIPPED"].includes(data.status) && (
-                        <button className="update-btn" onClick={handleUpdate}>Lanjutkan</button>
-                    )}
                     <button className="print-btn" onClick={() => window.print()}>
                         Print
                     </button>
@@ -112,7 +110,7 @@ const DetailSalesOrder = () => {
                         <div className="detail-row"><span className="detail-label">Customer:</span><span className="detail-value">{customerName}</span></div>
                         <div className="detail-row"><span className="detail-label">Tanggal Sales:</span><span className="detail-value">{formatDate(data.salesDate)}</span></div>
                         <div className="detail-row"><span className="detail-label">Status:</span><span className="detail-value">{data.status}</span></div>
-                        <div className="detail-row"><span className="detail-label">Total Profit:</span><span className="detail-value">Rp {parseFloat(data.totalPrice).toLocaleString("id-ID")}</span></div>
+                        <div className="detail-row"><span className="detail-label">Total Profit:</span><span className="detail-value">Rp{parseFloat(data.totalPrice).toLocaleString("id-ID", { minimumFractionDigits: 2 })}</span></div>
                     </div>
                 </div>
 
@@ -139,128 +137,20 @@ const DetailSalesOrder = () => {
                                         <td>{item.quantity}</td>
                                         <td>{item.gudangTujuan}</td>
                                         <td>{item.tax || 0}%</td>
-                                        <td>Rp {parseFloat(itemPrices[item.barangId] || 0).toLocaleString("id-ID")}</td>
-                                        <td>Rp {parseFloat(getSubtotal(item.barangId, item.quantity, item.tax)).toLocaleString("id-ID")}</td>
+                                        <td>Rp{parseFloat(itemPrices[item.barangId] || 0).toLocaleString("id-ID", { minimumFractionDigits: 2 })}</td>
+                                        <td>Rp{parseFloat(getSubtotal(item.barangId, item.quantity, item.tax)).toLocaleString("id-ID", { minimumFractionDigits: 2 })}</td>
                                     </tr>
                                 ))}
                             </tbody>
                             <tfoot>
                                 <tr>
                                     <td colSpan="5" style={{ textAlign: "right", fontWeight: "bold" }}>Total</td>
-                                    <td style={{ fontWeight: "bold" }}>Rp {parseFloat(getTotalHargaBarang()).toLocaleString("id-ID")}</td>
+                                    <td style={{ fontWeight: "bold" }}>Rp{parseFloat(getTotalHargaBarang()).toLocaleString("id-ID", { minimumFractionDigits: 2 })}</td>
                                 </tr>
                             </tfoot>
                         </table>
                     </div>
                 </div>
-
-                {/* Invoice */}
-                {data.invoice && (
-                    <div className="detail-card">
-                        <div className="section-header">
-                            <h2 className="section-title">Faktur</h2>
-                        </div>
-
-                        <div className="section-content">
-                            <div className="detail-row">
-                                <span className="detail-label">Tanggal Invoice:</span>
-                                <span className="detail-value">{formatDate(data.invoice.invoiceDate)}</span>
-                            </div>
-                            <div className="detail-row">
-                                <span className="detail-label">Status Invoice:</span>
-                                <span className="detail-value">{data.invoice.invoiceStatus}</span>
-                            </div>
-                            <div className="detail-row">
-                                <span className="detail-label">Total Tagihan:</span>
-                                <span className="detail-value">Rp {parseFloat(data.invoice.totalAmount).toLocaleString("id-ID")}</span>
-                            </div>
-                            <div className="detail-row">
-                                <span className="detail-label">Jatuh Tempo:</span>
-                                <span className="detail-value">{formatDate(data.invoice.dueDate)}</span>
-                            </div>
-                            <div className="detail-row">
-                                <span className="detail-label">Sisa Tagihan:</span>
-                                <span className="detail-value">Rp {parseFloat(data.invoice.remainingAmount).toLocaleString("id-ID")}</span>
-                            </div>
-                        </div>
-                    </div>
-                )}
-
-                {/* Pengiriman */}
-                {data.shipping && (
-                    <div className="detail-card">
-                        <div className="section-header">
-                            <h2 className="section-title">Pengiriman</h2>
-                        </div>
-
-                        <div className="section-content">
-                            <div className="detail-row">
-                                <span className="detail-label">Tanggal Pengiriman:</span>
-                                <span className="detail-value">{formatDate(data.shipping.deliveryDate)}</span>
-                            </div>
-                            <div className="detail-row">
-                                <span className="detail-label">Status:</span>
-                                <span className="detail-value">{data.shipping.deliveryStatus}</span>
-                            </div>
-                            <div className="detail-row">
-                                <span className="detail-label">Nomor Resi:</span>
-                                <span className="detail-value">{data.shipping.trackingNumber}</span>
-                            </div>
-                            <div className="detail-row">
-                                <span className="detail-label">Biaya Kirim:</span>
-                                <span className="detail-value">Rp {parseFloat(data.shipping.deliveryFee).toLocaleString("id-ID")}</span>
-                            </div>
-                        </div>
-                    </div>
-                )}
-
-                {/* Pembayaran */}
-                {data.payment && (
-                    <div className="detail-card">
-                        <div className="section-header">
-                            <h2 className="section-title">Pembayaran</h2>
-                        </div>
-
-                        <div className="section-content">
-                            <div className="detail-row">
-                                <span className="detail-label">Tanggal:</span>
-                                <span className="detail-value">{formatDate(data.payment.paymentDate)}</span>
-                            </div>
-                            <div className="detail-row">
-                                <span className="detail-label">Metode:</span>
-                                <span className="detail-value">{data.payment.paymentMethod}</span>
-                            </div>
-                            <div className="detail-row">
-                                <span className="detail-label">Status:</span>
-                                <span className="detail-value">{data.payment.paymentStatus}</span>
-                            </div>
-                            <div className="detail-row">
-                                <span className="detail-label">Jumlah Dibayar:</span>
-                                <span className="detail-value">Rp {parseFloat(data.payment.totalAmountPayed).toLocaleString("id-ID")}</span>
-                            </div>
-                        </div>
-                    </div>
-                )}
-
-                {/* Receipt */}
-                {data.receipt && (
-                    <div className="detail-card">
-                        <div className="section-header">
-                            <h2 className="section-title">Nota Penerimaan</h2>
-                        </div>
-
-                        <div className="section-content">
-                            <div className="detail-row">
-                                <span className="detail-label">Tanggal Nota:</span>
-                                <span className="detail-value">{formatDate(data.receipt.receiptDate)}</span>
-                            </div>
-                            <div className="detail-row">
-                                <span className="detail-label">Jumlah Diterima:</span>
-                                <span className="detail-value">Rp {parseFloat(data.receipt.amountPayed).toLocaleString("id-ID")}</span>
-                            </div>
-                        </div>
-                    </div>
-                )}
             </div>
         </div>
     );

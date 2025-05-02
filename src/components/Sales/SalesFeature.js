@@ -9,13 +9,14 @@ import invoiceIcon from "../../assets/Sales Invoice.png";
 const SalesFeature = () => {
     const navigate = useNavigate();
 
+    
     return (
         <div className="sales-feature-container">
             <h1 className="page-title">Sales</h1>
 
             {/* Baris pertama */}
             <div className="sales-feature-row">
-                <div className="asset-box" onClick={() => navigate("/sales")}>
+                <div className="asset-box" onClick={() => navigate("/sales/completed")}>
                     <img src={salesIcon} alt="Sales" />
                     <p>Sales</p>
                 </div>

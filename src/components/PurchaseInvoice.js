@@ -119,13 +119,13 @@ const PurchaseInvoice = () => {
                                     <tr key={item.id}>
                                         <td>{item.id}</td>
                                         <td>{item.invoiceStatus}</td>
-                                        <td>{item.totalAmount.toLocaleString("id-ID", { style: "currency", currency: "IDR" })}</td>
+                                        <td>Rp{item.totalAmount.toLocaleString("id-ID", { minimumFractionDigits: 2 })}</td>
                                         <td>{item.dueDate}</td>
-                                        <td>{item.remainingAmount.toLocaleString("id-ID", { style: "currency", currency: "IDR" })}</td>
+                                        <td>Rp{item.remainingAmount.toLocaleString("id-ID", { minimumFractionDigits: 2 })}</td>
                                         <td>
                                         <button
                                             className="detail-btn"
-                                            onClick={() => navigate(`/purchase-invoice/detail/${item.id}`)}
+                                            onClick={() => navigate(`/purchase-invoice/detail/${item.purchaseOrderId}`)}
                                         >
                                             Detail
                                         </button>

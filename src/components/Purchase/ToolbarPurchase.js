@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import "../styles/Toolbar.css";
-import addIcon from "../assets/Add.png";
-import refreshIcon from "../assets/Refresh.png";
+import "../../styles/Toolbar.css";
+import refreshIcon from "../../assets/Refresh.png";
+import SearchIcon from "@mui/icons-material/Search";
 
-const ToolbarSalesOrder = ({ onAdd, onRefresh, onFilter, onSearch, selectedCategory, searchTerm }) => {
+const ToolbarPurchase = ({ onRefresh, onFilter, onSearch, selectedCategory, searchTerm }) => {
     const [inputValue, setInputValue] = useState("");
 
     useEffect(() => {
@@ -22,14 +22,6 @@ const ToolbarSalesOrder = ({ onAdd, onRefresh, onFilter, onSearch, selectedCateg
 
     return (
         <div className="toolbar">
-            {/* Add Button */}
-            <div className="toolbar-item">
-                <button className="toolbar-btn add-btn" onClick={onAdd}>
-                    <img src={addIcon} alt="Add" />
-                </button>
-                <p className="toolbar-text">Add</p>
-            </div>
-
             {/* Refresh Button */}
             <div className="toolbar-item">
                 <button className="toolbar-btn white-btn" onClick={onRefresh}>
@@ -42,11 +34,10 @@ const ToolbarSalesOrder = ({ onAdd, onRefresh, onFilter, onSearch, selectedCateg
             <div className="toolbar-item filter-container">
                 <select className="filter-dropdown" onChange={handleCategoryChange} value={selectedCategory}>
                     <option value="all">Filter: Semua Kolom</option>
-                    <option value="id">Filter: ID Sales Order</option>
-                    <option value="customer">Filter: Nama Customer</option>
+                    <option value="id">Filter: ID PO</option>
+                    <option value="customer">Filter: Nama Vendor</option>
                     <option value="date">Filter: Tanggal</option>
                     <option value="price">Filter: Total Harga</option>
-                    <option value="status">Filter: Status</option>
                 </select>
             </div>
 
@@ -54,15 +45,15 @@ const ToolbarSalesOrder = ({ onAdd, onRefresh, onFilter, onSearch, selectedCateg
             <div className="search-container">
                 <input
                     type="text"
-                    placeholder={`Cari berdasarkan ${selectedCategory}`}
+                    placeholder={`Search by ${selectedCategory}`}
                     className="search-bar"
                     value={inputValue}
                     onChange={handleSearchChange}
                 />
-                <span className="search-icon">🔍</span>
+                <SearchIcon className="toolbar-purchase-order-search-icon" />
             </div>
         </div>
     );
 };
 
-export default ToolbarSalesOrder;
+export default ToolbarPurchase;

@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
-import "../styles/ToolbarPurchaseOrder.css";
-import addIcon from "../assets/Add.png";
-import refreshIcon from "../assets/Refresh.png";
+import "../../styles/ToolbarPurchaseOrder.css";
+import addIcon from "../../assets/Add.png";
+import refreshIcon from "../../assets/Refresh.png";
 import SearchIcon from "@mui/icons-material/Search";
 
 const ToolbarPurchaseOrder = ({

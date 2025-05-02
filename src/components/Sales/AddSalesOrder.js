@@ -142,9 +142,9 @@ const AddSalesOrder = () => {
             toast.success("Sales Order berhasil ditambahkan!");
             setTimeout(() => {
                 if (newId) {
-                    navigate(`/sales-order/detail/${newId}`);
+                    navigate(`/sales/completed/detail/${newId}`);
                 } else {
-                    navigate("/sales-order");
+                    navigate("/sales/completed");
                 }
             }, 1500);
         } catch {
@@ -281,7 +281,7 @@ const AddSalesOrder = () => {
                                         </button>
                                         <button
                                             className={showConfirmation === "submit" ? "primary-btn" : "danger-btn"}
-                                            onClick={showConfirmation === "submit" ? confirmSubmit : () => navigate("/sales-order")}
+                                            onClick={showConfirmation === "submit" ? confirmSubmit : () => navigate("/sales/completed")}
                                         >
                                             {showConfirmation === "submit" ? "Ya, Simpan" : "Ya, Batalkan"}
                                         </button>

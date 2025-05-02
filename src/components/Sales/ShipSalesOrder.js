@@ -175,8 +175,8 @@ const ShippingSalesOrder = () => {
                                             <td>{qty}</td>
                                             <td>{item.gudangTujuan}</td>
                                             <td>{tax}%</td>
-                                            <td>Rp {harga.toLocaleString("id-ID")}</td>
-                                            <td>Rp {subtotal.toLocaleString("id-ID")}</td>
+                                            <td>Rp{harga.toLocaleString("id-ID", { minimumFractionDigits: 2 })}</td>
+                                            <td>Rp{subtotal.toLocaleString("id-ID", { minimumFractionDigits: 2 })}</td>
                                         </tr>
                                     );
                                 })}
@@ -185,11 +185,11 @@ const ShippingSalesOrder = () => {
                                 <tr>
                                     <td colSpan="5" style={{ textAlign: "right", fontWeight: "bold" }}>Total</td>
                                     <td style={{ fontWeight: "bold" }}>
-                                        Rp {data.items.reduce((total, item) => {
+                                        Rp{data.items.reduce((total, item) => {
                                             const harga = item.barang?.hargaJual || 0;
                                             const tax = item.tax || 0;
                                             return total + harga * item.quantity * (1 + tax / 100);
-                                        }, 0).toLocaleString("id-ID")}
+                                        }, 0).toLocaleString("id-ID", { minimumFractionDigits: 2 })}
                                     </td>
                                 </tr>
                             </tfoot>
@@ -305,7 +305,7 @@ const ShippingSalesOrder = () => {
                                 <p>Pengiriman berhasil dimulai. Anda akan diarahkan ke halaman detail sales order.</p>
                             </div>
                             <div className="modal-footer">
-                                <button className="primary-btn" onClick={() => navigate(`/sales-order/detail/${id}`)}>OK</button>
+                                <button className="primary-btn" onClick={() => navigate(`/sales/completed/detail/${id}`)}>OK</button>
                             </div>
                         </div>
                     </div>
