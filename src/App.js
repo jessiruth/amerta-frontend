@@ -50,7 +50,14 @@ import CompletePurchaseOrder from "./components/Purchase/CompletePurchaseOrder";
 import AddPurchaseOrder from "./components/Purchase/AddPurchaseOrder";
 import ShippingList from "./components/Sales/ShippingList";
 import DetailShipping from "./components/Sales/ShippingDetail";
+<<<<<<< HEAD
 >>>>>>> e29e4293b079740868827090f640cf4429db7dfc
+=======
+import PurchaseInvoice from "./components/PurchaseInvoice";
+import PurchaseInvoiceDetail from "./components/PurchaseInvoiceDetail";
+import SalesInvoice from "./components/SalesInvoice";
+import SalesInvoiceDetail from "./components/SalesInvoiceDetail";
+>>>>>>> 8972773338afa551cf344910fa7e144c0e66ba01
 
 function Layout() {
     const location = useLocation();
@@ -113,8 +120,15 @@ function Layout() {
                 <Route path="/sales-order/payment/:id" element={<PaymentSalesOrder />} />
                 <Route path="/shipping" element={<ShippingList />} />
                 <Route path="/shipping/detail/:id" element={<DetailShipping />} />
+<<<<<<< HEAD
 >>>>>>> e29e4293b079740868827090f640cf4429db7dfc
 
+=======
+                <Route path="/purchase-invoice" element={<PurchaseInvoice />} />
+                <Route path="/purchase-invoice/detail/:id" element={<PurchaseInvoiceDetail />} />
+                <Route path="/sales-invoice" element={<SalesInvoice />} />
+                <Route path="/sales-invoice/detail/:id" element={<SalesInvoiceDetail />} />
+>>>>>>> 8972773338afa551cf344910fa7e144c0e66ba01
             </Routes>
         </div>
     );
