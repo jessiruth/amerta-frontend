@@ -137,7 +137,7 @@ const PaymentPurchaseOrder = () => {
                                         type="number"
                                         step="0.01"
                                         min="1"
-                                        placeholder="Contoh: 12000.50"
+                                        placeholder="Contoh: 12000,50"
                                         value={totalAmountPayed}
                                         onChange={(e) => setTotalAmountPayed(e.target.value)}
                                     />

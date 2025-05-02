@@ -136,7 +136,14 @@ const DeliveryPurchaseOrder = () => {
                             </div>
                             <div className="form-group">
                                 <label>Biaya Kirim</label>
-                                <input type="number" value={deliveryFee} onChange={(e) => setDeliveryFee(e.target.value)} />
+                                <input
+                                        type="number"
+                                        step="0.01"
+                                        min="1"
+                                        placeholder="Contoh: 12000,50"
+                                        value={deliveryFee}
+                                        onChange={(e) => setDeliveryFee(e.target.value)}
+                                    />
                                 {inputErrors.deliveryFee && <span className="error-message">{inputErrors.deliveryFee}</span>}
                             </div>
                         </div>
