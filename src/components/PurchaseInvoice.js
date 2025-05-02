@@ -2,8 +2,6 @@ import { useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "../services/axiosInstance";
 import Toolbar from "../components/ToolbarInvoice";
-import jsPDF from "jspdf";
-import autoTable from "jspdf-autotable";
 import "../styles/GudangList.css";
 
 const PurchaseInvoice = () => {
@@ -80,34 +78,6 @@ const PurchaseInvoice = () => {
         setSearchCategory("all");
         setFilteredData(data);
         fetchData();
-    };
-
-    const downloadPdf = (item) => {
-        const doc = new jsPDF();
-    
-        doc.setFontSize(18);
-        doc.text("FAKTUR PEMBELIAN", 14, 20);
-    
-        doc.setFontSize(12);
-        doc.text(`ID Faktur: ${item.id}`, 14, 35);
-        doc.text(`Status: ${item.invoiceStatus}`, 14, 42);
-        doc.text(`Jumlah: Rp ${item.totalAmount.toLocaleString("id-ID")}`, 14, 49);
-        doc.text(`Jatuh Tempo: ${item.dueDate}`, 14, 56);
-        doc.text(`Sisa Pembayaran: Rp ${item.remainingAmount.toLocaleString("id-ID")}`, 14, 63);
-    
-        // Optional: Table placeholder
-        autoTable(doc, {
-            startY: 75,
-            head: [["Deskripsi", "Nilai"]],
-            body: [
-                ["Total", `Rp ${item.totalAmount.toLocaleString("id-ID")}`],
-                ["Sisa Bayar", `Rp ${item.remainingAmount.toLocaleString("id-ID")}`],
-                ["Status", item.invoiceStatus],
-                ["Jatuh Tempo", item.dueDate],
-            ],
-        });
-    
-        doc.save(`invoice-${item.id}.pdf`);
     };    
 
     return (
@@ -140,7 +110,7 @@ const PurchaseInvoice = () => {
                                 <th>Jumlah</th>
                                 <th>Jatuh Tempo</th>
                                 <th>Sisa Bayar</th>
-                                <th>Aksi</th>
+                                <th>Detail</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -153,21 +123,12 @@ const PurchaseInvoice = () => {
                                         <td>{item.dueDate}</td>
                                         <td>{item.remainingAmount.toLocaleString("id-ID", { style: "currency", currency: "IDR" })}</td>
                                         <td>
-                                        <td>
                                         <button
                                             className="detail-btn"
                                             onClick={() => navigate(`/purchase-invoice/detail/${item.id}`)}
                                         >
                                             Detail
                                         </button>
-                                        <button
-                                            className="pdf-btn"
-                                            onClick={() => downloadPdf(item.id)}
-                                            style={{ marginLeft: "8px" }}
-                                        >
-                                            Download PDF
-                                        </button>
-                                        </td>
                                         </td>
                                     </tr>
                                 ))

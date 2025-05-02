@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axiosInstance from "../services/axiosInstance";
-import "../styles/ExpenseDetail.css";
 import jsPDF from "jspdf";
-import html2canvas from "html2canvas";
+import autoTable from "jspdf-autotable";
+import "../styles/ExpenseDetail.css";
 
 const PurchaseInvoiceDetail = () => {
     const { id } = useParams();
@@ -43,21 +43,41 @@ const PurchaseInvoiceDetail = () => {
         fetchDetail();
     }, [id, token]);
 
-    const handleDownloadPdf = async () => {
-        const element = document.getElementById("invoice-pdf");
-        if (!element) return;
+    const formatDate = (date) =>
+        new Date(date).toLocaleDateString("id-ID", {
+            day: "numeric",
+            month: "long",
+            year: "numeric",
+        });
 
-        try {
-            const canvas = await html2canvas(element, { scale: 2 });
-            const imgData = canvas.toDataURL("image/png");
-            const pdf = new jsPDF();
-            const width = pdf.internal.pageSize.getWidth();
-            const height = (canvas.height * width) / canvas.width;
-            pdf.addImage(imgData, "PNG", 0, 0, width, height);
-            pdf.save(`invoice-${id}.pdf`);
-        } catch (error) {
-            alert("Gagal membuat PDF");
-        }
+    const downloadPdf = () => {
+        if (!data) return;
+
+        const doc = new jsPDF();
+        doc.setFontSize(18);
+        doc.text("FAKTUR PEMBELIAN", 14, 20);
+
+        doc.setFontSize(12);
+        doc.text(`ID Faktur: ${data.id}`, 14, 35);
+        doc.text(`Purchase Order ID: ${data.purchaseOrderId}`, 14, 42);
+        doc.text(`Status: ${data.invoiceStatus}`, 14, 49);
+        doc.text(`Jumlah: Rp ${data.totalAmount.toLocaleString("id-ID")}`, 14, 56);
+        doc.text(`Jatuh Tempo: ${formatDate(data.dueDate)}`, 14, 63);
+        doc.text(`Sisa Pembayaran: Rp ${data.remainingAmount.toLocaleString("id-ID")}`, 14, 70);
+
+        autoTable(doc, {
+            startY: 80,
+            head: [["Deskripsi", "Nilai"]],
+            body: [
+                ["Total", `Rp ${data.totalAmount.toLocaleString("id-ID")}`],
+                ["Sisa Bayar", `Rp ${data.remainingAmount.toLocaleString("id-ID")}`],
+                ["Status", data.invoiceStatus],
+                ["Jatuh Tempo", formatDate(data.dueDate)],
+                ["Payment Terms", `${data.paymentTerms} hari`],
+            ],
+        });
+
+        doc.save(`invoice-${data.id}.pdf`);
     };
 
     if (loading) return <p className="loading-message">Memuat data...</p>;
@@ -65,50 +85,51 @@ const PurchaseInvoiceDetail = () => {
     if (!data) return <p className="error-message">Data tidak ditemukan.</p>;
 
     return (
-        <div className="expense-detail-container">
-            <div id="invoice-pdf">
-                <h2>Detail Purchase Invoice {data.id}</h2>
-                <table className="expense-detail-table">
-                    <tbody>
-                        <tr>
-                            <th>Purchase Order ID</th>
-                            <td>{data.purchaseOrderId || "-"}</td>
-                        </tr>
-                        <tr>
-                            <th>Status</th>
-                            <td>{data.invoiceStatus || "-"}</td>
-                        </tr>
-                        <tr>
-                            <th>Jumlah</th>
-                            <td>{data.totalAmount?.toLocaleString("id-ID", { style: "currency", currency: "IDR" }) || "-"}</td>
-                        </tr>
-                        <tr>
-                            <th>Tanggal Invoice</th>
-                            <td>{data.invoiceDate ? new Date(data.invoiceDate).toLocaleDateString("id-ID") : "-"}</td>
-                        </tr>
-                        <tr>
-                            <th>Jatuh Tempo</th>
-                            <td>{data.dueDate ? new Date(data.dueDate).toLocaleDateString("id-ID") : "-"}</td>
-                        </tr>
-                        <tr>
-                            <th>Sisa Pembayaran</th>
-                            <td>{data.remainingAmount?.toLocaleString("id-ID", { style: "currency", currency: "IDR" }) || "-"}</td>
-                        </tr>
-                        <tr>
-                            <th>Payment Terms</th>
-                            <td>{data.paymentTerms ? `${data.paymentTerms} hari` : "-"}</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <div style={{ marginTop: "20px" }}>
-                <button className="back-button" onClick={() => navigate("/purchase-invoice")}>
-                    Back
-                </button>
-                <button className="detail-btn" onClick={handleDownloadPdf} style={{ marginLeft: "10px" }}>
-                    Download PDF
-                </button>
+        <div className="gudang-detail-container">
+            <div className="gudang-detail-content">
+                <div className="page-header">
+                    <h1 className="page-title">{data.id}</h1>
+                </div>
+                <div className="detail-card">
+                    <div className="section-header">
+                        <h2 className="section-title">Informasi Faktur</h2>
+                    </div>
+                    <div className="section-content">
+                        <div className="detail-row">
+                            <span className="detail-label">Purchase Order ID:</span>
+                            <span className="detail-value">{data.purchaseOrderId || "-"}</span>
+                        </div>
+                        <div className="detail-row">
+                            <span className="detail-label">Status:</span>
+                            <span className="detail-value">{data.invoiceStatus || "-"}</span>
+                        </div>
+                        <div className="detail-row">
+                            <span className="detail-label">Jumlah:</span>
+                            <span className="detail-value">{data.totalAmount?.toLocaleString("id-ID", { style: "currency", currency: "IDR" }) || "-"}</span>
+                        </div>
+                        <div className="detail-row">
+                            <span className="detail-label">Tanggal Invoice:</span>
+                            <span className="detail-value">{data.invoiceDate ? formatDate(data.invoiceDate) : "-"}</span>
+                        </div>
+                        <div className="detail-row">
+                            <span className="detail-label">Jatuh Tempo:</span>
+                            <span className="detail-value">{data.dueDate ? formatDate(data.dueDate) : "-"}</span>
+                        </div>
+                        <div className="detail-row">
+                            <span className="detail-label">Sisa Pembayaran:</span>
+                            <span className="detail-value">{data.remainingAmount?.toLocaleString("id-ID", { style: "currency", currency: "IDR" }) || "-"}</span>
+                        </div>
+                        <div className="detail-row">
+                            <span className="detail-label">Payment Terms:</span>
+                            <span className="detail-value">{data.paymentTerms ? `${data.paymentTerms} hari` : "-"}</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div className="action-buttons">
+                    <button className="back-btn" onClick={() => navigate("/purchase-invoice")}>Kembali</button>
+                    <button className="print-btn" onClick={downloadPdf}>Download PDF</button>
+                </div>
             </div>
         </div>
     );
