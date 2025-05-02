@@ -36,10 +36,16 @@ import AddSalesOrder from "./components/Sales/AddSalesOrder";
 import ConfirmSalesOrder from "./components/Sales/ConfirmSalesOrder";
 import ShippingSalesOrder from "./components/Sales/ShipSalesOrder";
 import ConfirmShippingSalesOrder from "./components/Sales/ConfirmShippingSalesOrder";
+<<<<<<< HEAD
 import SalesReceipt from "./components/SalesReceipt";
 import SalesReceiptDetail from "./components/SalesReceiptDetail";
 import PurchaseReceipt from "./components/PurchaseReceipt";
 import PurchaseReceiptDetail from "./components/PurchaseReceiptDetail";
+=======
+import PaymentSalesOrder from "./components/Sales/PaymentSalesOrder";
+import ShippingList from "./components/Sales/ShippingList";
+import DetailShipping from "./components/Sales/ShippingDetail";
+>>>>>>> e29e4293b079740868827090f640cf4429db7dfc
 
 function Layout() {
     const location = useLocation();
@@ -86,10 +92,16 @@ function Layout() {
                 <Route path="/sales-order/confirm/:id" element={<ConfirmSalesOrder />} />
                 <Route path="/sales-order/shipping/:id" element={<ShippingSalesOrder />} />
                 <Route path="/sales-order/confirm-shipping/:id" element={<ConfirmShippingSalesOrder />} />
+<<<<<<< HEAD
                 <Route path="/sales-receipt" element={<SalesReceipt/>} />
                 <Route path="/sales-receipt/detail/:id" element={<SalesReceiptDetail />} />
                 <Route path="/purchase-receipt" element={<PurchaseReceipt/>} />
                 <Route path="/purhcase-receipt/detail/:id" element={<PurchaseReceiptDetail />} />
+=======
+                <Route path="/sales-order/payment/:id" element={<PaymentSalesOrder />} />
+                <Route path="/shipping" element={<ShippingList />} />
+                <Route path="/shipping/detail/:id" element={<DetailShipping />} />
+>>>>>>> e29e4293b079740868827090f640cf4429db7dfc
 
             </Routes>
         </div>

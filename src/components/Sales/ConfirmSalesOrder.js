@@ -15,6 +15,7 @@ const ConfirmSalesOrder = () => {
     const [loading, setLoading] = useState(true);
     const [modalType, setModalType] = useState(null);
     const [inputErrors, setInputErrors] = useState({});
+    const [successModal, setSuccessModal] = useState(false);
 
     useEffect(() => {
         const token = localStorage.getItem("token");
@@ -73,8 +74,8 @@ const ConfirmSalesOrder = () => {
             }, {
                 headers: { Authorization: `Bearer ${token}` },
             });
-            alert("Sales Order berhasil dikonfirmasi.");
-            navigate(`/sales-order/detail/${id}`);
+            setModalType(null);
+            setSuccessModal(true);
         } catch {
             alert("Gagal mengkonfirmasi Sales Order.");
         }
@@ -131,7 +132,7 @@ const ConfirmSalesOrder = () => {
                                 <tr>
                                     <th>Kode Barang</th>
                                     <th>Qty</th>
-                                    <th>Gudang Tujuan</th>
+                                    <th>Gudang Asal</th>
                                     <th>Pajak</th>
                                     <th>Harga Satuan</th>
                                     <th>Subtotal</th>
@@ -229,6 +230,24 @@ const ConfirmSalesOrder = () => {
                         </div>
                     </div>
                 )}
+
+                {successModal && (
+                    <div className="modal-overlay">
+                        <div className="modal-content">
+                            <div className="modal-header">
+                                <h3>Konfirmasi Berhasil</h3>
+                                <button className="close-button" onClick={() => setSuccessModal(false)}>&times;</button>
+                            </div>
+                            <div className="modal-body">
+                                <p>Sales Order berhasil dikonfirmasi. Anda akan diarahkan ke halaman detail.</p>
+                            </div>
+                            <div className="modal-footer">
+                                <button className="primary-btn" onClick={() => navigate(`/sales-order/detail/${id}`)}>OK</button>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
             </div>
         </div>
     );
