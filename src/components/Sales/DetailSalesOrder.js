@@ -66,14 +66,6 @@ const DetailSalesOrder = () => {
 
     const handleBack = () => navigate("/sales-order");
 
-    const handleUpdate = () => {
-        const status = data.status;
-        if (status === "CREATED") navigate(`/sales-order/confirm/${data.id}`);
-        else if (status === "CONFIRMED") navigate(`/sales-order/shipping/${data.id}`);
-        else if (status === "IN SHIPPING") navigate(`/sales-order/confirm-shipping/${data.id}`);
-        else if (status === "SHIPPED") navigate(`/sales-order/payment/${data.id}`);
-    };
-
     const getSubtotal = (barangId, qty, tax) => {
         const harga = itemPrices[barangId] || 0;
         const subtotal = harga * qty;

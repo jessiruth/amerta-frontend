@@ -66,14 +66,6 @@ const DetailPurchaseOrder = () => {
 
     const handleBack = () => navigate("/purchase-order");
 
-    const handleUpdate = () => {
-        const status = data.status;
-        if (status === "CREATED") navigate(`/purchase-order/confirm/${data.id}`);
-        else if (status === "CONFIRMED") navigate(`/purchase-order/payment/${data.id}`);
-        else if (status === "PAID") navigate(`/purchase-order/delivery/${data.id}`);
-        else if (status === "IN DELIVERY") navigate(`/purchase-order/complete-delivery/${data.id}`);
-    };
-
     const getSubtotal = (barangId, qty, tax) => {
         const harga = itemPrices[barangId] || 0;
         const subtotal = harga * qty;
@@ -83,21 +75,6 @@ const DetailPurchaseOrder = () => {
     const getTotalHargaBarang = () =>
         data.items.reduce((total, item) =>
             total + getSubtotal(item.barangId, item.quantity, item.tax), 0);
-
-    const getNextButtonLabel = (status) => {
-        switch (status) {
-            case "CREATED":
-                return "Konfirmasi";
-            case "CONFIRMED":
-                return "Bayar";
-            case "PAID":
-                return "Pengiriman";
-            case "IN DELIVERY":
-                return "Selesaikan";
-            default:
-                return "Lanjutkan";
-        }
-    };    
 
     if (loading) return <div className="loading-container"><p>Loading...</p></div>;
     if (error || !data) return <div className="error-container"><p>{error}</p></div>;

@@ -62,6 +62,7 @@ const PurchaseReceipt = () => {
             } else if (searchCategory === "amount") {
                 return item.amountPayed.toString().toLowerCase().includes(lower);
             }
+            return false;
         });
         
 
