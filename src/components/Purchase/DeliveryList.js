@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
-import ToolbarShipping from "../../components/ToolbarShipping";
+import ToolbarDelivery from "../../components/ToolbarDelivery";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "../../services/axiosInstance";
 import "../../styles/GoodsTransport.css";
 
-const ShippingList = () => {
+const DeliveryList = () => {
     const [data, setData] = useState([]);
     const [filteredData, setFilteredData] = useState([]);
     const [searchTerm, setSearchTerm] = useState("");
@@ -33,25 +33,25 @@ const ShippingList = () => {
 
             setLoading(true);
             try {
-                const response = await axiosInstance.get("/api/sales-order/viewall", {
+                const response = await axiosInstance.get("/api/purchase-order/viewall", {
                     headers: { Authorization: `Bearer ${token}` },
                 });
 
-                const salesOrders = response.data?.data || [];
+                const purchaseOrders = response.data?.data || [];
 
-                const filtered = salesOrders.filter(order => order.shipping !== null);
+                const filtered = purchaseOrders.filter(order => order.delivery !== null);
 
                 const withCustomer = await Promise.all(
                     filtered.map(async (order) => {
                         const customerName = await fetchCustomerName(order.customerId);
                         return {
                             id: order.id,
-                            shippingId: order.shipping.id,
+                            deliveryId: order.delivery.id,
                             customerName,
-                            shippingDate: order.shipping.shippingDate,
-                            trackingNumber: order.shipping.trackingNumber,
-                            shippingFee: order.shipping.shippingFee,
-                            shippingStatus: order.shipping.shippingStatus,
+                            deliveryDate: order.delivery.deliveryDate,
+                            trackingNumber: order.delivery.trackingNumber,
+                            deliveryFee: order.delivery.deliveryFee,
+                            deliveryStatus: order.delivery.deliveryStatus,
                         };
                     })
                 );
@@ -59,7 +59,7 @@ const ShippingList = () => {
                 setData(withCustomer);
                 setFilteredData(withCustomer);
             } catch (error) {
-                console.error("Error fetching shipping data:", error);
+                console.error("Error fetching delivery data:", error);
             } finally {
                 setLoading(false);
             }
@@ -76,15 +76,15 @@ const ShippingList = () => {
             } else if (searchCategory === "customer") {
                 return item.customerName.toLowerCase().includes(lower);
             } else if (searchCategory === "status") {
-                return item.shippingStatus.toLowerCase().includes(lower);
+                return item.deliveryStatus.toLowerCase().includes(lower);
             } else if (searchCategory === "date") {
-                return item.shippingDate.toLowerCase().includes(lower);
+                return item.deliveryDate.toLowerCase().includes(lower);
             } else {
                 return (
                     item.id.toLowerCase().includes(lower) ||
                     item.customerName.toLowerCase().includes(lower) ||
-                    item.shippingDate.toLowerCase().includes(lower) ||
-                    item.shippingStatus.toLowerCase().includes(lower)
+                    item.deliveryDate.toLowerCase().includes(lower) ||
+                    item.deliveryStatus.toLowerCase().includes(lower)
                 );
             }
         });
@@ -102,7 +102,7 @@ const ShippingList = () => {
         <div className="gudang-list-container">
             <h1 className="page-title">Daftar Pengiriman</h1>
 
-            <ToolbarShipping
+            <ToolbarDelivery
                 onRefresh={handleRefresh}
                 onFilter={(category) => setSearchCategory(category)}
                 onSearch={(term) => setSearchTerm(term)}
@@ -112,7 +112,7 @@ const ShippingList = () => {
 
             <div className="table-container">
                 <div className="table-header">
-                    <h2>Shipping Table</h2>
+                    <h2>Delivery</h2>
                 </div>
 
                 {loading ? (
@@ -124,7 +124,7 @@ const ShippingList = () => {
                         <thead>
                             <tr>
                                 <th>ID</th>
-                                <th>Nama Customer</th>
+                                <th>Nama Vendor</th>
                                 <th>Tanggal Pengiriman</th>
                                 <th>Nomor Resi</th>
                                 <th>Biaya Kirim</th>
@@ -135,17 +135,17 @@ const ShippingList = () => {
                         <tbody>
                             {filteredData.length > 0 ? (
                                 filteredData.map((item) => (
-                                    <tr key={item.shippingId}>
-                                        <td>{item.shippingId}</td>
+                                    <tr key={item.id}>
+                                        <td>{item.deliveryId}</td>
                                         <td>{item.customerName}</td>
-                                        <td>{item.shippingDate}</td>
+                                        <td>{item.deliveryDate}</td>
                                         <td>{item.trackingNumber}</td>
-                                        <td>Rp{parseFloat(item.shippingFee).toLocaleString("id-ID", { minimumFractionDigits: 2 })}</td>
-                                        <td>{item.shippingStatus}</td>
+                                        <td>Rp{parseFloat(item.deliveryFee).toLocaleString("id-ID", { minimumFractionDigits: 2 })}</td>
+                                        <td>{item.deliveryStatus}</td>
                                         <td>
                                             <button
                                                 className="detail-btn"
-                                                onClick={() => navigate(`/shipping/detail/${item.id}`)}
+                                                onClick={() => navigate(`/delivery/detail/${item.id}`)}
                                             >
                                                 Detail
                                             </button>
@@ -165,4 +165,4 @@ const ShippingList = () => {
     );
 };
 
-export default ShippingList;
+export default DeliveryList;

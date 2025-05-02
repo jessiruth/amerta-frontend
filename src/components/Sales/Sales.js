@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "../../services/axiosInstance";
-import ToolbarSalesOrder from "./ToolbarSales";
+import ToolbarSalesOrder from "./ToolbarSalesOrder";
 import "../../styles/GoodsTransport.css";
 
-const SalesOrder = () => {
+const Sales = () => {
     const [data, setData] = useState([]);
     const [filteredData, setFilteredData] = useState([]);
     const [searchTerm, setSearchTerm] = useState("");
@@ -90,7 +90,7 @@ const SalesOrder = () => {
 
     return (
         <div className="gudang-list-container">
-            <h1 className="page-title">Sales Order</h1>
+            <h1 className="page-title">Sales</h1>
 
             <ToolbarSalesOrder
                 onAdd={() => navigate("/sales-order/add")}
@@ -103,7 +103,7 @@ const SalesOrder = () => {
 
             <div className="table-container">
                 <div className="table-header">
-                    <h2>Sales Order Table</h2>
+                    <h2>Sales Table</h2>
                 </div>
 
                 {loading ? (
@@ -134,7 +134,7 @@ const SalesOrder = () => {
                                         <td>
                                             <button
                                                 className="detail-btn"
-                                                onClick={() => navigate(`/sales-order/detail/${order.id}`)}
+                                                onClick={() => navigate(`/sales/completed/detail/${order.id}`)}
                                             >
                                                 Detail
                                             </button>
@@ -154,4 +154,4 @@ const SalesOrder = () => {
     );
 };
 
-export default SalesOrder;
+export default Sales;

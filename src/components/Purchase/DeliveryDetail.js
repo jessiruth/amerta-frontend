@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import axiosInstance from "../../services/axiosInstance";
 import "../../styles/GudangDetail.css";
 
-const ShippingDetail = () => {
+const DetailDelivery = () => {
     const { id } = useParams();
     const navigate = useNavigate();
     const [data, setData] = useState(null);
@@ -17,7 +17,7 @@ const ShippingDetail = () => {
 
         const fetchData = async () => {
             try {
-                const res = await axiosInstance.get(`/api/sales-order/${id}`, {
+                const res = await axiosInstance.get(`/api/purchase-order/${id}`, {
                     headers: { Authorization: `Bearer ${token}` },
                 });
                 const order = res.data?.data;
@@ -43,7 +43,7 @@ const ShippingDetail = () => {
                 );
                 setItemPrices(prices);
             } catch {
-                alert("Gagal memuat detail Sales Order");
+                alert("Gagal memuat detail Purchase Order");
             } finally {
                 setLoading(false);
             }
@@ -65,7 +65,7 @@ const ShippingDetail = () => {
         return subtotal + (subtotal * (tax || 0) / 100);
     };
 
-    const handleBack = () => navigate("/shipping");
+    const handleBack = () => navigate("/delivery-note");
 
     const getTotal = () =>
         data.items.reduce((total, item) =>
@@ -79,12 +79,38 @@ const ShippingDetail = () => {
             <div className="gudang-form-content">
                 <div className="page-header">
                     <h1 className="page-title">Surat Jalan</h1>
-                    <h1 className="page-title">{data.shipping.id}</h1>
+                    <h1 className="page-title">{data.delivery.id}</h1>
                 </div>
 
                 <div className="action-buttons">
                     <button className="back-btn" onClick={handleBack}>Kembali</button>
                     <button className="print-btn" onClick={() => window.print()}>Print</button>
+                </div>
+
+                <div className="detail-card">
+                    <div className="section-header"><h2 className="section-title">Informasi Pengiriman</h2></div>
+                    <div className="section-content">
+                        <div className="detail-row">
+                            <span className="detail-label">Vendor:</span>
+                            <span className="detail-value">{customerName}</span>
+                        </div>
+                        <div className="detail-row">
+                            <span className="detail-label">Tanggal Pengiriman:</span>
+                            <span className="detail-value">{formatDate(data.delivery.deliveryDate)}</span>
+                        </div>
+                        <div className="detail-row">
+                            <span className="detail-label">Nomor Resi:</span>
+                            <span className="detail-value">{data.delivery.trackingNumber}</span>
+                        </div>
+                        <div className="detail-row">
+                            <span className="detail-label">Biaya Kirim:</span>
+                            <span className="detail-value">Rp{parseFloat(data.delivery.deliveryFee).toLocaleString("id-ID", { minimumFractionDigits: 2 })}</span>
+                        </div>
+                        <div className="detail-row">
+                            <span className="detail-label">Status Pengiriman:</span>
+                            <span className="detail-value">{data.delivery.deliveryStatus}</span>
+                        </div>
+                    </div>
                 </div>
 
                 <div className="detail-card">
@@ -126,35 +152,9 @@ const ShippingDetail = () => {
                         </table>
                     </div>
                 </div>
-
-                <div className="detail-card">
-                    <div className="section-header"><h2 className="section-title">Informasi Pengiriman</h2></div>
-                    <div className="section-content">
-                        <div className="detail-row">
-                            <span className="detail-label">Customer:</span>
-                            <span className="detail-value">{customerName}</span>
-                        </div>
-                        <div className="detail-row">
-                            <span className="detail-label">Tanggal Pengiriman:</span>
-                            <span className="detail-value">{formatDate(data.shipping.shippingDate)}</span>
-                        </div>
-                        <div className="detail-row">
-                            <span className="detail-label">Nomor Resi:</span>
-                            <span className="detail-value">{data.shipping.trackingNumber}</span>
-                        </div>
-                        <div className="detail-row">
-                            <span className="detail-label">Biaya Kirim:</span>
-                            <span className="detail-value">Rp{parseFloat(data.shipping.shippingFee).toLocaleString("id-ID", { minimumFractionDigits: 2 })}</span>
-                        </div>
-                        <div className="detail-row">
-                            <span className="detail-label">Status Pengiriman:</span>
-                            <span className="detail-value">{data.shipping.shippingStatus}</span>
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
     );
 };
 
-export default ShippingDetail;
+export default DetailDelivery;

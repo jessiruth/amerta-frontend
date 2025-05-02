@@ -111,11 +111,11 @@ const PurchaseReceipt = () => {
                                     <tr key={item.id}>
                                         <td>{item.id}</td>
                                         <td>{item.receiptDate}</td>
-                                        <td>Rp {parseFloat(item.amountPayed).toLocaleString("id-ID")}</td>
+                                        <td>Rp{parseFloat(item.amountPayed).toLocaleString("id-ID", { minimumFractionDigits: 2 })}</td>
                                         <td>
                                             <button
                                                 className="detail-btn"
-                                                onClick={() => navigate(`/sales-receipt/detail/${item.purchaseOrderId}`)}
+                                                onClick={() => navigate(`/purchase-receipt/detail/${item.purchaseOrderId}`)}
                                             >
                                                 Detail
                                             </button>

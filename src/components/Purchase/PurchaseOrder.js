@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "../../services/axiosInstance";
-import ToolbarPurchaseOrder from "../../components/ToolbarPurchaseOrder";
-import "../../styles/GoodsTransport.css"; // reusing existing table style
+import "../../styles/GoodsTransport.css";
+import ToolbarPurchaseOrder from "./ToolbarPurchase";
+import "../../styles/GoodsTransport.css";
 
 const PurchaseOrder = () => {
     const [data, setData] = useState([]);
@@ -96,7 +97,6 @@ const PurchaseOrder = () => {
             <h1 className="page-title">Purchase Order</h1>
 
             <ToolbarPurchaseOrder
-                onAdd={() => navigate("/purchase-order/add")}
                 onRefresh={handleRefresh}
                 onFilter={(category) => setSearchCategory(category)}
                 onSearch={(term) => setSearchTerm(term)}
@@ -106,7 +106,7 @@ const PurchaseOrder = () => {
 
             <div className="table-container">
                 <div className="table-header">
-                    <h2>Purchase Order Table</h2>
+                    <h2>Purchase Order</h2>
                 </div>
 
                 {loading ? (
