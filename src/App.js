@@ -39,8 +39,10 @@ import ConfirmShippingSalesOrder from "./components/Sales/ConfirmShippingSalesOr
 import PaymentSalesOrder from "./components/Sales/PaymentSalesOrder";
 import ShippingList from "./components/Sales/ShippingList";
 import DetailShipping from "./components/Sales/ShippingDetail";
-import PurchaseInvoiceList from "./components/PurchaseInvoice";
+import PurchaseInvoice from "./components/PurchaseInvoice";
 import PurchaseInvoiceDetail from "./components/PurchaseInvoiceDetail";
+import SalesInvoice from "./components/SalesInvoice";
+import SalesInvoiceDetail from "./components/SalesInvoiceDetail";
 
 function Layout() {
     const location = useLocation();
@@ -90,8 +92,10 @@ function Layout() {
                 <Route path="/sales-order/payment/:id" element={<PaymentSalesOrder />} />
                 <Route path="/shipping" element={<ShippingList />} />
                 <Route path="/shipping/detail/:id" element={<DetailShipping />} />
-                <Route path="/purchase-invoice" element={<PurchaseInvoiceList />} />
+                <Route path="/purchase-invoice" element={<PurchaseInvoice />} />
                 <Route path="/purchase-invoice/detail/:id" element={<PurchaseInvoiceDetail />} />
+                <Route path="/sales-invoice" element={<SalesInvoice />} />
+                <Route path="/sales-invoice/detail/:id" element={<SalesInvoiceDetail />} />
             </Routes>
         </div>
     );
