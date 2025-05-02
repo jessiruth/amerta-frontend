@@ -46,7 +46,8 @@ const AddSalesOrder = () => {
             const res = await axiosInstance.get("/api/barang/viewall", {
                 headers: { Authorization: `Bearer ${token}` },
             });
-            setProducts(res.data?.data || []);
+            const filtered = (res.data?.data || []).filter(p => p.active === true);
+            setProducts(filtered);
         } catch {
             toast.error("Gagal mengambil data barang");
         }
