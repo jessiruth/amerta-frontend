@@ -208,7 +208,7 @@ const AddPurchaseOrder = () => {
                                 </div>
                                 <div className="form-group">
                                     <label>Jumlah</label>
-                                    <input type="number" min="1" value={item.quantity} onChange={(e) => handleItemChange(index, "quantity", e.target.value)} />
+                                    <input type="number" min="0" value={item.quantity} onChange={(e) => handleItemChange(index, "quantity", e.target.value)} />
                                     {errors[`item-${index}-quantity`] && <span className="error-message">{errors[`item-${index}-quantity`]}</span>}
                                 </div>
                                 <div className="form-group">
