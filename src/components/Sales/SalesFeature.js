@@ -9,6 +9,7 @@ import invoiceIcon from "../../assets/Sales Invoice.png";
 const SalesFeature = () => {
     const navigate = useNavigate();
 
+    
     return (
         <div className="sales-feature-container">
             <h1 className="page-title">Sales</h1>
