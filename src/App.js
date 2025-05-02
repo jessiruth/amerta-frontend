@@ -35,6 +35,10 @@ import DetailSalesOrder from "./components/Sales/DetailSalesOrder";
 import AddSalesOrder from "./components/Sales/AddSalesOrder";
 import ConfirmSalesOrder from "./components/Sales/ConfirmSalesOrder";
 import ShippingSalesOrder from "./components/Sales/ShipSalesOrder";
+import ConfirmShippingSalesOrder from "./components/Sales/ConfirmShippingSalesOrder";
+import PaymentSalesOrder from "./components/Sales/PaymentSalesOrder";
+import ShippingList from "./components/Sales/ShippingList";
+import DetailShipping from "./components/Sales/ShippingDetail";
 import PurchaseInvoiceList from "./components/PurchaseInvoice";
 import PurchaseInvoiceDetail from "./components/PurchaseInvoiceDetail";
 
@@ -82,6 +86,10 @@ function Layout() {
                 <Route path="/sales-order/add" element={<AddSalesOrder />} />
                 <Route path="/sales-order/confirm/:id" element={<ConfirmSalesOrder />} />
                 <Route path="/sales-order/shipping/:id" element={<ShippingSalesOrder />} />
+                <Route path="/sales-order/confirm-shipping/:id" element={<ConfirmShippingSalesOrder />} />
+                <Route path="/sales-order/payment/:id" element={<PaymentSalesOrder />} />
+                <Route path="/shipping" element={<ShippingList />} />
+                <Route path="/shipping/detail/:id" element={<DetailShipping />} />
                 <Route path="/purchase-invoice" element={<PurchaseInvoiceList />} />
                 <Route path="/purchase-invoice/detail/:id" element={<PurchaseInvoiceDetail />} />
             </Routes>
