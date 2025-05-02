@@ -7,7 +7,7 @@ const DetailDelivery = () => {
     const { id } = useParams();
     const navigate = useNavigate();
     const [data, setData] = useState(null);
-    const [customerName, setCustomerName] = useState("");
+    const [vendorName, setVendorName] = useState("");
     const [itemPrices, setItemPrices] = useState({});
     const [loading, setLoading] = useState(true);
 
@@ -26,7 +26,7 @@ const DetailDelivery = () => {
                 const customerRes = await axiosInstance.get(`/api/customer/${order.customerId}`, {
                     headers: { Authorization: `Bearer ${token}` },
                 });
-                setCustomerName(customerRes.data?.data?.name || "Unknown");
+                setVendorName(customerRes.data?.data?.name || "Unknown");
 
                 const prices = {};
                 await Promise.all(
@@ -35,7 +35,7 @@ const DetailDelivery = () => {
                             const res = await axiosInstance.get(`/api/barang/${item.barangId}`, {
                                 headers: { Authorization: `Bearer ${token}` },
                             });
-                            prices[item.barangId] = res.data?.data?.hargaJual || 0;
+                            prices[item.barangId] = res.data?.data?.hargaBeli || 0;
                         } catch {
                             prices[item.barangId] = 0;
                         }
@@ -92,7 +92,7 @@ const DetailDelivery = () => {
                     <div className="section-content">
                         <div className="detail-row">
                             <span className="detail-label">Vendor:</span>
-                            <span className="detail-value">{customerName}</span>
+                            <span className="detail-value">{vendorName}</span>
                         </div>
                         <div className="detail-row">
                             <span className="detail-label">Tanggal Pengiriman:</span>
