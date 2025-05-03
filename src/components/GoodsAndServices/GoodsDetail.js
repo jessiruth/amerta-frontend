@@ -33,7 +33,7 @@ const GoodsDetail = () => {
 
     return (
         <div className="goods-detail-page-container">
-            <h1 className="goods-detail-page-title">View Goods - ID: {barang.id}</h1>
+            <h1 className="goods-detail-page-title">ID: {barang.id}</h1>
 
             <div className="goods-detail-container">
                 <div className="goods-detail-content">

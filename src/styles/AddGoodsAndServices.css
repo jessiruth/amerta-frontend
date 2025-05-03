@@ -141,7 +141,6 @@
     padding: 10px 15px;
     border: none;
     font-size: 15px;
-    font-weight: bold;
     border-radius: 5px;
     cursor: pointer;
     transition: all 0.3s;
@@ -208,7 +207,7 @@
 .goods-add-modal-message {
     font-size: 15px !important;
     color: black !important;
-    font-weight: bold !important;
+    /* font-weight: bold !important; */
 }
 
 .goods-add-modal-actions {
