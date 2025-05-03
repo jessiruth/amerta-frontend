@@ -64,7 +64,7 @@ const DetailSales = () => {
             year: "numeric",
         });
 
-    const handleBack = () => navigate("/sales-order");
+    const handleBack = () => navigate("/sales/completed");
 
     const handleUpdate = () => {
         const status = data.status;

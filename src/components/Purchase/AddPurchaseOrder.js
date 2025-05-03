@@ -276,7 +276,7 @@ const AddPurchaseOrder = () => {
                                         <button className="secondary-btn" onClick={() => setShowConfirmation(null)}>Kembali</button>
                                         <button
                                             className={showConfirmation === "submit" ? "primary-btn" : "danger-btn"}
-                                            onClick={showConfirmation === "submit" ? confirmSubmit : () => navigate("/purchase-order")}
+                                            onClick={showConfirmation === "submit" ? confirmSubmit : () => navigate("/purchase/completed")}
                                         >
                                             {showConfirmation === "submit" ? "Ya, Simpan" : "Ya, Batalkan"}
                                         </button>
