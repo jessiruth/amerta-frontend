@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 import "../styles/Assets.css";
 import goodsImage from "../assets/Goods & Service.png";
 import storageImage from "../assets/Storage.png";

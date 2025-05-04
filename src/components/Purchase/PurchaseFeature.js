@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 import "../../styles/SalesFeature.css";
 import purchaseIcon from "../../assets/Purchase.png";
 import purchaseOrderIcon from "../../assets/Purchase Order.png";

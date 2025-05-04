@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 import "../styles/Finance.css";
 import expenseImage from "../assets/Expense.png";
 import revenueImage from "../assets/Revenue.png";
