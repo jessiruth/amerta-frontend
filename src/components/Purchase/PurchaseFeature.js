@@ -10,6 +10,12 @@ import invoiceIcon from "../../assets/Purchase Invoice.png";
 const PurchaseFeature = () => {
     const navigate = useNavigate();
 
+    const token = localStorage.getItem("token");
+
+    useEffect(() => {
+        if (!token) navigate("/");
+    }, [navigate, token]);
+
     return (
         <div className="sales-feature-container">
             <h1 className="page-title">Purchase</h1>

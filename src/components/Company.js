@@ -5,6 +5,12 @@ import employeeImage from "../assets/Employee.png";
 const Company = () => {
     const navigate = useNavigate();
 
+    const token = localStorage.getItem("token");
+
+    useEffect(() => {
+        if (!token) navigate("/");
+    }, [navigate, token]);
+
     return (
         <div className="company-container">
             <h1 className="page-title">Company</h1>

@@ -7,6 +7,12 @@ import transportImage from "../assets/Goods Transport.png";
 const Assets = () => {
     const navigate = useNavigate();
 
+    const token = localStorage.getItem("token");
+
+    useEffect(() => {
+        if (!token) navigate("/");
+    }, [navigate, token]);
+
     return (
         <div className="assets-container">
             <h1 className="page-title">Assets</h1>

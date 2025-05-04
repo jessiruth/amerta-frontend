@@ -12,6 +12,10 @@ const RevenueDetail = () => {
     const token = localStorage.getItem("token");
 
     useEffect(() => {
+        if (!token) navigate("/");
+    }, [navigate, token]);
+
+    useEffect(() => {
         const fetchDetail = async () => {
             try {
                 if (!token) {

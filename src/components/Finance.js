@@ -6,6 +6,12 @@ import revenueImage from "../assets/Revenue.png";
 const Finance = () => {
     const navigate = useNavigate();
 
+    const token = localStorage.getItem("token");
+
+    useEffect(() => {
+        if (!token) navigate("/");
+    }, [navigate, token]);
+
     return (
         <div className="finance-container">
             <h1 className="page-title">Finance</h1>

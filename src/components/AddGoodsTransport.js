@@ -16,6 +16,10 @@ const AddGoodsTransport = () => {
     const token = localStorage.getItem("token");
 
     useEffect(() => {
+        if (!token) navigate("/");
+    }, [navigate, token]);
+
+    useEffect(() => {
         const fetchGudang = async () => {
             try {
                 const response = await axiosInstance.get("/api/gudang/", {

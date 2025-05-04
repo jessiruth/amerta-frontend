@@ -21,6 +21,10 @@ const AddCustomer = () => {
     const navigate = useNavigate();
     const token = localStorage.getItem("token");
 
+    useEffect(() => {
+        if (!token) navigate("/");
+    }, [navigate, token]);
+
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData((prev) => ({ ...prev, [name]: value }));

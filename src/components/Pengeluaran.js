@@ -18,6 +18,10 @@ const Pengeluaran = () => {
     const navigate = useNavigate();
     const token = localStorage.getItem("token");
 
+    useEffect(() => {
+        if (!token) navigate("/");
+    }, [navigate, token]);
+
     const handleChange = (e) => {
         setFormData({
             ...formData,
