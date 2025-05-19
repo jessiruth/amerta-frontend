@@ -69,28 +69,41 @@ const DeliveryList = () => {
     }, [token]);
 
     useEffect(() => {
-        const lower = searchTerm.toLowerCase();
         const filtered = data.filter((item) => {
+            const lower = searchTerm.toLowerCase().trim();
+            const numeric = parseFloat(searchTerm.replace(",", "."));
+
+            if (!lower) return true;
+
             if (searchCategory === "id") {
-                return item.id.toLowerCase().includes(lower);
-            } else if (searchCategory === "customer") {
-                return item.customerName.toLowerCase().includes(lower);
+            return item.deliveryId.toLowerCase() === lower;
+            } else if (searchCategory === "vendor") {
+            return item.customerName.toLowerCase() === lower;
             } else if (searchCategory === "status") {
-                return item.deliveryStatus.toLowerCase().includes(lower);
+            return item.deliveryStatus.toLowerCase() === lower;
             } else if (searchCategory === "date") {
-                return item.deliveryDate.toLowerCase().includes(lower);
-            } else {
-                return (
-                    item.id.toLowerCase().includes(lower) ||
-                    item.customerName.toLowerCase().includes(lower) ||
-                    item.deliveryDate.toLowerCase().includes(lower) ||
-                    item.deliveryStatus.toLowerCase().includes(lower)
-                );
+            return item.deliveryDate.toLowerCase().includes(lower);
+            } else if (searchCategory === "resi") {
+            return item.trackingNumber.toLowerCase() === lower;
+            } else if (searchCategory === "deliveryfee") {
+            return !isNaN(numeric) && parseFloat(item.deliveryFee) === numeric;
+            } else if (searchCategory === "all") {
+            return (
+                item.deliveryId.toLowerCase().includes(lower) ||
+                item.customerName.toLowerCase().includes(lower) ||
+                item.deliveryDate.toLowerCase().includes(lower) ||
+                item.deliveryStatus.toLowerCase().includes(lower) ||
+                item.trackingNumber.toLowerCase().includes(lower) ||
+                item.deliveryFee?.toString().replace(".", ",").includes(searchTerm)
+            );
             }
+
+            return false;
         });
 
-        setFilteredData(filtered);
+    setFilteredData(filtered);
     }, [searchTerm, searchCategory, data]);
+
 
     const handleRefresh = () => {
         setSearchTerm("");
@@ -100,7 +113,7 @@ const DeliveryList = () => {
 
     return (
         <div className="gudang-list-container">
-            <h1 className="page-title">Daftar Pengiriman</h1>
+            <h1 className="page-title">Delivery Note</h1>
 
             <ToolbarDelivery
                 onRefresh={handleRefresh}
@@ -147,7 +160,7 @@ const DeliveryList = () => {
                                                 className="detail-btn"
                                                 onClick={() => navigate(`/delivery/detail/${item.id}`)}
                                             >
-                                                Detail
+                                                Details
                                             </button>
                                         </td>
                                     </tr>

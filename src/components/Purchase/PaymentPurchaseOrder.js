@@ -184,7 +184,7 @@ const PaymentPurchaseOrder = () => {
                                     className={modalType === "confirm" ? "primary-btn" : "danger-btn"}
                                     onClick={() => {
                                         if (modalType === "confirm") handlePayment();
-                                        else navigate("/purchase-order");
+                                        else navigate(`/purchase/completed/detail/${id}`);
                                     }}
                                 >
                                     {modalType === "confirm" ? "Ya, Bayar" : "Ya, Batalkan"}

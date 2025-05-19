@@ -60,27 +60,38 @@ const Sales = () => {
       
 
     useEffect(() => {
-        const lower = searchTerm.toLowerCase();
+        const lower = searchTerm.toLowerCase().trim();
+        const parsed = parseFloat(lower.replace(",", "."));
+
         const filtered = data.filter((item) => {
             if (searchCategory === "id") {
-                return item.id.toString().toLowerCase().includes(lower);
-            } else if (searchCategory === "customer") {
-                return item.customerName.toLowerCase().includes(lower);
-            } else if (searchCategory === "status") {
-                return item.status.toLowerCase().includes(lower);
-            } else if (searchCategory === "date") {
-                return item.salesDate.toLowerCase().includes(lower);
-            } else {
-                return (
-                    item.customerName.toLowerCase().includes(lower) ||
-                    item.salesDate.toLowerCase().includes(lower) ||
-                    item.status.toLowerCase().includes(lower)
-                );
+            return item.id.toString().toLowerCase() === lower;
             }
+            if (searchCategory === "customer") {
+            return item.customerName.toLowerCase() === lower;
+            }
+            if (searchCategory === "status") {
+            return item.status.toLowerCase() === lower;
+            }
+            if (searchCategory === "price") {
+            return !isNaN(parsed) && parseFloat(item.totalPrice) === parsed;
+            }
+            if (searchCategory === "date") {
+            return item.salesDate.toLowerCase().includes(lower);
+            }
+
+            return (
+            item.id.toString().toLowerCase().includes(lower) ||
+            item.customerName.toLowerCase().includes(lower) ||
+            item.salesDate.toLowerCase().includes(lower) ||
+            item.status.toLowerCase().includes(lower) ||
+            item.totalPrice?.toString().replace(".", ",").includes(searchTerm)
+            );
         });
 
         setFilteredData(filtered);
     }, [searchTerm, searchCategory, data]);
+
 
     const handleRefresh = () => {
         setSearchTerm("");
@@ -117,7 +128,7 @@ const Sales = () => {
                                 <th>ID</th>
                                 <th>Nama Customer</th>
                                 <th>Tanggal</th>
-                                <th>Total Harga</th>
+                                <th>Total Harga (Profit)</th>
                                 <th>Status</th>
                                 <th>Aksi</th>
                             </tr>
@@ -136,7 +147,7 @@ const Sales = () => {
                                                 className="detail-btn"
                                                 onClick={() => navigate(`/sales/completed/detail/${order.id}`)}
                                             >
-                                                Detail
+                                                Details
                                             </button>
                                         </td>
                                     </tr>

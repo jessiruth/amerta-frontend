@@ -1,253 +1,215 @@
-.goods-add-page-container {
-    min-height: 105vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 40px;
-    background-color: #f5f5f5;
+:root {
+  --primary-color: #3182ce;
+  --primary-hover: #2c5282;
+  --danger-color: #e53e3e;
+  --border-color: #e2e8f0;
+  --radius: 8px;
+  --transition: all 0.2s ease;
 }
 
-.goods-add-form-container {
-    width: 60%;
-    max-width: 600px;
-    height: 80vh;
-    overflow-y: auto;
-    background-color: white;
-    padding: 30px;
-    border-radius: 10px;
-    box-shadow: 0px 0px 12px rgba(0, 0, 0, 0.15);
-    text-align: left;
+.barang-form-container {
+  background-color: #f7fafc;
+  min-height: 100vh;
+  padding: 2rem;
 }
 
-.goods-add-page-title {
-    text-align: center;
-    font-size: 32px;
-    font-weight: bold;
-    color: #f7931e;
-    margin-bottom: 20px;
-    font-family: 'Poppins', sans-serif;
+.barang-form-content {
+  max-width: 900px;
+  margin: 70px auto 0;
+  background: white;
+  padding: 2rem;
+  border-radius: var(--radius);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-.goods-add-form {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
+.barang-form-section h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: #2d3748;
 }
 
-.goods-add-label {
-    font-weight: bold;
-    font-size: 16px;
-    margin-bottom: 5px;
+.barang-form-group {
+  margin-bottom: 1.5rem;
 }
 
-.goods-add-form input,
-.goods-add-form select {
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    font-size: 16px;
-    width: 100%;
-    box-sizing: border-box;
+.barang-form-group label {
+  display: block;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+  color: #2d3748;
+  font-size: 0.95rem;
 }
 
-.goods-add-radio-group {
-    display: flex;
-    gap: 20px;
-    margin-top: 5px;
+.barang-form-group .required {
+  color: var(--danger-color);
+  margin-left: 0.25rem;
 }
 
-.goods-add-radio-group label {
-    font-size: 16px;
-    display: flex;
-    align-items: center;
+.barang-form-group input,
+.barang-form-group select {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+  font-size: 0.9375rem;
 }
 
-.goods-add-stock-section {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-top: 20px;
+.barang-form-group input:focus,
+.barang-form-group select:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px rgba(49, 130, 206, 0.2);
 }
 
-.goods-add-stock-section h3 {
-    font-size: 20px;
-    font-weight: bold;
-    color: #333;
+.barang-radio-group {
+  display: flex;
+  gap: 1.5rem;
+  margin-top: 0.25rem;
 }
 
-.goods-add-btn-stock-add {
-    background-color: #3b82f6;
-    color: white;
-    padding: 8px 12px;
-    border: none;
-    cursor: pointer;
-    border-radius: 5px;
-    font-size: 14px;
-    transition: background-color 0.3s;
+.barang-radio-group label {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
 }
 
-.goods-add-btn-stock-add:hover {
-    background-color: #2563eb;
+.barang-error {
+  color: var(--danger-color);
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+  display: block;
 }
 
-.goods-add-stock-table {
-    width: 100%;
-    margin-top: 15px;
-    border-collapse: collapse;
-    background-color: white;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-    border-radius: 5px;
-    overflow: hidden;
+.barang-stock-table-wrapper {
+  max-height: 260px;
+  overflow-y: auto;
+  margin-bottom: 1rem;
 }
 
-.goods-add-stock-table th {
-    background-color: #f7931e;
-    color: white;
-    padding: 12px;
-    font-size: 16px;
-    text-align: center;
+.barang-stock-table {
+  width: 100%;
+  border-collapse: collapse;
 }
 
-.goods-add-stock-table td {
-    border: 1px solid #ddd;
-    padding: 10px;
-    text-align: center;
-    font-size: 16px;
+.barang-stock-table th,
+.barang-stock-table td {
+  padding: 0.75rem;
+  text-align: center;
+  border: 1px solid var(--border-color);
+  box-sizing: border-box;
 }
 
-.goods-add-btn-delete-stock {
-    background: none;
-    border: none;
-    cursor: pointer;
-    color: red;
-    font-size: 20px;
-    transition: color 0.3s;
+.barang-stock-table th {
+  background-color: #f6f9fc;
+  font-weight: 600;
+  color: #2d3748;
 }
 
-.goods-add-btn-delete-stock:hover {
-    color: darkred;
+.barang-delete-button {
+  background: none;
+  border: none;
+  color: var(--danger-color);
+  font-size: 1.2rem;
+  cursor: pointer;
 }
 
-.goods-add-button-group {
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-    margin-top: 30px;
+.barang-delete-button:hover {
+  color: darkred;
 }
 
-.goods-add-btn-cancel,
-.goods-add-btn-save {
-    padding: 10px 15px;
-    border: none;
-    font-size: 15px;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: all 0.3s;
+.barang-add-btn {
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: var(--radius);
+  margin-bottom: 1rem;
+  cursor: pointer;
+  font-weight: 600;
 }
 
-.goods-add-btn-cancel {
-    background-color: red;
-    color: white;
+.barang-add-btn:hover {
+  background-color: var(--primary-hover);
 }
 
-.goods-add-btn-cancel:hover {
-    background-color: darkred;
+.barang-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 2rem;
 }
 
-.goods-add-btn-save {
-    background-color: green;
-    color: white;
+.barang-cancel-btn,
+.barang-submit-btn {
+  padding: 0.75rem 1.5rem;
+  font-size: 0.9375rem;
+  border-radius: var(--radius);
+  font-weight: 600;
+  cursor: pointer;
 }
 
-.goods-add-btn-save:hover {
-    background-color: darkgreen;
+.barang-cancel-btn {
+  background-color: white;
+  border: 1px solid var(--border-color);
+  color: #4a5568;
 }
 
-.goods-add-scrollable-table {
-    max-height: 250px;
-    overflow-y: auto;
+.barang-cancel-btn:hover {
+  background-color: #f9fafb;
 }
 
-/* ===================== MODAL ====================== */
-
-.goods-add-modal-style {
-    position: absolute !important;
-    top: 50% !important;
-    left: 50% !important;
-    transform: translate(-50%, -50%) !important;
-    background-color: white !important;
-    padding: 30px !important;
-    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.3) !important;
-    border-radius: 10px !important;
-    text-align: center !important;
-    width: 400px !important;
+.barang-submit-btn {
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
 }
 
-.goods-add-modal-header-confirm,
-.goods-add-modal-header-success,
-.goods-add-modal-header-error {
-    font-size: 24px !important;
-    font-weight: bold !important;
-    margin-bottom: 10px !important;
+.barang-submit-btn:hover {
+  background-color: var(--primary-hover);
 }
 
-.goods-add-modal-header-confirm {
-    color: #333 !important;
+.barang-page-header {
+  margin-top: 100px;
+  text-align: center;
 }
 
-.goods-add-modal-header-success {
-    color: green !important;
+.barang-page-title {
+  font-size: 1.875rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 2rem;
 }
 
-.goods-add-modal-header-error {
-    color: red !important;
+/* Khusus untuk halaman AddPurchaseOrder & AddSalesOrder */
+.purchase-stock-table td:nth-child(2),
+.purchase-stock-table td:nth-child(3),
+.purchase-stock-table td:nth-child(4),
+.purchase-stock-table th:nth-child(2),
+.purchase-stock-table th:nth-child(3),
+.purchase-stock-table th:nth-child(4) {
+  width: 25%;
+ 
 }
 
-.goods-add-modal-message {
-    font-size: 15px !important;
-    color: black !important;
-    /* font-weight: bold !important; */
+.purchase-stock-table select,
+.purchase-stock-table input[type="number"] {
+  width: 100%;
+  padding: 0.5rem;
+  box-sizing: border-box;
 }
 
-.goods-add-modal-actions {
-    display: flex !important;
-    justify-content: center !important;
-    margin-top: 20px !important;
-    gap: 45px !important;
+.purchase-stock-table th,
+.purchase-stock-table td {
+  padding: 0.75rem;
+  text-align: center;
+  border: 1px solid var(--border-color);
+  box-sizing: border-box;
 }
 
-.goods-add-modal-btn-cancel {
-    background-color: red !important;
-    color: white !important;
-    padding: 8px 12px !important;
-    border-radius: 5px !important;
-    border: none !important;
-    cursor: pointer !important;
-}
-
-.goods-add-modal-btn-cancel:hover {
-    background-color: darkred !important;
-}
-
-.goods-add-modal-btn-confirm {
-    background-color: green !important;
-    color: white !important;
-    padding: 8px 12px !important;
-    border-radius: 5px !important;
-    border: none !important;
-    cursor: pointer !important;
-}
-
-.goods-add-modal-btn-confirm:hover {
-    background-color: darkgreen !important;
-}
-
-.goods-add-modal-btn-view {
-    background-color: #3b82f6 !important;
-    color: white !important;
-    padding: 8px 12px !important;
-    border-radius: 5px !important;
-    border: none !important;
-    cursor: pointer !important;
+.purchase-stock-table th {
+  background-color: #f6f9fc;
+  font-weight: 600;
+  color: #2d3748;
 }

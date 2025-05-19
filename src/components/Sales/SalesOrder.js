@@ -136,7 +136,7 @@ const SalesOrder = () => {
                                                 className="detail-btn"
                                                 onClick={() => navigate(`/sales-order/detail/${order.id}`)}
                                             >
-                                                Detail
+                                                Details
                                             </button>
                                         </td>
                                     </tr>
