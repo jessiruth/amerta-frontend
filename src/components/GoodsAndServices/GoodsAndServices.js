@@ -71,6 +71,9 @@ const GoodsAndServices = () => {
       if (searchCategory === "harga beli") {
         return !isNaN(parsed) && parseFloat(barang.hargaBeli) === parsed;
       }
+      if (searchCategory === "stok") {
+        return barang.totalStock === parseInt(lower, 10);
+      }
       if (searchCategory === "all") {
         return (
           barang.nama.toLowerCase().includes(lower) ||

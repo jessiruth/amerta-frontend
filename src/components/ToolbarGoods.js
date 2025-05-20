@@ -25,6 +25,9 @@ const Toolbar = ({ onAdd, onRefresh, onFilter, onSearch, selectedCategory, searc
     if (selectedCategory === "harga jual" || selectedCategory === "harga beli") {
       return "Contoh: 12500,50";
     }
+    if (selectedCategory === "stok") {
+      return "Contoh: 10";
+    }
     return `Search by ${selectedCategory}`;
   };
 
@@ -50,6 +53,7 @@ const Toolbar = ({ onAdd, onRefresh, onFilter, onSearch, selectedCategory, searc
           <option value="nama">Filter: Nama</option>
           <option value="kategori">Filter: Kategori</option>
           <option value="merk">Filter: Merk</option>
+          <option value="stok">Filter: Stok</option>
           <option value="harga jual">Filter: Harga Jual</option>
           <option value="harga beli">Filter: Harga Beli</option>
         </select>
