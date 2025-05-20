@@ -47,6 +47,7 @@ const ToolbarGoodsTransport = ({ onAdd, onRefresh, onFilter, onSearch, selectedC
           value={selectedCategory}
         >
           <option value="all">Filter: All</option>
+          <option value="id">Filter: ID</option>
           <option value="tanggal">Filter: Tanggal Pindah</option>
           <option value="asal">Filter: Gudang Asal</option>
           <option value="tujuan">Filter: Gudang Tujuan</option>

@@ -205,9 +205,8 @@ const UpdateGudang = () => {
               <h3>Informasi Umum</h3>
 
               <div className="form-group">
-                <label htmlFor="nama">Nama Gudang</label>
                 <input type="text" id="nama" name="nama" value={formData.nama} hidden/>
-                <label className="readonly-label">{formData.nama}</label>
+                <h3 className="readonly-label">Nama Gudang: {formData.nama}</h3>
               </div>
 
               <div className="form-group">
