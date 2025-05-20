@@ -178,8 +178,9 @@
 .barang-page-title {
   font-size: 1.875rem;
   font-weight: 700;
-  color: var(--text-primary);
+  color: #f7931e;
   margin-bottom: 2rem;
+  font-family: 'Poppins', sans-serif;
 }
 
 /* Khusus untuk halaman AddPurchaseOrder & AddSalesOrder */
