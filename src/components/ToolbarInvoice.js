@@ -45,9 +45,9 @@ const ToolbarInvoice = ({ onRefresh, onFilter, onSearch, selectedCategory, searc
                     <option value="all">Filter: All</option>
                     <option value="id">Filter: ID Invoice</option>
                     <option value="status">Filter: Status</option>
+                    <option value="jumlah">Filter: Jumlah Bayar</option>
                     <option value="due date">Filter: Jatuh Tempo</option>
                     <option value="payment terms">Filter: Sisa Hari</option>
-                    <option value="jumlah">Filter: Jumlah Bayar</option>
                     <option value="sisa">Filter: Sisa Bayar</option>
                 </select>
             </div>

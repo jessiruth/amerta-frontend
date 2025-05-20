@@ -44,9 +44,9 @@ const ToolbarShipping = ({ onRefresh, onFilter, onSearch, selectedCategory, sear
           <option value="id">Filter: ID Shipping</option>
           <option value="customer">Filter: Nama Customer</option>
           <option value="date">Filter: Tanggal Pengiriman</option>
-          <option value="status">Filter: Status Pengiriman</option>
           <option value="resi">Filter: Nomor Resi</option>
           <option value="shippingfee">Filter: Biaya Pengiriman</option>
+          <option value="status">Filter: Status Pengiriman</option>
         </select>
       </div>
 
