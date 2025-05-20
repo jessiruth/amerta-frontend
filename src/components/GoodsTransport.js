@@ -95,7 +95,7 @@ const GoodsTransport = () => {
 
             <div className="table-container">
                 <div className="table-header">
-                    <h2>Transport</h2>
+                    <h2>Goods Transport</h2>
                 </div>
 
                 {loading ? (
