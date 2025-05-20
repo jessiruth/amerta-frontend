@@ -15,6 +15,7 @@ const AddGoodsTransport = () => {
   const [errors, setErrors] = useState({});
   const [modalType, setModalType] = useState(null);
   const [successModal, setSuccessModal] = useState(false);
+  const [createdId, setCreatedId] = useState(null);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -119,10 +120,11 @@ const AddGoodsTransport = () => {
       }, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      if (res.status === 200 || res.status === 201) {
-        setSuccessModal(true);
-        setModalType(null);
-      }
+       if (res.status === 200 || res.status === 201) {
+          setCreatedId(res.data?.data?.id);
+          setSuccessModal(true);
+          setModalType(null);
+        }
     } catch {
       alert("Gagal menyimpan data.");
       setModalType(null);
@@ -257,10 +259,10 @@ const AddGoodsTransport = () => {
               <button className="close-button" onClick={() => setSuccessModal(false)}>&times;</button>
             </div>
             <div className="modal-body">
-              <p>Data berhasil disimpan.</p>
+              <p>Data berhasil disimpan. Anda akan diarahkan ke halaman detail pemindahan.</p>
             </div>
             <div className="modal-footer">
-              <button className="primary-btn" onClick={() => navigate("/goods-transport")}>OK</button>
+              <button className="primary-btn" onClick={() => navigate(`/goods-transport/detail/${createdId}`)}>OK</button>
             </div>
           </div>
         </div>
