@@ -141,7 +141,7 @@ const PurchaseInvoice = () => {
 
       <div className="table-container">
         <div className="table-header">
-          <h2>Purchase Invoice Table</h2>
+          <h2>Purchase Invoice</h2>
         </div>
 
         {loading ? (

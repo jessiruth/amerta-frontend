@@ -5,126 +5,134 @@ import "../../styles/GudangDetail.css";
 import "../../styles/AddSalesOrder.css";
 
 const ShippingSalesOrder = () => {
-    const { id } = useParams();
-    const navigate = useNavigate();
+  const { id } = useParams();
+  const navigate = useNavigate();
 
-    const [data, setData] = useState(null);
-    const [customerName, setCustomerName] = useState("");
-    const [shippingDate, setShippingDate] = useState(new Date().toISOString().split("T")[0]);
-    const [shippingFee, setShippingFee] = useState("");
-    const [modalType, setModalType] = useState(null);
-    const [successModal, setSuccessModal] = useState(false);
-    const [loading, setLoading] = useState(true);
-    const [inputErrors, setInputErrors] = useState({});
-    const [stockWarnings, setStockWarnings] = useState([]);
+  const [data, setData] = useState(null);
+  const [customerName, setCustomerName] = useState("");
+  const [shippingDate, setShippingDate] = useState(new Date().toISOString().split("T")[0]);
+  const [shippingFee, setShippingFee] = useState("");
+  const [modalType, setModalType] = useState(null);
+  const [successModal, setSuccessModal] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [inputErrors, setInputErrors] = useState({});
+  const [stockWarnings, setStockWarnings] = useState([]);
 
-    useEffect(() => {
-        const token = localStorage.getItem("token");
-        if (!token) return navigate("/");
+  const parseAmount = (val) => parseFloat(val.replace(",", "."));
 
-        const fetchData = async () => {
-            try {
-                const res = await axiosInstance.get(`/api/sales-order/${id}`, {
-                    headers: { Authorization: `Bearer ${token}` },
-                });
-                const soData = res.data?.data;
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) return navigate("/");
 
-                // Ambil harga jual barang satu per satu
-                const updatedItems = await Promise.all(
-                    soData.items.map(async (item) => {
-                        try {
-                            const barangRes = await axiosInstance.get(`/api/barang/${item.barangId}`, {
-                                headers: { Authorization: `Bearer ${token}` },
-                            });
-                            return {
-                                ...item,
-                                barang: barangRes.data?.data,
-                            };
-                        } catch {
-                            return { ...item };
-                        }
-                    })
-                );
-
-                setData({ ...soData, items: updatedItems });
-
-                const customerRes = await axiosInstance.get(`/api/customer/${soData.customerId}`, {
-                    headers: { Authorization: `Bearer ${token}` },
-                });
-                setCustomerName(customerRes.data?.data?.name || "Unknown");
-            } catch {
-                alert("Gagal memuat detail Sales Order");
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchData();
-    }, [id, navigate]);
-
-
-    const formatDate = (date) =>
-        new Date(date).toLocaleDateString("id-ID", {
-            day: "numeric",
-            month: "long",
-            year: "numeric",
+    const fetchData = async () => {
+      try {
+        const res = await axiosInstance.get(`/api/sales-order/${id}`, {
+          headers: { Authorization: `Bearer ${token}` },
         });
+        const soData = res.data?.data;
 
-    const validateInputs = async () => {
-        const errors = {};
-        const token = localStorage.getItem("token");
-
-        if (!shippingFee || Number(shippingFee) < 0) {
-            errors.shippingFee = "Biaya kirim harus >= 0";
-        }
-        if (new Date(shippingDate) < new Date(data.salesDate)) {
-            errors.shippingDate = "Tanggal pengiriman tidak boleh sebelum tanggal sales order.";
-        }
-        if (data.invoice?.invoiceDate && new Date(shippingDate) < new Date(data.invoice.invoiceDate)) {
-            errors.shippingDate = "Tanggal pengiriman tidak boleh sebelum tanggal invoice.";
-        }
-
-        const warnings = [];
-        for (const item of data.items) {
+        const updatedItems = await Promise.all(
+          soData.items.map(async (item) => {
             try {
-                const res = await axiosInstance.get(`/api/barang/${item.barangId}`, {
-                    headers: { Authorization: `Bearer ${token}` },
-                });
-                const stockData = res.data?.data?.stockBarang || [];
-                const stokGudang = stockData.find(s => s.namaGudang === item.gudangTujuan)?.stock || 0;
-
-                if (item.quantity > stokGudang) {
-                    warnings.push({
-                        barangId: item.barangId,
-                        required: item.quantity,
-                        available: stokGudang,
-                    });
-                }
-            } catch {
-                console.error(`Gagal mengambil stok barang ${item.barangId}`);
-            }
-        }
-
-        setStockWarnings(warnings);
-        setInputErrors(errors);
-        return Object.keys(errors).length === 0;
-    };
-
-    const handleSubmit = async () => {
-        const token = localStorage.getItem("token");
-        try {
-            await axiosInstance.put(`/api/sales-order/shipping/${id}`, {
-                shippingDate,
-                shippingFee: Number(shippingFee),
-            }, {
+              const barangRes = await axiosInstance.get(`/api/barang/${item.barangId}`, {
                 headers: { Authorization: `Bearer ${token}` },
-            });
-            setModalType(null);
-            setSuccessModal(true);
-        } catch {
-            alert("Gagal memulai pengiriman.");
-        }
+              });
+              return {
+                ...item,
+                barang: barangRes.data?.data,
+              };
+            } catch {
+              return { ...item };
+            }
+          })
+        );
+
+        setData({ ...soData, items: updatedItems });
+
+        const customerRes = await axiosInstance.get(`/api/customer/${soData.customerId}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setCustomerName(customerRes.data?.data?.name || "Unknown");
+      } catch {
+        alert("Gagal memuat detail Sales Order");
+      } finally {
+        setLoading(false);
+      }
     };
+
+    fetchData();
+  }, [id, navigate]);
+
+  const formatDate = (date) =>
+    new Date(date).toLocaleDateString("id-ID", {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    });
+
+  const validateInputs = async () => {
+    const errors = {};
+    const token = localStorage.getItem("token");
+
+    const amountRegex = /^\d+(,\d{1,2})?$/;
+    const parsedFee = parseAmount(shippingFee);
+
+    if (!shippingFee) {
+      errors.shippingFee = "Biaya kirim wajib diisi";
+    } else if (parsedFee < 0) {
+      errors.shippingFee = "Biaya kirim harus >= 0";
+    } else if (!amountRegex.test(shippingFee)) {
+      errors.shippingFee = "Gunakan format yang sesuai, contoh: 12000,50";
+    }
+
+    if (new Date(shippingDate) < new Date(data.salesDate)) {
+      errors.shippingDate = "Tanggal pengiriman tidak boleh sebelum tanggal sales order.";
+    }
+    if (data.invoice?.invoiceDate && new Date(shippingDate) < new Date(data.invoice.invoiceDate)) {
+      errors.shippingDate = "Tanggal pengiriman tidak boleh sebelum tanggal invoice.";
+    }
+
+    const warnings = [];
+    for (const item of data.items) {
+      try {
+        const res = await axiosInstance.get(`/api/barang/${item.barangId}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const stockData = res.data?.data?.stockBarang || [];
+        const stokGudang = stockData.find(s => s.namaGudang === item.gudangTujuan)?.stock || 0;
+
+        if (item.quantity > stokGudang) {
+          warnings.push({
+            barangId: item.barangId,
+            required: item.quantity,
+            available: stokGudang,
+          });
+        }
+      } catch {
+        console.error(`Gagal mengambil stok barang ${item.barangId}`);
+      }
+    }
+
+    setStockWarnings(warnings);
+    setInputErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
+  const handleSubmit = async () => {
+    const token = localStorage.getItem("token");
+    try {
+      await axiosInstance.put(`/api/sales-order/shipping/${id}`, {
+        shippingDate,
+        shippingFee: parseAmount(shippingFee),
+      }, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setModalType(null);
+      setSuccessModal(true);
+    } catch {
+      alert("Gagal memulai pengiriman.");
+    }
+  };
 
     if (loading) return <p>Loading...</p>;
     if (!data) return <p>Data tidak ditemukan.</p>;
@@ -222,22 +230,28 @@ const ShippingSalesOrder = () => {
                     </div>
                 )}
 
-                {/* Input Pengiriman */}
+                  {/* Input Pengiriman */}
                 <div className="detail-card">
                     <div className="section-header"><h2 className="section-title">Input Pengiriman</h2></div>
                     <div className="section-content">
-                        <div className="form-row">
-                            <div className="form-group">
-                                <label>Tanggal Pengiriman</label>
-                                <input type="date" value={shippingDate} onChange={(e) => setShippingDate(e.target.value)} />
-                                {inputErrors.shippingDate && <span className="error-message">{inputErrors.shippingDate}</span>}
-                            </div>
-                            <div className="form-group">
-                                <label>Biaya Kirim</label>
-                                <input type="number" value={shippingFee} onChange={(e) => setShippingFee(e.target.value)} />
-                                {inputErrors.shippingFee && <span className="error-message">{inputErrors.shippingFee}</span>}
-                            </div>
+                    <div className="form-row">
+                        <div className="form-group">
+                        <label>Tanggal Pengiriman</label>
+                        <input type="date" value={shippingDate} onChange={(e) => setShippingDate(e.target.value)} />
+                        {inputErrors.shippingDate && <span className="error-message">{inputErrors.shippingDate}</span>}
                         </div>
+                        <div className="form-group">
+                        <label>Biaya Kirim</label>
+                        <input
+                            type="text"
+                            inputMode="decimal"
+                            placeholder="Contoh: 12000,50"
+                            value={shippingFee}
+                            onChange={(e) => setShippingFee(e.target.value)}
+                        />
+                        {inputErrors.shippingFee && <span className="error-message">{inputErrors.shippingFee}</span>}
+                        </div>
+                    </div>
                     </div>
                 </div>
 
@@ -283,7 +297,7 @@ const ShippingSalesOrder = () => {
                                 <button className={modalType === "confirm" ? "primary-btn" : "danger-btn"}
                                     onClick={() => {
                                         if (modalType === "confirm") handleSubmit();
-                                        else navigate("/sales-order");
+                                        else navigate(`/sales/completed/detail/${id}`);
                                     }}
                                 >
                                     {modalType === "confirm" ? "Ya, Kirim" : "Ya, Batalkan"}

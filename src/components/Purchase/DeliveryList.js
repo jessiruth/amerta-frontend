@@ -125,7 +125,7 @@ const DeliveryList = () => {
 
             <div className="table-container">
                 <div className="table-header">
-                    <h2>Delivery</h2>
+                    <h2>Delivery Note</h2>
                 </div>
 
                 {loading ? (

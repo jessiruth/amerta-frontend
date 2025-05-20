@@ -92,7 +92,7 @@ const PurchaseReceipt = () => {
 
       <div className="table-container">
         <div className="table-header">
-          <h2>Purchase Receipt Table</h2>
+          <h2>Purchase Receipt</h2>
         </div>
 
         {loading ? (

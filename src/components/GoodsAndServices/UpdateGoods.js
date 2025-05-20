@@ -19,6 +19,7 @@ const UpdateGoods = () => {
   const [gudangOptions, setGudangOptions] = useState([]);
   const [errors, setErrors] = useState({});
   const [showModal, setShowModal] = useState(null);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
 
   const parseHarga = (str) => parseFloat(str.replace(",", "."));
 
@@ -132,10 +133,7 @@ const UpdateGoods = () => {
         headers: { Authorization: `Bearer ${token}` }
       });
 
-      toast.success("Barang berhasil diupdate!");
-      setTimeout(() => {
-        navigate(`/goods-and-services/${id}`);
-      }, 1500);
+      setShowSuccessModal(true);
     } catch {
       toast.error("Gagal mengupdate barang.");
     } finally {
@@ -144,7 +142,19 @@ const UpdateGoods = () => {
   };
 
   const addStock = () => {
-    setStokList(prev => [...prev, { stock: "", namaGudang: "", isExisting: false }]);
+    setStokList(prev => {
+      const updated = [...prev, { stock: "", namaGudang: "" }];
+
+      if (updated.length > 0 && errors.stokList) {
+        setErrors(prev => {
+          const copy = { ...prev };
+          delete copy.stokList;
+          return copy;
+        });
+      }
+
+      return updated;
+    });
   };
 
   const removeStock = (index) => {
@@ -157,11 +167,44 @@ const UpdateGoods = () => {
     const updated = [...stokList];
     updated[index][field] = value;
     setStokList(updated);
+
     const errKey = `${field === "stock" ? "stock" : "gudang"}-${index}`;
     if (errors[errKey]) {
       setErrors(prev => {
         const copy = { ...prev };
         delete copy[errKey];
+        return copy;
+      });
+    }
+
+    if (errors.stokList) {
+      setErrors(prev => {
+        const copy = { ...prev };
+        delete copy.stokList;
+        return copy;
+      });
+    }
+  };
+
+    // Tambahkan ini di bagian atas fungsi komponen:
+  const handleChangeField = (field, value) => {
+    switch (field) {
+      case "nama": setNama(value); break;
+      case "kategori": setKategori(value); break;
+      case "merk": setMerk(value); break;
+      case "hargaBeli": setHargaBeli(value); break;
+      case "hargaJual": setHargaJual(value); break;
+      case "isActive":
+        setIsActive(value);
+        break;
+      default: break;
+    }
+
+    // Hapus error terkait jika ada
+    if (errors[field]) {
+      setErrors(prev => {
+        const copy = { ...prev };
+        delete copy[field];
         return copy;
       });
     }
@@ -178,17 +221,17 @@ const UpdateGoods = () => {
           <div className="barang-form-section">
             <div className="barang-form-group">
               <label>Nama Barang<span className="required">*</span></label>
-              <input type="text" value={nama} placeholder="Masukkan nama barang" onChange={e => setNama(e.target.value)} />
+              <input type="text" value={nama} placeholder="Masukkan nama barang" onChange={e => handleChangeField("nama", e.target.value)} />
               {errors.nama && <div className="barang-error">{errors.nama}</div>}
             </div>
             <div className="barang-form-group">
               <label>Kategori<span className="required">*</span></label>
-              <input type="text" value={kategori} placeholder="Masukkan kategori barang" onChange={e => setKategori(e.target.value)} />
+              <input type="text" value={kategori} placeholder="Masukkan kategori barang" onChange={e => handleChangeField("kategori", e.target.value)} />
               {errors.kategori && <div className="barang-error">{errors.kategori}</div>}
             </div>
             <div className="barang-form-group">
               <label>Merk<span className="required">*</span></label>
-              <input type="text" value={merk} placeholder="Masukkan merk barang" onChange={e => setMerk(e.target.value)} />
+              <input type="text" value={merk} placeholder="Masukkan merk barang" onChange={e => handleChangeField("merk", e.target.value)} />
               {errors.merk && <div className="barang-error">{errors.merk}</div>}
             </div>
             <div className="barang-form-group">
@@ -198,7 +241,7 @@ const UpdateGoods = () => {
                 inputMode="decimal"
                 placeholder="Contoh: 12500,50"
                 value={hargaBeli}
-                onChange={e => setHargaBeli(e.target.value)}
+                onChange={e => handleChangeField("hargaBeli", e.target.value)}
               />
               {errors.hargaBeli && <div className="barang-error">{errors.hargaBeli}</div>}
             </div>
@@ -209,15 +252,27 @@ const UpdateGoods = () => {
                 inputMode="decimal"
                 placeholder="Contoh: 15000,75"
                 value={hargaJual}
-                onChange={e => setHargaJual(e.target.value)}
+                onChange={e => handleChangeField("hargaJual", e.target.value)}
               />
               {errors.hargaJual && <div className="barang-error">{errors.hargaJual}</div>}
             </div>
             <div className="barang-form-group">
               <label>Status Barang<span className="required">*</span></label>
               <div className="barang-radio-group">
-                <label><input type="radio" checked={isActive === true} onChange={() => setIsActive(true)} /> Aktif</label>
-                <label><input type="radio" checked={isActive === false} onChange={() => setIsActive(false)} /> Tidak Aktif</label>
+                <label>
+                  <input
+                    type="radio"
+                    checked={isActive === true}
+                    onChange={() => handleChangeField("isActive", true)}
+                  /> Aktif
+                </label>
+                <label>
+                  <input
+                    type="radio"
+                    checked={isActive === false}
+                    onChange={() => handleChangeField("isActive", false)}
+                  /> Tidak Aktif
+                </label>
               </div>
               {errors.isActive && <div className="barang-error">{errors.isActive}</div>}
             </div>
@@ -305,6 +360,29 @@ const UpdateGoods = () => {
                   : navigate("/goods-and-services")}
               >
                 {showModal === "confirm" ? "Ya, Simpan" : "Ya, Batalkan"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+       {/* Modal Sukses */}
+      {showSuccessModal && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h3>Barang Diupdate</h3>
+              <button className="close-button" onClick={() => setShowSuccessModal(false)}>&times;</button>
+            </div>
+            <div className="modal-body">
+              <p>Barang berhasil diupdate. Anda akan diarahkan ke detail barang.</p>
+            </div>
+            <div className="modal-footer">
+              <button
+                className="primary-btn"
+                onClick={() => navigate(`/goods-and-services/${id}`)}
+              >
+                Lihat Barang
               </button>
             </div>
           </div>

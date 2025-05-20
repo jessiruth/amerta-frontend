@@ -1,3 +1,4 @@
+// import ...
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -15,7 +16,7 @@ const AddPurchaseOrder = () => {
   const [errors, setErrors] = useState({});
   const [modalType, setModalType] = useState(null);
   const [successModal, setSuccessModal] = useState(false);
-  const [createdId, setCreatedId] = useState(null); // ID PO yang baru dibuat
+  const [createdId, setCreatedId] = useState(null);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -36,8 +37,32 @@ const AddPurchaseOrder = () => {
         setErrors({ general: "Gagal mengambil data awal" });
       }
     };
+
     fetchData();
   }, [navigate]);
+
+  const fetchGudangFor = async (index, barangId) => {
+    try {
+      const token = localStorage.getItem("token");
+      const res = await axiosInstance.get(`/api/barang/all-gudang/${barangId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const list = res.data?.data?.namaGudang || [];
+      setAvailableGudangPerItem(prev => {
+        const copy = [...prev];
+        copy[index] = list;
+        return copy;
+      });
+
+      if (items[index]?.gudangTujuan && list.includes(items[index].gudangTujuan)) {
+        setErrors(prev => {
+          const copy = { ...prev };
+          delete copy[`gudang-${index}`];
+          return copy;
+        });
+      }
+    } catch {}
+  };
 
   const validateForm = () => {
     const newErr = {};
@@ -55,9 +80,7 @@ const AddPurchaseOrder = () => {
       if (!item.gudangTujuan) newErr[`gudang-${i}`] = "Pilih gudang";
       if (item.pajak === "" || Number(item.pajak) < 0 || Number(item.pajak) > 100)
         newErr[`pajak-${i}`] = "Pajak tidak valid (0-100%)";
-     if (!item.quantity || isNaN(item.quantity) || Number(item.quantity) < 1) {
-        newErr[`quantity-${i}`] = "Jumlah minimal 1";
-    }
+
       const key = `${item.barangId}-${item.gudangTujuan}`;
       if (combo.has(key) && combo.get(key) !== item.pajak)
         newErr[`pajak-${i}`] = "Pajak harus konsisten";
@@ -98,8 +121,16 @@ const AddPurchaseOrder = () => {
   };
 
   const addItem = () => {
-    setItems([...items, { barangId: "", quantity: "", pajak: "", gudangTujuan: "" }]);
-    setAvailableGudangPerItem(prev => [...prev, []]);
+    setItems(prev => {
+      const updated = [...prev, { barangId: "", quantity: "", pajak: "", gudangTujuan: "" }];
+      setAvailableGudangPerItem(g => [...g, []]);
+      if (errors.items) {
+        const copy = { ...errors };
+        delete copy.items;
+        setErrors(copy);
+      }
+      return updated;
+    });
   };
 
   const removeItem = index => {
@@ -115,22 +146,49 @@ const AddPurchaseOrder = () => {
     const updated = [...items];
     updated[index][field] = value;
     setItems(updated);
-    if (field === "barangId") fetchGudangFor(index, value);
-  };
 
-  const fetchGudangFor = async (index, barangId) => {
-    try {
-      const token = localStorage.getItem("token");
-      const res = await axiosInstance.get(`/api/barang/all-gudang/${barangId}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      const list = res.data?.data?.namaGudang || [];
-      setAvailableGudangPerItem(prev => {
-        const copy = [...prev];
-        copy[index] = list;
+    const errKey = `${field === "barangId" ? "barang" : field}-${index}`;
+    if (errors[errKey]) {
+      setErrors(prev => {
+        const copy = { ...prev };
+        delete copy[errKey];
         return copy;
       });
-    } catch { }
+    }
+
+    if (errors.items && field === "barangId") {
+      setErrors(prev => {
+        const copy = { ...prev };
+        delete copy.items;
+        return copy;
+      });
+    }
+
+    if (field === "gudangTujuan" && value) {
+      setErrors(prev => {
+        const copy = { ...prev };
+        delete copy[`gudang-${index}`];
+        return copy;
+      });
+    }
+
+    if (field === "barangId") {
+      fetchGudangFor(index, value);
+    }
+  };
+
+
+  const handleChangeField = (field, value) => {
+    if (field === "purchaseDate") setPurchaseDate(value);
+    if (field === "customerId") setCustomerId(value);
+
+    if (errors[field]) {
+      setErrors(prev => {
+        const copy = { ...prev };
+        delete copy[field];
+        return copy;
+      });
+    }
   };
 
   return (
@@ -144,12 +202,12 @@ const AddPurchaseOrder = () => {
             <h3>Informasi Umum</h3>
             <div className="barang-form-group">
               <label>Tanggal Pembelian<span className="required">*</span></label>
-              <input type="date" value={purchaseDate} onChange={e => setPurchaseDate(e.target.value)} />
+              <input type="date" value={purchaseDate} onChange={e => handleChangeField("purchaseDate", e.target.value)} />
               {errors.purchaseDate && <div className="barang-error">{errors.purchaseDate}</div>}
             </div>
             <div className="barang-form-group">
               <label>Vendor<span className="required">*</span></label>
-              <select value={customerId} onChange={e => setCustomerId(e.target.value)}>
+              <select value={customerId} onChange={e => handleChangeField("customerId", e.target.value)}>
                 <option value="">Pilih Vendor</option>
                 {customers.map(c => (
                   <option key={c.id} value={c.id}>{c.name}</option>
@@ -167,52 +225,56 @@ const AddPurchaseOrder = () => {
             <div className="barang-stock-table-wrapper">
               {items.length > 0 && (
                 <table className="purchase-stock-table">
-                    <thead>
-                        <tr>
-                        <th>Barang<span className="required">*</span></th>
-                        <th>Jumlah<span className="required">*</span></th>
-                        <th>Gudang<span className="required">*</span></th>
-                        <th>Pajak (%)<span className="required">*</span></th>
-                        <th>Hapus</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {items.map((it, idx) => (
-                        <tr key={idx}>
-                            <td>
-                            <select value={it.barangId} onChange={e => handleItemChange(idx, "barangId", e.target.value)}>
-                                <option value="">Pilih Barang</option>
-                                {products.map(p => (
-                                <option key={p.id} value={p.id}>{p.nama} ({p.merk})</option>
-                                ))}
-                            </select>
-                            {errors[`barang-${idx}`] && <div className="barang-error">{errors[`barang-${idx}`]}</div>}
-                            </td>
-                            <td>
-                            <input type="number" value={it.quantity} min="0" placeholder="Contoh: 35" onChange={e => handleItemChange(idx, "quantity", e.target.value)} />
-                            {errors[`quantity-${idx}`] && <div className="barang-error">{errors[`quantity-${idx}`]}</div>}
-                            </td>
-                            <td>
-                            <select value={it.gudangTujuan} onChange={e => handleItemChange(idx, "gudangTujuan", e.target.value)}>
-                                <option value="">Pilih Gudang</option>
-                                {(availableGudangPerItem[idx] || []).map(g => <option key={g} value={g}>{g}</option>)}
-                            </select>
-                            {errors[`gudang-${idx}`] && <div className="barang-error">{errors[`gudang-${idx}`]}</div>}
-                            </td>
-                            <td>
-                            <input type="number" value={it.pajak} min="0" max="100" placeholder="Contoh: 5" onChange={e => handleItemChange(idx, "pajak", e.target.value)} />
-                            {errors[`pajak-${idx}`] && <div className="barang-error">{errors[`pajak-${idx}`]}</div>}
-                            </td>
-                            <td>
-                            <button type="button" className="barang-delete-button" onClick={() => removeItem(idx)}>
-                                <DeleteIcon />
-                            </button>
-                            </td>
-                        </tr>
-                        ))}
-                    </tbody>
-                    </table>
-
+                  <thead>
+                    <tr>
+                      <th>Barang*</th>
+                      <th>Jumlah*</th>
+                      <th>Gudang*</th>
+                      <th>Pajak (%) *</th>
+                      <th>Hapus</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {items.map((it, idx) => (
+                      <tr key={idx}>
+                        <td>
+                          <select value={it.barangId} onChange={e => handleItemChange(idx, "barangId", e.target.value)}>
+                            <option value="">Pilih Barang</option>
+                            {products.map(p => (
+                              <option key={p.id} value={p.id}>{p.nama} ({p.merk})</option>
+                            ))}
+                          </select>
+                          {errors[`barang-${idx}`] && <div className="barang-error">{errors[`barang-${idx}`]}</div>}
+                        </td>
+                        <td>
+                          <input type="number" value={it.quantity} min="0" placeholder="Contoh: 35" onChange={e => handleItemChange(idx, "quantity", e.target.value)} />
+                          {errors[`quantity-${idx}`] && <div className="barang-error">{errors[`quantity-${idx}`]}</div>}
+                        </td>
+                        <td>
+                          <select
+                            value={availableGudangPerItem[idx]?.includes(it.gudangTujuan) ? it.gudangTujuan : ""}
+                            onChange={e => handleItemChange(idx, "gudangTujuan", e.target.value)}
+                          >
+                            <option value="">Pilih Gudang</option>
+                            {(availableGudangPerItem[idx] || []).map(g => (
+                              <option key={g} value={g}>{g}</option>
+                            ))}
+                          </select>
+                          {errors[`gudang-${idx}`] && <div className="barang-error">{errors[`gudang-${idx}`]}</div>}
+                        </td>
+                        <td>
+                          <input type="number" value={it.pajak} min="0" max="100" placeholder="Contoh: 5" onChange={e => handleItemChange(idx, "pajak", e.target.value)} />
+                          {errors[`pajak-${idx}`] && <div className="barang-error">{errors[`pajak-${idx}`]}</div>}
+                        </td>
+                        <td>
+                          <button type="button" className="barang-delete-button" onClick={() => removeItem(idx)}>
+                            <DeleteIcon />
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               )}
             </div>
           </div>
@@ -224,7 +286,7 @@ const AddPurchaseOrder = () => {
         </form>
       </div>
 
-      {modalType && (
+     {modalType && (
         <div className="modal-overlay">
           <div className="modal-content">
             <div className="modal-header">

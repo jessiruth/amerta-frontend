@@ -50,12 +50,14 @@ const ToolbarSalesOrder = ({ onAdd, onRefresh, onFilter, onSearch, selectedCateg
             {/* Filter Dropdown */}
             <div className="toolbar-goods-item filter-container">
                 <select className="toolbar-goods-dropdown" onChange={handleCategoryChange} value={selectedCategory}>
-                    <option value="all">Filter: Semua Kolom</option>
+                    <option value="all">Filter: All</option>
                     <option value="id">Filter: ID SO</option>
                     <option value="customer">Filter: Nama Customer</option>
                     <option value="date">Filter: Tanggal</option>
                     <option value="price">Filter: Total Harga</option>
                     <option value="status">Filter: Status</option>
+                    <option value="due date">Filter: Jatuh Tempo</option>
+                    <option value="payment terms">Filter: Sisa Hari</option>
                 </select>
             </div>
 

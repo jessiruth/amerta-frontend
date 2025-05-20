@@ -11,7 +11,7 @@ const ConfirmPurchaseOrder = () => {
     const [vendorName, setVendorName] = useState("");
     const [itemPrices, setItemPrices] = useState({});
     const [invoiceDate, setInvoiceDate] = useState(new Date().toISOString().split("T")[0]);
-    const [paymentTerms, setPaymentTerms] = useState(30);
+    const [paymentTerms, setPaymentTerms] = useState("");
     const [modalType, setModalType] = useState(null);
     const [successModal, setSuccessModal] = useState(false);
     const [loading, setLoading] = useState(true);
@@ -98,8 +98,10 @@ const ConfirmPurchaseOrder = () => {
             errors.invoiceDate = "Tanggal invoice tidak boleh lebih awal dari tanggal pembelian.";
         }
         if (!paymentTerms || Number(paymentTerms) < 1) {
+            errors.paymentTerms = "Jangka waktu pembayaran tidak boleh kosong.";
+        } else if (Number(paymentTerms) < 1) {
             errors.paymentTerms = "Jangka waktu pembayaran minimal 1 hari.";
-        }
+        }   
         setInputErrors(errors);
         return Object.keys(errors).length === 0;
     };
@@ -181,7 +183,7 @@ const ConfirmPurchaseOrder = () => {
                             </div>
                             <div className="form-group">
                                 <label>Jangka Waktu Pembayaran (hari)</label>
-                                <input type="number" min="1" value={paymentTerms} onChange={(e) => setPaymentTerms(e.target.value)} />
+                                <input type="number" min="1" placeholder="Contoh: 30" value={paymentTerms} onChange={(e) => setPaymentTerms(e.target.value)} />
                                 {inputErrors.paymentTerms && <span className="error-message">{inputErrors.paymentTerms}</span>}
                             </div>
                         </div>

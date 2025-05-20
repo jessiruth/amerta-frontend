@@ -59,20 +59,68 @@ const AddSalesOrder = () => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
-    setErrors(prev => ({ ...prev, [name]: null }));
+
+    if (errors[name]) {
+      setErrors(prev => {
+        const copy = { ...prev };
+        delete copy[name];
+        return copy;
+      });
+    }
+
+    if (name === "gudangTujuan") {
+      const updatedErrors = { ...errors };
+      formData.items.forEach((_, idx) => {
+        delete updatedErrors[`item-${idx}-quantity`];
+        delete updatedErrors[`item-${idx}-pajak`];
+        delete updatedErrors[`item-${idx}-barangId`];
+      });
+      delete updatedErrors.gudangTujuan;
+      setErrors(updatedErrors);
+    }
   };
 
-  const handleItemChange = (index, field, value) => {
+
+ const handleItemChange = (index, field, value) => {
     const updatedItems = [...formData.items];
     updatedItems[index] = { ...updatedItems[index], [field]: value };
     setFormData(prev => ({ ...prev, items: updatedItems }));
+
+    const errKey = `item-${index}-${field}`;
+    if (errors[errKey]) {
+      setErrors(prev => {
+        const copy = { ...prev };
+        delete copy[errKey];
+        return copy;
+      });
+    }
+
+    // Hapus error `items` jika user menambah data
+    if (errors.items) {
+      setErrors(prev => {
+        const copy = { ...prev };
+        delete copy.items;
+        return copy;
+      });
+    }
   };
 
+
   const addItem = () => {
-    setFormData(prev => ({
-      ...prev,
-      items: [...prev.items, { barangId: "", quantity: "", pajak: "" }]
-    }));
+    setFormData(prev => {
+      const updatedItems = [...prev.items, { barangId: "", quantity: "", pajak: "" }];
+
+      // Hapus error 'items' jika ada
+      if (errors.items) {
+        setErrors(prevErrors => {
+          const copy = { ...prevErrors };
+          delete copy.items;
+          return copy;
+        });
+      }
+
+      return { ...prev, items: updatedItems };
+    });
   };
 
   const removeItem = (index) => {
@@ -107,7 +155,7 @@ const AddSalesOrder = () => {
         const key = `${item.barangId}-${formData.gudangTujuan}`;
         if (item.barangId && formData.gudangTujuan !== "") {
         if (pajakMap.has(key) && pajakMap.get(key) !== item.pajak) {
-            newErrors[`item-${index}-pajak`] = "Pajak harus konsisten untuk barang dan gudang yang sama";
+            newErrors[`item-${index}-pajak`] = "Pajak harus konsisten";
         }
         pajakMap.set(key, item.pajak);
         }
