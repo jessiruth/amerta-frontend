@@ -22,6 +22,8 @@ import AddGoodsTransport from "./components/AddGoodsTransport";
 import SalesFeature from "./components/Sales/SalesFeature";
 import Customer from "./components/Customer";
 import AddCustomer from "./components/AddCustomer";
+import UpdateCustomer from "./components/UpdateCustomer";
+import CustomerDetail from "./components/CustomerDetail";
 import Sales from "./components/Sales/Sales";
 import SalesOrder from "./components/Sales/SalesOrder";
 
@@ -103,6 +105,8 @@ function Layout() {
         
                 <Route path="/customer" element={<Customer />} />
                 <Route path="/customer/add" element={<AddCustomer />} />
+                <Route path="/customer/update/:id" element={<UpdateCustomer />} />
+                <Route path="/customer/:id" element={<CustomerDetail />} />
 
                 <Route path="/sales" element={<SalesFeature />} />
                 <Route path="/sales/completed" element={<Sales/>} />

@@ -29,7 +29,31 @@
     background-color: #ddd;
 }
 
-td[colspan="5"] {
+.clickable-row {
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.clickable-row:hover {
+    background-color: #f0f0f0;
+}
+
+.edit-button {
+    background-color: #f7931e;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.2s ease;
+}
+
+.edit-button:hover {
+    background-color: #e67e00;
+}
+
+td[colspan="6"] {
     text-align: center;
     padding: 15px;
     font-weight: bold;
