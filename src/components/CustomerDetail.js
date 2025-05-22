@@ -69,7 +69,7 @@ const CustomerDetail = () => {
                 <Navbar />
                 <div className="gudang-detail-content">
                     <div className="loading-container">
-                        <div className="loading-text">Memuat detail customer...</div>
+                        <div className="loading-text">Memuat detail customer/vendor...</div>
                     </div>
                 </div>
             </div>
@@ -102,7 +102,7 @@ const CustomerDetail = () => {
                         Kembali
                     </button>
                     <button className="update-btn" onClick={handleUpdateCustomer}>
-                        Update Customer
+                        Update Customer/Vendor
                     </button>
                 </div>
 
@@ -112,12 +112,8 @@ const CustomerDetail = () => {
                     </div>
                     <div className="section-content">
                         <div className="detail-row">
-                            <span className="detail-label">Nama Perusahaan:</span>
+                            <span className="detail-label">Nama Customer/Vendor:</span>
                             <span className="detail-value">{customer.name}</span>
-                        </div>
-                        <div className="detail-row">
-                            <span className="detail-label">Role:</span>
-                            <span className="detail-value">{customer.role}</span>
                         </div>
                         <div className="detail-row">
                             <span className="detail-label">Email:</span>
@@ -126,6 +122,10 @@ const CustomerDetail = () => {
                         <div className="detail-row">
                             <span className="detail-label">Alamat:</span>
                             <span className="detail-value">{customer.address}</span>
+                        </div>
+                        <div className="detail-row">
+                            <span className="detail-label">Role:</span>
+                            <span className="detail-value">{customer.role}</span>
                         </div>
                     </div>
                 </div>

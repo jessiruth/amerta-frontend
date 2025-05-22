@@ -43,14 +43,14 @@ const Customer = () => {
         navigate(`/customer/${customerId}`);
     };
 
-    const handleEditClick = (e, customerId) => {
-        e.stopPropagation(); // Prevent row click when clicking edit button
-        navigate(`/customer/update/${customerId}`);
+    const handleDetailClick = (e, customerId) => {
+        e.stopPropagation(); // Prevent row click when clicking detail button
+        navigate(`/customer/${customerId}`);
     };
 
     return (
         <div className="employee-container">
-            <h1 className="page-title">Customer</h1>
+            <h1 className="page-title">Customer/Vendor</h1>
 
             <Toolbar
                 onAdd={() => navigate("/customer/add")}
@@ -85,10 +85,10 @@ const Customer = () => {
                                 <td>{customer.whatsapp}</td>
                                 <td>
                                     <button
-                                        className="edit-button"
-                                        onClick={(e) => handleEditClick(e, customer.id)}
+                                        className="detail-button"
+                                        onClick={(e) => handleDetailClick(e, customer.id)}
                                     >
-                                        Edit
+                                        Detail
                                     </button>
                                 </td>
                             </tr>

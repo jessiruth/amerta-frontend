@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
-import "../styles/AddEmployee.css"; // Reuse same style
+import "../styles/AddEmployee.css";
 import Navbar from "./Navbar";
 
 const UpdateCustomer = () => {
