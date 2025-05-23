@@ -28,12 +28,18 @@ const UpdateProfile = () => {
 
   const validateForm = () => {
     const errors = {};
-    if (!oldPassword.trim()) errors.oldPassword = "Password lama wajib diisi.";
+    if (!oldPassword.trim()) {
+      errors.oldPassword = "Password lama wajib diisi.";
+    }
+
     if (!newPassword.trim()) {
       errors.newPassword = "Password baru wajib diisi.";
     } else if (/\s/.test(newPassword)) {
       errors.newPassword = "Password baru tidak boleh mengandung spasi.";
+    } else if (!/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/.test(newPassword)) {
+      errors.newPassword = "Password harus minimal 8 karakter, mengandung huruf dan angka.";
     }
+
     setValidationErrors(errors);
     return Object.keys(errors).length === 0;
   };
