@@ -56,6 +56,7 @@ const Toolbar = ({ onAdd, onRefresh, onFilter, onSearch, selectedCategory, searc
           <option value="stok">Filter: Stok</option>
           <option value="harga jual">Filter: Harga Jual</option>
           <option value="harga beli">Filter: Harga Beli</option>
+          <option value="status">Filter: Status</option>
         </select>
       </div>
 

@@ -74,6 +74,12 @@ const GoodsAndServices = () => {
       if (searchCategory === "stok") {
         return barang.totalStock === parseInt(lower, 10);
       }
+      if (searchCategory === "status") {
+        return (
+          (lower === "aktif" && barang.active === true) ||
+          (lower === "tidak aktif" && barang.active === false)
+        );
+      }
       if (searchCategory === "all") {
         return (
           barang.nama.toLowerCase().includes(lower) ||
@@ -153,6 +159,7 @@ const GoodsAndServices = () => {
                 <th>Stok</th>
                 <th>Harga Beli</th>
                 <th>Harga Jual</th>
+                <th>Status</th>
                 <th>Aksi</th>
               </tr>
             </thead>
@@ -166,6 +173,7 @@ const GoodsAndServices = () => {
                     <td>{barang.totalStock}</td>
                     <td>Rp{parseFloat(barang.hargaBeli).toLocaleString("id-ID", { minimumFractionDigits: 2 })}</td>
                     <td>Rp{parseFloat(barang.hargaJual).toLocaleString("id-ID", { minimumFractionDigits: 2 })}</td>
+                    <td>{barang.active ? "Aktif" : "Tidak Aktif"}</td>
                     <td>
                       <button
                         className="goods-detail-btn"

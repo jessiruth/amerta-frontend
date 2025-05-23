@@ -67,7 +67,7 @@ html, body {
   display: flex;
   justify-content: center;
   gap: 30px;
-  margin-left: 40px;
+  margin: 40px;
   flex-wrap: wrap;
 }
 
@@ -87,24 +87,105 @@ html, body {
 }
 
 .summary-boxes {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 20px;
-  justify-content: center;
-  margin-top: 20px;
+  margin-top: 30px;
   margin-bottom: 40px;
   margin-left: 40px;
+  padding: 0 40px;
 }
 
 .summary-box {
   background-color: white;
-  padding: 16px 24px;
-  border-radius: 10px;
-  box-shadow: 0 0 8px rgba(0,0,0,0.08);
-  font-size: 15px;
-  color: #333;
-  font-weight: 500;
-  min-width: 200px;
-  text-align: center;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
   font-family: 'Poppins', sans-serif;
+  transition: box-shadow 0.2s ease;
 }
+
+.summary-box:hover {
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+}
+
+.summary-box-title {
+  font-size: 14px;
+  font-weight: 500;
+  color: #999;
+  margin-bottom: 8px;
+}
+
+.summary-box-value {
+  font-size: 24px;
+  font-weight: 700;
+  color: #1a1a1a;
+}
+
+.summary-box-subtext {
+  font-size: 13px;
+  color: #52c41a;
+  margin-top: 4px;
+}
+
+.dashboard-table-section {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 30px;
+  margin: 40px;
+}
+
+.dashboard-table-card {
+  background-color: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  width: 600px;
+}
+
+.dashboard-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.dashboard-table th,
+.dashboard-table td {
+  text-align: left;
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+}
+
+.dashboard-status-badge {
+  padding: 4px 10px;
+  border-radius: 12px;
+  color: white;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.dashboard-status-badge.completed {
+  background-color: #0b6f22;
+}
+.dashboard-status-badge.paid {
+  background-color: #28a745;
+}
+
+.dashboard-status-badge.in-delivery,
+.dashboard-status-badge.delivered,
+.dashboard-status-badge.in-shipping,
+.dashboard-status-badge.shipped {
+  background-color: #007bff;
+}
+
+.dashboard-status-badge.created{
+  background-color: #6c757d;
+}
+
+.dashboard-status-badge.confirmed {
+  background-color: #ffc107;
+}
+
