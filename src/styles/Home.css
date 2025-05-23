@@ -1,3 +1,10 @@
+html, body {
+  margin: 0;
+  padding: 0;
+  background-color: white;
+  height: 100%;
+}
+
 .dashboard-container {
     display: flex;
     flex-direction: column;
@@ -34,9 +41,10 @@
 }
 
 .content {
-    padding: 20px;
-    text-align: center;
+    padding: 30px 40px 50px;
     color: #1a1a1a;
+    background-color: white;
+    flex-grow: 1;
 }
 
 .home-container {
@@ -45,35 +53,58 @@
     text-align: center;
 }
 
-.page-title {
+.home-page-title {
     text-align: center;
+    margin-left: 40px;
     font-size: 36px;
     font-weight: bold;
-    color: #f7931e;
+    color: #f7931e !important;
     margin-bottom: 20px;
     font-family: 'Poppins', sans-serif;
 }
 
 .charts-section {
-    display: flex;
-    justify-content: center;
-    gap: 30px;
-    flex-wrap: wrap;
-    margin-top: 30px;
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  margin-left: 40px;
+  flex-wrap: wrap;
 }
 
 .chart-card {
-    background-color: white;
-    padding: 20px;
-    border-radius: 12px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    width: 450px;
-    text-align: center;
+  background-color: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  width: 400px;
+  text-align: center;
 }
 
 .chart-card h3 {
-    margin-bottom: 10px;
-    color: #1a1a1a;
-    font-family: 'Poppins', sans-serif;
+  margin-bottom: 10px;
+  color: #1a1a1a;
+  font-family: 'Poppins', sans-serif;
 }
 
+.summary-boxes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+  margin-top: 20px;
+  margin-bottom: 40px;
+  margin-left: 40px;
+}
+
+.summary-box {
+  background-color: white;
+  padding: 16px 24px;
+  border-radius: 10px;
+  box-shadow: 0 0 8px rgba(0,0,0,0.08);
+  font-size: 15px;
+  color: #333;
+  font-weight: 500;
+  min-width: 200px;
+  text-align: center;
+  font-family: 'Poppins', sans-serif;
+}

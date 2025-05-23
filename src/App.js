@@ -65,6 +65,8 @@ import DetailPurchase from "./components/Purchase/DetailPurchase";
 import DetailSales from "./components/Sales/DetailSales";
 import Dashboard from "./components/Dashboard";
 
+import Profile from "./components/Profile";
+import UpdateProfile from "./components/UpdateProfile";
 
 function Layout() {
     const location = useLocation();
@@ -156,6 +158,8 @@ function Layout() {
                 <Route path="/purchase-invoice/detail/:id" element={<PurchaseInvoiceDetail />} />
 
                 <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/profile/:id" element={<Profile />} />
+                <Route path="/profile/update-password/:id" element={<UpdateProfile />} />
             </Routes>
         </div>
     );

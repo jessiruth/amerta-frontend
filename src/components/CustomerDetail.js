@@ -9,6 +9,7 @@ const CustomerDetail = () => {
     const navigate = useNavigate();
     const [loading, setLoading] = useState(true);
     const [customer, setCustomer] = useState(null);
+    const [orders, setOrders] = useState([]);
     const [error, setError] = useState(null);
     const token = localStorage.getItem("token");
 
@@ -21,7 +22,9 @@ const CustomerDetail = () => {
             });
 
             if (response.data && response.data.data) {
-                setCustomer(response.data.data);
+                const customerData = response.data.data;
+                setCustomer(customerData);
+                fetchOrders(customerData.id, customerData.role);
             } else {
                 setError('Data customer tidak ditemukan.');
             }
@@ -37,6 +40,22 @@ const CustomerDetail = () => {
             setLoading(false);
         }
     }, [id, token, navigate]);
+
+    const fetchOrders = useCallback(async (customerId, role) => {
+        try {
+            const endpoint = role === "CUSTOMER"
+                ? `/api/sales-order/customer/${customerId}`
+                : `/api/purchase-order/vendor/${customerId}`;
+
+            const response = await axios.get(`${process.env.REACT_APP_API_BASE_URL}${endpoint}`, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+
+            setOrders(response.data?.data || []);
+        } catch (error) {
+            console.error("Gagal mengambil order:", error);
+        }
+    }, [token]);
 
     useEffect(() => {
         if (!token) {
@@ -96,14 +115,10 @@ const CustomerDetail = () => {
                 <div className="page-header">
                     <h1 className="page-title">{customer.name}</h1>
                 </div>
-                
+
                 <div className="action-buttons">
-                    <button className="back-btn" onClick={handleBack}>
-                        Kembali
-                    </button>
-                    <button className="update-btn" onClick={handleUpdateCustomer}>
-                        Update Customer/Vendor
-                    </button>
+                    <button className="back-btn" onClick={handleBack}>Kembali</button>
+                    <button className="update-btn" onClick={handleUpdateCustomer}>Update Customer/Vendor</button>
                 </div>
 
                 <div className="detail-card">
@@ -150,28 +165,54 @@ const CustomerDetail = () => {
                     </div>
                 </div>
 
-                {customer.createdDate && (
-                    <div className="detail-card">
-                        <div className="section-header">
-                            <h2 className="section-title">Informasi Sistem</h2>
-                        </div>
-                        <div className="section-content">
-                            <div className="detail-row">
-                                <span className="detail-label">Tanggal Dibuat:</span>
-                                <span className="detail-value">{formatDate(customer.createdDate)}</span>
-                            </div>
-                            {customer.updatedDate && (
-                                <div className="detail-row">
-                                    <span className="detail-label">Terakhir Diperbarui:</span>
-                                    <span className="detail-value">{formatDate(customer.updatedDate)}</span>
-                                </div>
-                            )}
-                        </div>
+                <div className="detail-card">
+                    <div className="section-header">
+                        <h2 className="section-title">
+                            {customer.role === "CUSTOMER" ? "Sales Order" : "Purchase Order"}
+                        </h2>
                     </div>
-                )}
+                    <div className="section-content">
+                        {orders.length === 0 ? (
+                            <p>Tidak ada {customer.role === "CUSTOMER" ? "sales order" : "purchase order"} yang ditemukan.</p>
+                        ) : (
+                            <table className="barang-table">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Tanggal</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {orders.map((order) => (
+                                        <tr key={order.id}>
+                                            <td>{order.id}</td>
+                                            <td>{formatDate(customer.role === "CUSTOMER" ? order.salesDate : order.purchaseDate)}</td>
+                                            <td>
+                                                <button
+                                                    className="update-btn"
+                                                    onClick={() =>
+                                                    navigate(
+                                                        customer.role === "CUSTOMER"
+                                                        ? `/sales/completed/detail/${order.id}`
+                                                        : `/purchase/completed/detail/${order.id}`
+                                                    )
+                                                    }
+                                                >
+                                                    Detail
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        
+                                    ))}
+                                </tbody>
+                            </table>
+                        )}
+                    </div>
+                </div>
             </div>
         </div>
     );
 };
 
-export default CustomerDetail; 
+export default CustomerDetail;
