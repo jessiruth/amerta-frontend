@@ -4,7 +4,8 @@ import axiosInstance from "../services/axiosInstance";
 import {
   LineChart, Line, CartesianGrid, XAxis, YAxis, Tooltip,
   BarChart, Bar,
-  PieChart, Pie, Cell, Legend
+  PieChart, Pie, Cell, Legend,
+  AreaChart, Area
 } from "recharts";
 import "../styles/Home.css";
 
@@ -14,8 +15,11 @@ const Home = () => {
   const [role, setRole] = useState("");
   const [lineData, setLineData] = useState([]);
   const [barData, setBarData] = useState([]);
-   const [expenseData, setExpenseData] = useState([]);
-   const [barangStatusData, setBarangStatusData] = useState([]);
+  const [expenseData, setExpenseData] = useState([]);
+  const [barangStatusData, setBarangStatusData] = useState([]);
+  const [incomeExpenseData, setIncomeExpenseData] = useState([]);
+  const [shippingScatterData, setShippingScatterData] = useState([]);
+  const [paymentAreaData, setPaymentAreaData] = useState([]);
 
   const [summary, setSummary] = useState({
     barangAktif: 0,
@@ -44,15 +48,19 @@ const Home = () => {
     const headers = { Authorization: `Bearer ${token}` };
 
     const today = new Date();
-    const pastYear = new Date(today);
-    pastYear.setFullYear(today.getFullYear() - 1);
+    const thisYear = new Date(today);
+    thisYear.setFullYear(today.getFullYear());
+    const futureDate = new Date(today);
+    futureDate.setFullYear(today.getFullYear() + 1);
     const formatDate = (d) => d.toISOString().split("T")[0];
-    const filter = {
-      startDate: formatDate(pastYear),
-      endDate: formatDate(today)
-    };
 
+    const filter = {
+      startDate: formatDate(thisYear),
+      endDate: formatDate(futureDate)
+    };
+    
     try {
+      // Bar Chart: Penjualan vs Pembelian
       const [sales, purchase] = await Promise.all([
         axiosInstance.post("/api/dashboard/get-data", {
           entity: "sales_order", x: "salesDate", y: "id", aggregation: "count", filter
@@ -61,6 +69,8 @@ const Home = () => {
           entity: "purchase_order", x: "purchaseDate", y: "id", aggregation: "count", filter
         }, { headers })
       ]);
+
+      // Area Chart
       const mergedBar = sales.data.data.data.map((d, i) => ({
         x: d.x,
         sales: d.y,
@@ -68,41 +78,61 @@ const Home = () => {
       }));
       setBarData(mergedBar);
 
-      // Line Chart - Sales Order Profit (original)
+      // Line Chart: Profit Penjualan
       const lineRes = await axiosInstance.post("/api/dashboard/get-data", {
-        entity: "sales_order",
-        x: "salesDate",
-        y: "totalPrice",
-        aggregation: "sum",
-        filter
+        entity: "sales_order", x: "salesDate", y: "totalPrice", aggregation: "sum", filter
       }, { headers });
       setLineData(lineRes.data.data.data || []);
 
-      const futureDate = new Date(today);
-      futureDate.setFullYear(today.getFullYear() + 1);
-
-      const purchaseOrderFilter = {
-        startDate: formatDate(today),
-        endDate: formatDate(futureDate)
-      };
-
+      // Line Chart: Pengeluaran PO
       const expenseRes = await axiosInstance.post("/api/dashboard/get-data", {
-        entity: "purchase_order",
-        x: "purchaseDate",
-        y: "totalPrice",
+        entity: "purchase_order", x: "purchaseDate", y: "totalPrice", aggregation: "sum", filter
+      }, { headers });
+      setExpenseData(expenseRes.data.data.data || []);
+
+      // Scatter Plot - Rata-rata Shipping Fee per Bulan
+      const shippingAvgRes = await axiosInstance.post("/api/dashboard/get-data", {
+        entity: "sales_order",
+        x: "salesDate",
+        y: "shipping.shippingFee",
+        aggregation: "avg",
+        filter
+      }, { headers });
+      setShippingScatterData(shippingAvgRes.data.data.data || []);
+
+      // Area Chart: Pengeluaran Aktual VS Pendapatan
+     const incomeRes = await axiosInstance.post("/api/dashboard/get-data", {
+        entity: "sales_payment",
+        x: "paymentDate",
+        y: "totalAmountPayed",
         aggregation: "sum",
-        filter: purchaseOrderFilter
+        filter
       }, { headers });
 
-      setExpenseData(expenseRes.data.data.data || []);
-  
-      // Hitung summary data dari API
-      const [
-        barangRes,
-        customerRes,
-        salesRes,
-        purchaseRes
-      ] = await Promise.all([
+      const expensePORes = await axiosInstance.post("/api/dashboard/get-data", {
+        entity: "purchase_payment",
+        x: "paymentDate",
+        y: "totalAmountPayed",
+        aggregation: "sum",
+        filter
+      }, { headers });
+
+      // Gabungkan berdasarkan tanggal
+      const incomeMap = new Map(incomeRes.data.data.data.map(d => [d.x, d.y]));
+      const expenseMap = new Map(expensePORes.data.data.data.map(d => [d.x, d.y]));
+      const allDates = new Set([...incomeMap.keys(), ...expenseMap.keys()]);
+      const mergedData = Array.from(allDates).map(date => ({
+        x: date,
+        income: incomeMap.get(date) || 0,
+        expense: expenseMap.get(date) || 0
+      }));
+      mergedData.sort((a, b) => new Date(a.x) - new Date(b.x));
+
+setIncomeExpenseData(mergedData);
+
+
+      // Summary Data
+      const [barangRes, customerRes, salesRes, purchaseRes] = await Promise.all([
         axiosInstance.get("/api/barang/viewall", { headers }),
         axiosInstance.get("/api/customer/viewall", { headers }),
         axiosInstance.get("/api/sales-order/viewall", { headers }),
@@ -139,7 +169,6 @@ const Home = () => {
         purchaseOrderBulanIni: poThisMonth
       });
 
-
     } catch (error) {
       console.error("Dashboard fetch error:", error);
     }
@@ -168,22 +197,35 @@ const Home = () => {
 
             <div className="charts-section">
               <div className="chart-card">
-                <h3>Penjualan vs Pembelian</h3>
+                <h3>Penjualan vs Pembelian ({new Date().getFullYear()})</h3>
                 <BarChart width={350} height={250} data={barData}>
                   <Bar dataKey="sales" fill="#f7931e" />
                   <Bar dataKey="purchase" fill="#8884d8" />
-                  <XAxis
-                    dataKey="x"
-                    tickFormatter={(dateStr) => {
-                      const date = new Date(dateStr);
-                      return date.toLocaleString("default", { month: "short" });
-                    }}
-                  />
+                  <XAxis dataKey="x" tickFormatter={(dateStr) => {
+                    const date = new Date(dateStr);
+                    return date.toLocaleString("default", { month: "short" });
+                  }} />
                   <YAxis />
                   <Tooltip />
-                  <Legend /> 
+                  <Legend />
                 </BarChart>
               </div>
+
+              <div className="chart-card">
+              <h3>Pendapatan vs Pengeluaran ({new Date().getFullYear()})</h3>
+              <AreaChart width={350} height={250} data={incomeExpenseData}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="x" tickFormatter={(dateStr) => {
+                  const date = new Date(dateStr);
+                  return date.toLocaleString("default", { month: "short" });
+                }} />
+                <YAxis />
+                <Tooltip />
+                <Area type="monotone" dataKey="income" stroke="#00C49F" fill="#b2f2bb" />
+                <Area type="monotone" dataKey="expense" stroke="#FF8042" fill="#ffd8a8" />
+                <Legend />
+              </AreaChart>
+            </div>
 
               <div className="chart-card">
                 <h3>Status Barang (Aktif vs Non-Aktif)</h3>
@@ -217,25 +259,22 @@ const Home = () => {
               </div>
 
               <div className="chart-card">
-              <h3>Pengeluaran Pembelian ({new Date().getFullYear()})</h3>
-              {expenseData.length === 0 ? (
-                <div className="no-data">No data available</div>
-              ) : (
-                <LineChart width={350} height={250} data={expenseData}>
-                  <Line type="monotone" dataKey="y" stroke="#8884d8" strokeWidth={2} />
-                  <CartesianGrid stroke="#ccc" />
-                  <XAxis
-                    dataKey="x"
-                    tickFormatter={(dateStr) => {
+                <h3>Pengeluaran Pembelian ({new Date().getFullYear()})</h3>
+                {expenseData.length === 0 ? (
+                  <div className="no-data">No data available</div>
+                ) : (
+                  <LineChart width={350} height={250} data={expenseData}>
+                    <Line type="monotone" dataKey="y" stroke="#8884d8" strokeWidth={2} />
+                    <CartesianGrid stroke="#ccc" />
+                    <XAxis dataKey="x" tickFormatter={(dateStr) => {
                       const date = new Date(dateStr);
                       return date.toLocaleString("default", { month: "short" });
-                    }}
-                  />
-                  <YAxis />
-                  <Tooltip />
-                </LineChart>
-              )}
-            </div>
+                    }} />
+                    <YAxis />
+                    <Tooltip />
+                  </LineChart>
+                )}
+              </div>
 
               <div className="chart-card">
                 <h3>Profit Penjualan ({new Date().getFullYear()})</h3>
@@ -244,6 +283,23 @@ const Home = () => {
                 ) : (
                   <LineChart width={350} height={250} data={lineData}>
                     <Line type="monotone" dataKey="y" stroke="#f7931e" strokeWidth={2} />
+                    <CartesianGrid stroke="#ccc" />
+                    <XAxis dataKey="x" tickFormatter={(dateStr) => {
+                      const date = new Date(dateStr);
+                      return date.toLocaleString("default", { month: "short" });
+                    }} />
+                    <YAxis />
+                    <Tooltip />
+                  </LineChart>
+                )}
+              </div>
+
+              <div className="chart-card">
+                <h3>Rata-Rata Shipping Fee ({new Date().getFullYear()})</h3>
+                {shippingScatterData.length === 0 ? (
+                  <div className="no-data">No data available</div>
+                ) : (
+                  <LineChart width={350} height={250} data={shippingScatterData}>
                     <CartesianGrid stroke="#ccc" />
                     <XAxis
                       dataKey="x"
@@ -254,6 +310,13 @@ const Home = () => {
                     />
                     <YAxis />
                     <Tooltip />
+                    <Line
+                      type="monotone"
+                      dataKey="y"
+                      stroke="#82ca9d"
+                      dot={{ stroke: "#82ca9d", strokeWidth: 2, r: 5, fill: "#ffffff" }}
+                      activeDot={{ r: 8 }}
+                    />
                   </LineChart>
                 )}
               </div>
