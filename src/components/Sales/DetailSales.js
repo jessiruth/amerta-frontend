@@ -84,6 +84,22 @@ const DetailSales = () => {
         data.items.reduce((total, item) =>
             total + getSubtotal(item.barangId, item.quantity, item.tax), 0);
 
+    const getNextButtonLabel = (status) => {
+        switch (status) {
+            case "CREATED":
+                return "Konfirmasi";
+            case "CONFIRMED":
+                return "Pengiriman";
+            case "IN SHIPPING":
+                return "Konfirmasi Pengiriman";
+            case "SHIPPED":
+                return "Pembayaran";
+            default:
+                return "Lanjutkan";
+        }
+    };
+
+
     if (loading) return <div className="loading-container"><p>Loading...</p></div>;
     if (error || !data) return <div className="error-container"><p>{error}</p></div>;
 
@@ -96,8 +112,8 @@ const DetailSales = () => {
 
                 <div className="action-buttons">
                     <button className="back-btn" onClick={handleBack}>Kembali</button>
-                    {["CREATED", "CONFIRMED", "IN SHIPPING", "SHIPPED"].includes(data.status) && (
-                        <button className="update-btn" onClick={handleUpdate}>Lanjutkan</button>
+                   {["CREATED", "CONFIRMED", "IN SHIPPING", "SHIPPED"].includes(data.status) && (
+                        <button className="update-btn" onClick={handleUpdate}>{getNextButtonLabel(data.status)}</button>
                     )}
                     <button className="print-btn" onClick={() => window.print()}>
                         Print

@@ -56,27 +56,37 @@ const SalesOrder = () => {
         };
       
         fetchData();
-      }, [token]); // warning now gone ✅
+      }, [token]);
       
+     useEffect(() => {
+        const lower = searchTerm.toLowerCase().trim();
+        const parsed = parseFloat(lower.replace(",", "."));
 
-    useEffect(() => {
-        const lower = searchTerm.toLowerCase();
         const filtered = data.filter((item) => {
-            if (searchCategory === "id") {
-                return item.id.toString().toLowerCase().includes(lower);
-            } else if (searchCategory === "customer") {
-                return item.customerName.toLowerCase().includes(lower);
-            } else if (searchCategory === "status") {
-                return item.status.toLowerCase().includes(lower);
-            } else if (searchCategory === "date") {
-                return item.salesDate.toLowerCase().includes(lower);
-            } else {
-                return (
-                    item.customerName.toLowerCase().includes(lower) ||
-                    item.salesDate.toLowerCase().includes(lower) ||
-                    item.status.toLowerCase().includes(lower)
-                );
-            }
+        if (!lower) return true;
+
+        if (searchCategory === "id") {
+            return item.id.toString().toLowerCase() === lower;
+        }
+        if (searchCategory === "customer") {
+            return item.customerName.toLowerCase() === lower;
+        }
+        if (searchCategory === "status") {
+            return item.status.toLowerCase() === lower;
+        }
+        if (searchCategory === "price") {
+            return !isNaN(parsed) && parseFloat(item.totalPrice) === parsed;
+        }
+        if (searchCategory === "date") {
+            return item.salesDate.toLowerCase().includes(lower);
+        }
+        return (
+            item.id.toString().toLowerCase().includes(lower) ||
+            item.customerName.toLowerCase().includes(lower) ||
+            item.salesDate.toLowerCase().includes(lower) ||
+            item.status.toLowerCase().includes(lower) ||
+            item.totalPrice?.toString().replace(".", ",").includes(searchTerm)
+        );
         });
 
         setFilteredData(filtered);
@@ -103,7 +113,7 @@ const SalesOrder = () => {
 
             <div className="table-container">
                 <div className="table-header">
-                    <h2>Sales Order Table</h2>
+                    <h2>Sales Order</h2>
                 </div>
 
                 {loading ? (
@@ -117,7 +127,7 @@ const SalesOrder = () => {
                                 <th>ID</th>
                                 <th>Nama Customer</th>
                                 <th>Tanggal</th>
-                                <th>Total Harga</th>
+                                <th>Total Harga (Profit)</th>
                                 <th>Status</th>
                                 <th>Aksi</th>
                             </tr>
@@ -136,7 +146,7 @@ const SalesOrder = () => {
                                                 className="detail-btn"
                                                 onClick={() => navigate(`/sales-order/detail/${order.id}`)}
                                             >
-                                                Detail
+                                                Details
                                             </button>
                                         </td>
                                     </tr>

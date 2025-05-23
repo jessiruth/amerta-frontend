@@ -69,27 +69,39 @@ const ShippingList = () => {
     }, [token]);
 
     useEffect(() => {
-        const lower = searchTerm.toLowerCase();
         const filtered = data.filter((item) => {
+            const lower = searchTerm.toLowerCase().trim();
+            const numeric = parseFloat(searchTerm.replace(",", "."));
+
+            if (!lower) return true;
+
             if (searchCategory === "id") {
-                return item.id.toLowerCase().includes(lower);
+            return item.shippingId.toLowerCase() === lower;
             } else if (searchCategory === "customer") {
-                return item.customerName.toLowerCase().includes(lower);
+            return item.customerName.toLowerCase() === lower;
             } else if (searchCategory === "status") {
-                return item.shippingStatus.toLowerCase().includes(lower);
+            return item.shippingStatus.toLowerCase() === lower;
             } else if (searchCategory === "date") {
-                return item.shippingDate.toLowerCase().includes(lower);
-            } else {
-                return (
-                    item.id.toLowerCase().includes(lower) ||
-                    item.customerName.toLowerCase().includes(lower) ||
-                    item.shippingDate.toLowerCase().includes(lower) ||
-                    item.shippingStatus.toLowerCase().includes(lower)
-                );
+            return item.shippingDate.toLowerCase().includes(lower);
+            } else if (searchCategory === "resi") {
+            return item.trackingNumber.toLowerCase() === lower;
+            } else if (searchCategory === "shippingfee") {
+            return !isNaN(numeric) && parseFloat(item.shippingFee) === numeric;
+            } else if (searchCategory === "all") {
+            return (
+                item.shippingId.toLowerCase().includes(lower) ||
+                item.customerName.toLowerCase().includes(lower) ||
+                item.shippingDate.toLowerCase().includes(lower) ||
+                item.shippingStatus.toLowerCase().includes(lower) ||
+                item.trackingNumber.toLowerCase().includes(lower) ||
+                item.shippingFee?.toString().replace(".", ",").includes(searchTerm)
+            );
             }
+
+            return false;
         });
 
-        setFilteredData(filtered);
+    setFilteredData(filtered);
     }, [searchTerm, searchCategory, data]);
 
     const handleRefresh = () => {
@@ -112,7 +124,7 @@ const ShippingList = () => {
 
             <div className="table-container">
                 <div className="table-header">
-                    <h2>Shipping Table</h2>
+                    <h2>Shipping</h2>
                 </div>
 
                 {loading ? (
@@ -147,7 +159,7 @@ const ShippingList = () => {
                                                 className="detail-btn"
                                                 onClick={() => navigate(`/shipping/detail/${item.id}`)}
                                             >
-                                                Detail
+                                                Details
                                             </button>
                                         </td>
                                     </tr>

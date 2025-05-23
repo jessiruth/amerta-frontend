@@ -407,7 +407,7 @@ textarea {
 }
 
 .hapus-btn {
-    background-color: var(--danger-color);
+    /* background-color: var(--danger-color);
     color: white;
     border: none;
     border-radius: var(--radius);
@@ -415,11 +415,18 @@ textarea {
     font-weight: 600;
     font-size: 0.875rem;
     cursor: pointer;
-    transition: var(--transition);
+    transition: var(--transition); */
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: red;
+    font-size: 50px;
+    transition: color 0.3s;
 }
 
 .hapus-btn:hover {
-    background-color: #c53030;
+    /* background-color: #c53030; */
+    color: darkred;
 }
 
 .item-grid {

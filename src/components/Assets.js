@@ -20,7 +20,7 @@ const Assets = () => {
             <div className="assets-grid">
                 <div className="asset-box" onClick={() => navigate("/goods-and-services")}>
                     <img src={goodsImage} alt="Goods & Services" />
-                    <p>Goods & Service</p>
+                    <p>Goods & Services</p>
                 </div>
 
                 <div className="asset-box" onClick={() => navigate("/gudang")}>

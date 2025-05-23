@@ -47,17 +47,22 @@ const GoodsTransport = () => {
     }, [fetchData]);
 
     useEffect(() => {
-        const lower = searchTerm.toLowerCase();
+        const lower = searchTerm.toLowerCase().trim();
 
         const filtered = data.filter((item) => {
-            if (searchCategory === "tanggal") {
+            if (!lower) return true;
+            
+            if (searchCategory === "id") {
+                return item.id.toString().toLowerCase() === lower;
+            } else if (searchCategory === "tanggal") {
                 return item.tanggalPemindahan.toLowerCase().includes(lower);
             } else if (searchCategory === "asal") {
-                return item.gudangAsal.toLowerCase().includes(lower);
+                return item.gudangAsal.toLowerCase() === lower;
             } else if (searchCategory === "tujuan") {
-                return item.gudangTujuan.toLowerCase().includes(lower);
+                return item.gudangTujuan.toLowerCase() === lower;
             } else {
                 return (
+                    item.id.toString().toLowerCase().includes(lower) ||
                     item.tanggalPemindahan.toLowerCase().includes(lower) ||
                     item.gudangAsal.toLowerCase().includes(lower) ||
                     item.gudangTujuan.toLowerCase().includes(lower)
@@ -90,7 +95,7 @@ const GoodsTransport = () => {
 
             <div className="table-container">
                 <div className="table-header">
-                    <h2>Transport Table</h2>
+                    <h2>Goods Transport</h2>
                 </div>
 
                 {loading ? (
@@ -121,7 +126,7 @@ const GoodsTransport = () => {
                                                 className="detail-btn"
                                                 onClick={() => navigate(`/goods-transport/detail/${item.id}`)}
                                             >
-                                                Detail
+                                                Details
                                             </button>
                                         </td>
                                     </tr>

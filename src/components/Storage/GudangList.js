@@ -41,31 +41,36 @@ const GudangList = () => {
     }, [navigate, fetchGudangList]);
 
     useEffect(() => {
-        const lower = searchTerm.toLowerCase();
+        const lower = searchTerm.toLowerCase().trim();
+        const numberOnly = searchTerm.replace(/[^0-9]/g, "");
 
         const filtered = gudangList.filter((item) => {
+            if (!lower) return true;
+
             if (searchCategory === "nama") {
-                return item.nama.toLowerCase().includes(lower);
+                return item.nama.toLowerCase() === lower;
             } else if (searchCategory === "kota") {
-                return item.alamatGudang?.kota?.toLowerCase().includes(lower);
+                return item.alamatGudang?.kota?.toLowerCase() === lower;
             } else if (searchCategory === "provinsi") {
-                return item.alamatGudang?.provinsi?.toLowerCase().includes(lower);
+                return item.alamatGudang?.provinsi?.toLowerCase() === lower;
             } else if (searchCategory === "kapasitas") {
-                const searchValue = searchTerm.replace(/[^0-9]/g, "");
-                if (searchValue === "") return true; 
-                return item.kapasitas.toString().includes(searchValue);
-            } else {
+                return numberOnly && item.kapasitas.toString() === numberOnly;
+            } else if (searchCategory === "all") {
                 return (
                     item.nama.toLowerCase().includes(lower) ||
                     item.alamatGudang?.kota?.toLowerCase().includes(lower) ||
                     item.alamatGudang?.provinsi?.toLowerCase().includes(lower) ||
-                    item.kapasitas.toString().includes(searchTerm.replace(/[^0-9]/g, ""))
+                    (numberOnly && item.kapasitas.toString().includes(numberOnly))
                 );
             }
+
+            return true;
         });
 
         setFilteredData(filtered);
     }, [searchTerm, searchCategory, gudangList]);
+
+
 
     const handleRefresh = () => {
         setSearchTerm("");
@@ -93,7 +98,7 @@ const GudangList = () => {
 
                 <div className="table-container">
                     <div className="table-header">
-                        <h2>Storage Table</h2>
+                        <h2>Storage</h2>
                     </div>
 
                     {loading ? (
@@ -118,7 +123,7 @@ const GudangList = () => {
                                             <td>{gudang.nama}</td>
                                             <td>{gudang.alamatGudang?.kota || "-"}</td>
                                             <td>{gudang.alamatGudang?.provinsi || "-"}</td>
-                                            <td>{gudang.kapasitas}</td>
+                                            <td>{parseFloat(gudang.kapasitas).toLocaleString("id-ID")}</td>
                                             <td>
                                                 <button
                                                     className="detail-btn"

@@ -112,3 +112,8 @@
         padding: 10px;
     }
 }
+
+.row-red td {
+  color: red !important;
+  font-weight: 600;
+}

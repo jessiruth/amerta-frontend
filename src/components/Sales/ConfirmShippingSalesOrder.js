@@ -238,7 +238,7 @@ const ConfirmShippingSalesOrder = () => {
                                     className={modalType === "confirm" ? "primary-btn" : "danger-btn"}
                                     onClick={() => {
                                         if (modalType === "confirm") handleConfirmShipping();
-                                        else navigate("/sales-order");
+                                        else navigate(`/sales/completed/detail/${id}`);
                                     }}
                                 >
                                     {modalType === "confirm" ? "Ya, Konfirmasi" : "Ya, Batalkan"}

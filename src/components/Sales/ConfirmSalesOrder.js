@@ -10,7 +10,7 @@ const ConfirmSalesOrder = () => {
     const [data, setData] = useState(null);
     const [customerName, setCustomerName] = useState("");
     const [invoiceDate, setInvoiceDate] = useState(new Date().toISOString().split("T")[0]);
-    const [paymentTerms, setPaymentTerms] = useState(30);
+    const [paymentTerms, setPaymentTerms] = useState("");
     const [itemPrices, setItemPrices] = useState({});
     const [loading, setLoading] = useState(true);
     const [modalType, setModalType] = useState(null);
@@ -86,9 +86,11 @@ const ConfirmSalesOrder = () => {
         if (new Date(invoiceDate) < new Date(data.salesDate)) {
             errors.invoiceDate = "Tanggal invoice tidak boleh lebih awal dari tanggal sales.";
         }
-        if (!paymentTerms || Number(paymentTerms) < 1) {
+        if (!paymentTerms) {
+            errors.paymentTerms = "Jangka waktu pembayaran tidak boleh kosong.";
+        } else if (Number(paymentTerms) < 1) {
             errors.paymentTerms = "Jangka waktu pembayaran minimal 1 hari.";
-        }
+        }   
         setInputErrors(errors);
         return Object.keys(errors).length === 0;
     };
@@ -177,7 +179,7 @@ const ConfirmSalesOrder = () => {
                                 </div>
                                 <div className="form-group">
                                     <label>Jangka Waktu Pembayaran (hari)</label>
-                                    <input type="number" min="1" value={paymentTerms} onChange={(e) => setPaymentTerms(e.target.value)} />
+                                    <input type="number" min="1" placeholder="Contoh: 30" value={paymentTerms} onChange={(e) => setPaymentTerms(e.target.value)} />
                                     {inputErrors.paymentTerms && <span className="error-message">{inputErrors.paymentTerms}</span>}
                                 </div>
                             </div>
@@ -221,7 +223,7 @@ const ConfirmSalesOrder = () => {
                                     className={modalType === "confirm" ? "primary-btn" : "danger-btn"}
                                     onClick={() => {
                                         if (modalType === "confirm") handleConfirm();
-                                        else navigate("/sales-order");
+                                        else navigate(`/sales/completed/detail/${id}`);
                                     }}
                                 >
                                     {modalType === "confirm" ? "Ya, Konfirmasi" : "Ya, Batalkan"}

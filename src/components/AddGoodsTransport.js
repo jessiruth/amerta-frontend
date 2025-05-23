@@ -1,194 +1,274 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import DeleteIcon from "@mui/icons-material/Delete";
 import axiosInstance from "../services/axiosInstance";
-import "../styles/AddGoodsTransport.css";
+import "../styles/AddGoodsAndServices.css";
 
 const AddGoodsTransport = () => {
-    const [gudangList, setGudangList] = useState([]);
-    const [barangList, setBarangList] = useState([]);
-    const [selectedGudangAsal, setSelectedGudangAsal] = useState("");
-    const [selectedGudangTujuan, setSelectedGudangTujuan] = useState("");
-    const [barangTransfer, setBarangTransfer] = useState([]);
-    const [tanggalPemindahan, setTanggalPemindahan] = useState(new Date().toISOString().split("T")[0]);
-    const [error, setError] = useState("");
-    const [isSubmitting, setIsSubmitting] = useState(false);
-    const navigate = useNavigate();
+  const navigate = useNavigate();
+  const [gudangList, setGudangList] = useState([]);
+  const [barangList, setBarangList] = useState([]);
+  const [selectedGudangAsal, setSelectedGudangAsal] = useState("");
+  const [selectedGudangTujuan, setSelectedGudangTujuan] = useState("");
+  const [barangTransfer, setBarangTransfer] = useState([]);
+  const [tanggalPemindahan, setTanggalPemindahan] = useState(new Date().toISOString().split("T")[0]);
+  const [errors, setErrors] = useState({});
+  const [modalType, setModalType] = useState(null);
+  const [successModal, setSuccessModal] = useState(false);
+  const [createdId, setCreatedId] = useState(null);
+
+  useEffect(() => {
     const token = localStorage.getItem("token");
+    if (!token) return navigate("/");
 
-    useEffect(() => {
-        if (!token) navigate("/");
-    }, [navigate, token]);
-
-    useEffect(() => {
-        const fetchGudang = async () => {
-            try {
-                const response = await axiosInstance.get("/api/gudang/", {
-                    headers: { Authorization: `Bearer ${token}` },
-                });
-                setGudangList(response.data.data);
-            } catch (err) {
-                console.error("Error fetching gudang:", err);
-                setError("Gagal mengambil data gudang.");
-            }
-        };
-
-        const fetchBarang = async () => {
-            try {
-                const response = await axiosInstance.get("/api/barang/viewall", {
-                    headers: { Authorization: `Bearer ${token}` },
-                });
-                setBarangList(response.data.data);
-            } catch (err) {
-                console.error("Error fetching barang:", err);
-                setError("Gagal mengambil data barang.");
-            }
-        };
-
-        fetchGudang();
-        fetchBarang();
-    }, [token]);
-
-    const handleAddBarang = () => {
-        setBarangTransfer([...barangTransfer, { id: "", jumlah: "" }]);
+    const fetchData = async () => {
+      try {
+        const [gudangRes, barangRes] = await Promise.all([
+          axiosInstance.get("/api/gudang/", { headers: { Authorization: `Bearer ${token}` } }),
+          axiosInstance.get("/api/barang/viewall", { headers: { Authorization: `Bearer ${token}` } }),
+        ]);
+        setGudangList(gudangRes.data.data);
+        setBarangList(barangRes.data.data);
+      } catch {
+        alert("Gagal memuat data gudang/barang.");
+      }
     };
+    fetchData();
+  }, [navigate]);
 
-    const handleRemoveBarang = (index) => {
-        const newBarangTransfer = [...barangTransfer];
-        newBarangTransfer.splice(index, 1);
-        setBarangTransfer(newBarangTransfer);
-    };
+  const handleChange = (field, value) => {
+    if (field === "tanggalPemindahan") setTanggalPemindahan(value);
+    if (field === "gudangAsal") setSelectedGudangAsal(value);
+    if (field === "gudangTujuan") setSelectedGudangTujuan(value);
 
-    const handleBarangChange = (index, field, value) => {
-        const newBarangTransfer = [...barangTransfer];
-        newBarangTransfer[index][field] = value;
-        setBarangTransfer(newBarangTransfer);
-    };
+    if (errors[field]) {
+      const copy = { ...errors };
+      delete copy[field];
+      setErrors(copy);
+    }
+  };
 
-    const validateForm = () => {
-        if (!selectedGudangAsal || !selectedGudangTujuan) {
-            setError("Gudang asal dan tujuan harus dipilih.");
-            return false;
+  const handleItemChange = (index, field, value) => {
+    const updated = [...barangTransfer];
+    updated[index][field] = value;
+    setBarangTransfer(updated);
+
+    const errKey = `${field}-${index}`;
+    if (errors[errKey]) {
+      const copy = { ...errors };
+      delete copy[errKey];
+      setErrors(copy);
+    }
+  };
+
+  const addItem = () => {
+    setBarangTransfer(prev => [...prev, { id: "", jumlah: "" }]);
+    if (errors.items) {
+      const copy = { ...errors };
+      delete copy.items;
+      setErrors(copy);
+    }
+  };
+
+  const removeItem = index => {
+    const updated = [...barangTransfer];
+    updated.splice(index, 1);
+    setBarangTransfer(updated);
+  };
+
+  const validateForm = () => {
+    const newErr = {};
+    if (!selectedGudangAsal) {
+        newErr.gudangAsal = "Gudang asal wajib dipilih";
+    }
+    if (!selectedGudangTujuan) {
+        newErr.gudangTujuan = "Gudang tujuan wajib dipilih";
+    }
+    else if (selectedGudangAsal === selectedGudangTujuan){
+        newErr.gudangTujuan = "Gudang asal dan tujuan tidak boleh sama";
+    } 
+    
+    if (barangTransfer.length === 0) newErr.items = "Minimal satu barang harus ditambahkan";
+
+    barangTransfer.forEach((item, idx) => {
+      if (!item.id) newErr[`id-${idx}`] = "Pilih barang";
+      if (!item.jumlah || isNaN(item.jumlah) || Number(item.jumlah) < 1) {
+        newErr[`jumlah-${idx}`] = "Jumlah minimal 1";
+      }
+    });
+
+    setErrors(newErr);
+    return Object.keys(newErr).length === 0;
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (validateForm()) setModalType("confirm");
+  };
+
+  const handleConfirm = async () => {
+    const token = localStorage.getItem("token");
+    try {
+      const res = await axiosInstance.post("/api/barang/transfer", {
+        tanggalPemindahan,
+        gudangAsal: selectedGudangAsal,
+        gudangTujuan: selectedGudangTujuan,
+        listBarang: barangTransfer.map(item => ({
+          id: item.id,
+          jumlah: Number(item.jumlah)
+        })),
+      }, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+       if (res.status === 200 || res.status === 201) {
+          setCreatedId(res.data?.data?.id);
+          setSuccessModal(true);
+          setModalType(null);
         }
-        if (selectedGudangAsal === selectedGudangTujuan) {
-            setError("Gudang asal dan tujuan tidak boleh sama.");
-            return false;
-        }
-        if (barangTransfer.length === 0) {
-            setError("Minimal satu barang harus ditambahkan.");
-            return false;
-        }
-        for (let barang of barangTransfer) {
-            if (!barang.id || !barang.jumlah || barang.jumlah <= 0) {
-                setError("Barang harus dipilih dan jumlah harus lebih dari 0.");
-                return false;
-            }
-        }
-        return true;
-    };
+    } catch {
+      alert("Gagal menyimpan data.");
+      setModalType(null);
+    }
+  };
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        setError("");
-        const confirm = window.confirm("Apakah Anda yakin ingin menyimpan pemindahan barang ini?");
-        if (!confirm) return;
-        if (!validateForm()) return;
+  return (
+    <div className="barang-form-container">
+      <div className="barang-page-header">
+        <h1 className="barang-page-title">Tambah Pemindahan Barang</h1>
+      </div>
+      <div className="barang-form-content">
+        <form onSubmit={handleSubmit}>
+          <div className="barang-form-section">
+            <h3>Informasi Umum</h3>
 
-        setIsSubmitting(true);
-        try {
-            const payload = {
-                tanggalPemindahan,
-                gudangAsal: selectedGudangAsal,
-                gudangTujuan: selectedGudangTujuan,
-                listBarang: barangTransfer,
-            };
-
-            const response = await axiosInstance.post("/api/barang/transfer", payload, {
-                headers: { Authorization: `Bearer ${token}` },
-            });
-
-            if ([200, 201].includes(response.status)) {
-                alert("Pemindahan barang berhasil!");
-                navigate("/goods-transport");
-            } else {
-                setError("Gagal melakukan pemindahan barang. Silakan coba lagi.");
-            }
-        } catch (err) {
-            console.error("Error submitting transfer:", err);
-            setError("Terjadi kesalahan saat mengirim data.");
-        } finally {
-            setIsSubmitting(false);
-        }
-    };
-
-    return (
-        <div className="gudang-form-container">
-            <div className="gudang-form-content">
-                <div className="page-header">
-                    <h1 className="page-title">Tambah Pemindahan Barang</h1>
-                </div>
-
-                {error && <p className="error-message">{error}</p>}
-
-                <form onSubmit={handleSubmit} className="form-container">
-                    <div className="form-section">
-                        <div className="form-row">
-                            <div className="form-group">
-                                <label>Tanggal Pemindahan</label>
-                                <input type="date" value={tanggalPemindahan} onChange={(e) => setTanggalPemindahan(e.target.value)} required />
-                            </div>
-                            <div className="form-group">
-                                <label>Gudang Asal</label>
-                                <select value={selectedGudangAsal} onChange={(e) => setSelectedGudangAsal(e.target.value)} required>
-                                    <option value="">Pilih Gudang Asal</option>
-                                    {gudangList.map((g) => <option key={g.nama} value={g.nama}>{g.nama}</option>)}
-                                </select>
-                            </div>
-                            <div className="form-group">
-                                <label>Gudang Tujuan</label>
-                                <select value={selectedGudangTujuan} onChange={(e) => setSelectedGudangTujuan(e.target.value)} required>
-                                    <option value="">Pilih Gudang Tujuan</option>
-                                    {gudangList.map((g) => <option key={g.nama} value={g.nama}>{g.nama}</option>)}
-                                </select>
-                            </div>
-                        </div>
-
-                        <div className="form-group">
-                            <label>Barang yang Dipindahkan (Pilih Gudang Asal Terlebih Dahulu)</label>
-                            {barangTransfer.map((item, index) => (
-                                <div key={index} className="barang-item">
-                                    <select value={item.id} onChange={(e) => handleBarangChange(index, "id", e.target.value)} required>
-                                        <option value="">Pilih Barang</option>
-                                        {barangList
-                                            .filter(barang => barang.stockBarang.some(stock => stock.namaGudang === selectedGudangAsal))
-                                            .map(barang => {
-                                                const stockInfo = barang.stockBarang.find(s => s.namaGudang === selectedGudangAsal);
-                                                return (
-                                                    <option key={barang.id} value={barang.id}>
-                                                        {barang.nama} (Stok: {stockInfo?.stock || 0})
-                                                    </option>
-                                                );
-                                            })}
-                                    </select>
-                                    <input type="number" placeholder="Jumlah" value={item.jumlah} onChange={(e) => handleBarangChange(index, "jumlah", e.target.value)} required />
-                                    <button type="button" className="danger-btn" onClick={() => handleRemoveBarang(index)}>Hapus</button>
-                                </div>
-                            ))}
-                            <button type="button" className="primary-btn" onClick={handleAddBarang}>Tambah Barang</button>
-                        </div>
-                    </div>
-
-                    <div className="form-actions">
-                        <button type="button" className="cancel-btn" onClick={() => {
-                            if (window.confirm("Apakah Anda yakin ingin membatalkan transfer barang?")) navigate("/goods-transport");
-                        }}>Batal</button>
-                        <button type="submit" className="submit-btn" disabled={isSubmitting}>
-                            {isSubmitting ? "Menyimpan..." : "Simpan"}
-                        </button>
-                    </div>
-                </form>
+            <div className="barang-form-group">
+              <label>Tanggal Pemindahan<span className="required">*</span></label>
+              <input type="date" value={tanggalPemindahan} onChange={e => handleChange("tanggalPemindahan", e.target.value)} />
             </div>
+            <div className="barang-form-group">
+              <label>Gudang Asal<span className="required">*</span></label>
+              <select value={selectedGudangAsal} onChange={e => handleChange("gudangAsal", e.target.value)}>
+                <option value="">Pilih Gudang</option>
+                {gudangList.map(g => <option key={g.nama} value={g.nama}>{g.nama}</option>)}
+              </select>
+              {errors.gudangAsal && <div className="barang-error">{errors.gudangAsal}</div>}
+            </div>
+            <div className="barang-form-group">
+              <label>Gudang Tujuan<span className="required">*</span></label>
+              <select value={selectedGudangTujuan} onChange={e => handleChange("gudangTujuan", e.target.value)}>
+                <option value="">Pilih Gudang</option>
+                {gudangList.map(g => <option key={g.nama} value={g.nama}>{g.nama}</option>)}
+              </select>
+              {errors.gudangTujuan && <div className="barang-error">{errors.gudangTujuan}</div>}
+            </div>
+          </div>
+
+          <div className="barang-form-section">
+            <h3>Daftar Barang</h3>
+            <button type="button" className="barang-add-btn" onClick={addItem}>+ Tambah Barang</button>
+            {errors.items && <div className="barang-error">{errors.items}</div>}
+
+            <div className="barang-stock-table-wrapper">
+              {barangTransfer.length > 0 && (
+                <table className="purchase-stock-table">
+                  <thead>
+                    <tr>
+                      <th>Barang</th>
+                      <th>Jumlah</th>
+                      <th>Hapus</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {barangTransfer.map((item, idx) => (
+                      <tr key={idx}>
+                        <td>
+                          <select value={item.id} onChange={e => handleItemChange(idx, "id", e.target.value)}>
+                            <option value="">Pilih Barang</option>
+                            {barangList
+                              .filter(b => b.stockBarang.some(s => s.namaGudang === selectedGudangAsal))
+                              .map(b => {
+                                const stok = b.stockBarang.find(s => s.namaGudang === selectedGudangAsal)?.stock || 0;
+                                return (
+                                  <option key={b.id} value={b.id}>
+                                    {b.nama} (Stok: {stok})
+                                  </option>
+                                );
+                              })}
+                          </select>
+                          {errors[`id-${idx}`] && <div className="barang-error">{errors[`id-${idx}`]}</div>}
+                        </td>
+                        <td>
+                          <input type="number" placeholder="Jumlah" value={item.jumlah} onChange={e => handleItemChange(idx, "jumlah", e.target.value)} />
+                          {errors[`jumlah-${idx}`] && <div className="barang-error">{errors[`jumlah-${idx}`]}</div>}
+                        </td>
+                        <td>
+                          <button type="button" className="barang-delete-button" onClick={() => removeItem(idx)}>
+                            <DeleteIcon />
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              )}
+            </div>
+          </div>
+
+          <div className="barang-actions">
+            <button type="button" className="barang-cancel-btn" onClick={() => setModalType("cancel")}>Batal</button>
+            <button type="submit" className="barang-submit-btn">Simpan</button>
+          </div>
+        </form>
+      </div>
+
+      {modalType && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h3>{modalType === "confirm" ? "Konfirmasi Simpan" : "Konfirmasi Batal"}</h3>
+              <button className="close-button" onClick={() => setModalType(null)}>&times;</button>
+            </div>
+            <div className="modal-body">
+              {modalType === "confirm" ? (
+                <p>Apakah Anda yakin ingin menyimpan data ini?</p>
+              ) : (
+                <>
+                  <p>Apakah Anda yakin ingin membatalkan formulir?</p>
+                  <p className="warning-text">Semua data akan hilang.</p>
+                </>
+              )}
+            </div>
+            <div className="modal-footer">
+              <button className="secondary-btn" onClick={() => setModalType(null)}>Kembali</button>
+              <button className={modalType === "confirm" ? "primary-btn" : "danger-btn"}
+                onClick={modalType === "confirm"
+                  ? handleConfirm
+                  : () => navigate("/goods-transport")}>
+                {modalType === "confirm" ? "Ya, Simpan" : "Ya, Batalkan"}
+              </button>
+            </div>
+          </div>
         </div>
-    );
+      )}
+
+      {successModal && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h3>Pemindahan Disimpan</h3>
+              <button className="close-button" onClick={() => setSuccessModal(false)}>&times;</button>
+            </div>
+            <div className="modal-body">
+              <p>Data berhasil disimpan. Anda akan diarahkan ke halaman detail pemindahan.</p>
+            </div>
+            <div className="modal-footer">
+              <button className="primary-btn" onClick={() => navigate(`/goods-transport/detail/${createdId}`)}>OK</button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
 };
 
 export default AddGoodsTransport;

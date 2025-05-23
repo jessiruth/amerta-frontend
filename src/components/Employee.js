@@ -39,6 +39,15 @@ const Employee = () => {
         fetchEmployees();
     }, [fetchEmployees]);
 
+    const handleRowClick = (employeeId) => {
+        navigate(`/employee/${employeeId}`);
+    };
+
+    const handleDetailClick = (e, employeeId) => {
+        e.stopPropagation(); // Prevent row click when clicking detail button
+        navigate(`/employee/${employeeId}`);
+    };
+
     return (
         <div className="employee-container">
             <h1 className="page-title">Employee</h1>
@@ -58,22 +67,35 @@ const Employee = () => {
                         <th>Email</th>
                         <th>Handphone</th>
                         <th>Whatsapp Number</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
                     {employees.length > 0 ? (
                         employees.map((employee) => (
-                            <tr key={employee.id}>
+                            <tr 
+                                key={employee.id} 
+                                onClick={() => handleRowClick(employee.id)}
+                                className="clickable-row"
+                            >
                                 <td>{employee.name}</td>
                                 <td>{employee.role}</td>
                                 <td>{employee.email}</td>
                                 <td>{employee.phone}</td>
                                 <td>{employee.whatsappNumber}</td>
+                                <td>
+                                    <button
+                                        className="detail-button"
+                                        onClick={(e) => handleDetailClick(e, employee.id)}
+                                    >
+                                        Detail
+                                    </button>
+                                </td>
                             </tr>
                         ))
                     ) : (
                         <tr>
-                            <td colSpan="5">No data available</td>
+                            <td colSpan="6">No data available</td>
                         </tr>
                     )}
                 </tbody>

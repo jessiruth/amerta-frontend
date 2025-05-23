@@ -193,7 +193,7 @@ const CompletePurchaseOrder = () => {
 
                 {/* Tombol Aksi */}
                 <div className="form-actions">
-                    <button className="cancel-btn" onClick={() => navigate("/purchase/completed")}>Batal</button>
+                    <button className="cancel-btn" onClick={() => navigate(`/purchase/completed/detail/${id}`)}>Batal</button>
                     <button className="submit-btn" onClick={() => setModalType("confirm")}>Selesaikan</button>
                 </div>
 

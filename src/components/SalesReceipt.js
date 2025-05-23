@@ -46,25 +46,29 @@ const SalesReceipt = () => {
         fetchData();
     }, [fetchData]);
     
-    useEffect(() => {
-        const lower = searchTerm.toLowerCase();
-
-        if (searchTerm === "") {
-            setFilteredData(data);
-            return;
-        }
+     useEffect(() => {
+        const lower = searchTerm.toLowerCase().trim();
+        const numeric = parseFloat(searchTerm.replace(",", "."));
 
         const filtered = data.filter((item) => {
+            if (!lower) return true;
+
             if (searchCategory === "id") {
-                return item.id.toString().toLowerCase().includes(lower);
+            return item.id.toString().toLowerCase() === lower;
             } else if (searchCategory === "date") {
-                return item.receiptDate.toLowerCase().includes(lower);
+            return item.receiptDate.toLowerCase().includes(lower);
             } else if (searchCategory === "amount") {
-                return item.amountPayed.toString().toLowerCase().includes(lower);
+            return !isNaN(numeric) && parseFloat(item.amountPayed) === numeric;
+            } else if (searchCategory === "all") {
+            return (
+                item.id.toString().toLowerCase().includes(lower) ||
+                item.receiptDate.toLowerCase().includes(lower) ||
+                item.amountPayed.toString().replace(".", ",").includes(searchTerm)
+            );
             }
+
             return false;
         });
-        
 
         setFilteredData(filtered);
     }, [searchTerm, searchCategory, data]);
@@ -89,7 +93,7 @@ const SalesReceipt = () => {
 
             <div className="table-container">
                 <div className="table-header">
-                    <h2>Sales Receipt Table</h2>
+                    <h2>Sales Receipt</h2>
                 </div>
 
                 {loading ? (
@@ -118,7 +122,7 @@ const SalesReceipt = () => {
                                                 className="detail-btn"
                                                 onClick={() => navigate(`/sales-receipt/detail/${item.salesOrderId}`)}
                                             >
-                                                Detail
+                                                Details
                                             </button>
                                         </td>
                                     </tr>

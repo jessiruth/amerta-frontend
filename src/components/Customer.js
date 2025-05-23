@@ -39,9 +39,18 @@ const Customer = () => {
         fetchCustomers();
     }, [fetchCustomers]);
 
+    const handleRowClick = (customerId) => {
+        navigate(`/customer/${customerId}`);
+    };
+
+    const handleDetailClick = (e, customerId) => {
+        e.stopPropagation(); // Prevent row click when clicking detail button
+        navigate(`/customer/${customerId}`);
+    };
+
     return (
         <div className="employee-container">
-            <h1 className="page-title">Customer</h1>
+            <h1 className="page-title">Customer/Vendor</h1>
 
             <Toolbar
                 onAdd={() => navigate("/customer/add")}
@@ -50,7 +59,7 @@ const Customer = () => {
                 onSearch={(term) => console.log("Search:", term)}
             />
 
-            <table className="employee-table"> {/* harusnya employee-table big man */}
+            <table className="employee-table">
                 <thead>
                     <tr>
                         <th>Nama</th>
@@ -58,22 +67,35 @@ const Customer = () => {
                         <th>Email</th>
                         <th>Handphone</th>
                         <th>Whatsapp Number</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
                     {customer.length > 0 ? (
                         customer.map((customer) => (
-                            <tr key={customer.id}>
+                            <tr 
+                                key={customer.id} 
+                                onClick={() => handleRowClick(customer.id)}
+                                className="clickable-row"
+                            >
                                 <td>{customer.name}</td>
                                 <td>{customer.role}</td>
                                 <td>{customer.email}</td>
                                 <td>{customer.phone}</td>
                                 <td>{customer.whatsapp}</td>
+                                <td>
+                                    <button
+                                        className="detail-button"
+                                        onClick={(e) => handleDetailClick(e, customer.id)}
+                                    >
+                                        Detail
+                                    </button>
+                                </td>
                             </tr>
                         ))
                     ) : (
                         <tr>
-                            <td colSpan="5">No data available</td>
+                            <td colSpan="6">No data available</td>
                         </tr>
                     )}
                 </tbody>
