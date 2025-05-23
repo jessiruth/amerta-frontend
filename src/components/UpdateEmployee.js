@@ -14,7 +14,6 @@ const UpdateEmployee = () => {
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [confirmationType, setConfirmationType] = useState('save');
   const [formData, setFormData] = useState({
-    email: '',
     phone: '',
     homePhone: '',
     businessPhone: '',
@@ -25,6 +24,7 @@ const UpdateEmployee = () => {
   });
   const [readOnlyData, setReadOnlyData] = useState({
     name: '',
+    email: '',
     gender: '',
     entryDate: '',
     ktpNumber: '',
@@ -42,7 +42,6 @@ const UpdateEmployee = () => {
       if (response.data && response.data.data) {
         const employeeData = response.data.data;
         setFormData({
-          email: employeeData.email || '',
           phone: employeeData.phone || '',
           homePhone: employeeData.homePhone || '',
           businessPhone: employeeData.businessPhone || '',
@@ -53,6 +52,7 @@ const UpdateEmployee = () => {
         });
         setReadOnlyData({
           name: employeeData.name || '',
+          email: employeeData.email || '',
           gender: employeeData.gender ? 'Laki-laki' : 'Perempuan',
           entryDate: employeeData.entryDate ? new Date(employeeData.entryDate).toLocaleDateString('id-ID') : '',
           ktpNumber: employeeData.ktpNumber || '',
@@ -87,7 +87,6 @@ const UpdateEmployee = () => {
 
   const validateForm = () => {
     const errors = {};
-    if (!formData.email.trim()) errors.email = "Email harus diisi";
     if (!formData.phone.trim()) errors.phone = "Nomor telepon harus diisi";
     if (!formData.homePhone.trim()) errors.homePhone = "Nomor telepon rumah harus diisi";
     if (!formData.businessPhone.trim()) errors.businessPhone = "Nomor telepon bisnis harus diisi";
@@ -98,7 +97,6 @@ const UpdateEmployee = () => {
     if (formData.businessPhone && !/^\d+$/.test(formData.businessPhone)) errors.businessPhone = "Harus berupa angka";
     if (formData.whatsappNumber && !/^\d+$/.test(formData.whatsappNumber)) errors.whatsappNumber = "Harus berupa angka";
     if (formData.notes && formData.notes.length > 500) errors.notes = "Catatan maksimal 500 karakter";
-    if (formData.email && !/\S+@\S+\.\S+/.test(formData.email)) errors.email = "Format email tidak valid";
     setValidationErrors(errors);
     return Object.keys(errors).length === 0;
   };
@@ -171,18 +169,6 @@ const UpdateEmployee = () => {
           <div className="form-section">
             <div className="form-row">
               <div className="form-group">
-                <label>Email<span className="required">*</span></label>
-                <input
-                  type="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  className={validationErrors.email ? "error-input" : ""}
-                  required
-                />
-                {validationErrors.email && <span className="error-message">{validationErrors.email}</span>}
-              </div>
-              <div className="form-group">
                 <label>Nomor Telepon<span className="required">*</span></label>
                 <input
                   type="text"
@@ -193,6 +179,18 @@ const UpdateEmployee = () => {
                   required
                 />
                 {validationErrors.phone && <span className="error-message">{validationErrors.phone}</span>}
+              </div>
+              <div className="form-group">
+                <label>Nomor WhatsApp<span className="required">*</span></label>
+                <input
+                  type="text"
+                  name="whatsappNumber"
+                  value={formData.whatsappNumber}
+                  onChange={handleChange}
+                  className={validationErrors.whatsappNumber ? "error-input" : ""}
+                  required
+                />
+                {validationErrors.whatsappNumber && <span className="error-message">{validationErrors.whatsappNumber}</span>}
               </div>
             </div>
             <div className="form-row">
@@ -222,18 +220,6 @@ const UpdateEmployee = () => {
               </div>
             </div>
             <div className="form-row">
-              <div className="form-group">
-                <label>Nomor WhatsApp<span className="required">*</span></label>
-                <input
-                  type="text"
-                  name="whatsappNumber"
-                  value={formData.whatsappNumber}
-                  onChange={handleChange}
-                  className={validationErrors.whatsappNumber ? "error-input" : ""}
-                  required
-                />
-                {validationErrors.whatsappNumber && <span className="error-message">{validationErrors.whatsappNumber}</span>}
-              </div>
               <div className="form-group">
                 <label>Role<span className="required">*</span></label>
                 <select

@@ -63,6 +63,8 @@ import SalesInvoice from "./components/SalesInvoice";
 import SalesInvoiceDetail from "./components/SalesInvoiceDetail";
 import DetailPurchase from "./components/Purchase/DetailPurchase";
 import DetailSales from "./components/Sales/DetailSales";
+import Profile from "./components/Profile";
+import UpdateProfile from "./components/UpdateProfile";
 
 function Layout() {
     const location = useLocation();
@@ -152,6 +154,9 @@ function Layout() {
 
                 <Route path="/delivery-invoice" element={<PurchaseInvoice />} />
                 <Route path="/purchase-invoice/detail/:id" element={<PurchaseInvoiceDetail />} />
+
+                <Route path="/profile/:id" element={<Profile />} />
+                <Route path="/profile/update-password/:id" element={<UpdateProfile />} />
             </Routes>
         </div>
     );
