@@ -1,11 +1,16 @@
 import { useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import Toolbar from "../components/ToolbarGoodsTransport";
-import "../styles/Employee.css";
+import Toolbar from "../components/ToolbarEmployee";
+import "../styles/GoodsTransport.css";
 import axiosInstance from "../services/axiosInstance";
 
 const Employee = () => {
     const [employees, setEmployees] = useState([]);
+    const [filteredEmployees, setFilteredEmployees] = useState([]);
+    const [searchTerm, setSearchTerm] = useState("");
+    const [searchCategory, setSearchCategory] = useState("all");
+    const [loading, setLoading] = useState(true);
+
     const navigate = useNavigate();
     const token = localStorage.getItem("token");
 
@@ -16,6 +21,7 @@ const Employee = () => {
     }, [navigate, token]);
 
     const fetchEmployees = useCallback(async () => {
+        setLoading(true);
         try {
             const response = await axiosInstance.get("/api/user/all?role=", {
                 headers: {
@@ -23,15 +29,16 @@ const Employee = () => {
                 },
             });
 
-            console.log("API Response:", response.data);
-
             if (response.data && Array.isArray(response.data.data)) {
                 setEmployees(response.data.data);
+                setFilteredEmployees(response.data.data);
             } else {
                 console.error("Unexpected response format:", response.data);
             }
         } catch (error) {
             console.error("Error fetching employees:", error);
+        } finally {
+            setLoading(false);
         }
     }, [token]);
 
@@ -39,13 +46,42 @@ const Employee = () => {
         fetchEmployees();
     }, [fetchEmployees]);
 
-    const handleRowClick = (employeeId) => {
-        navigate(`/employee/${employeeId}`);
-    };
+    useEffect(() => {
+        const lower = searchTerm.toLowerCase().trim();
 
-    const handleDetailClick = (e, employeeId) => {
-        e.stopPropagation(); // Prevent row click when clicking detail button
-        navigate(`/employee/${employeeId}`);
+        const filtered = employees.filter((emp) => {
+            if (!lower) return true;
+
+            switch (searchCategory) {
+                case "nama":
+                    return emp.name.toLowerCase() === lower;
+                case "email":
+                    return emp.email.toLowerCase() === lower;
+                case "role":
+                    return emp.role.toLowerCase() === lower;
+                case "no_hp":
+                    return emp.phone?.toLowerCase() === lower;
+                case "wa":
+                    return emp.whatsappNumber?.toLowerCase() === lower;
+                case "all":
+                default:
+                    return (
+                        emp.name.toLowerCase().includes(lower) ||
+                        emp.email.toLowerCase().includes(lower) ||
+                        emp.role.toLowerCase().includes(lower) ||
+                        emp.phone?.toLowerCase().includes(lower) ||
+                        emp.whatsappNumber?.toLowerCase().includes(lower)
+                    );
+            }
+        });
+
+        setFilteredEmployees(filtered);
+    }, [searchTerm, searchCategory, employees]);
+
+    const handleRefresh = () => {
+        setSearchTerm("");
+        setSearchCategory("all");
+        fetchEmployees();
     };
 
     return (
@@ -54,52 +90,65 @@ const Employee = () => {
 
             <Toolbar
                 onAdd={() => navigate("/employee/add")}
-                onRefresh={fetchEmployees}
-                onFilter={() => console.log("Filter Clicked")}
-                onSearch={(term) => console.log("Search:", term)}
+                onRefresh={handleRefresh}
+                onFilter={(category) => setSearchCategory(category)}
+                onSearch={(term) => setSearchTerm(term)}
+                selectedCategory={searchCategory}
+                searchTerm={searchTerm}
             />
 
-            <table className="employee-table">
-                <thead>
-                    <tr>
-                        <th>Nama</th>
-                        <th>Role</th>
-                        <th>Email</th>
-                        <th>Handphone</th>
-                        <th>Whatsapp Number</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {employees.length > 0 ? (
-                        employees.map((employee) => (
-                            <tr 
-                                key={employee.id} 
-                                onClick={() => handleRowClick(employee.id)}
-                                className="clickable-row"
-                            >
-                                <td>{employee.name}</td>
-                                <td>{employee.role}</td>
-                                <td>{employee.email}</td>
-                                <td>{employee.phone}</td>
-                                <td>{employee.whatsappNumber}</td>
-                                <td>
-                                    <button
-                                        className="detail-button"
-                                        onClick={(e) => handleDetailClick(e, employee.id)}
-                                    >
-                                        Detail
-                                    </button>
-                                </td>
+            <div className="table-container">
+                <div className="table-header">
+                    <h2>Employee List</h2>
+                </div>
+
+                {loading ? (
+                    <div className="loading-container">
+                        <p>Loading...</p>
+                    </div>
+                ) : (
+                    <table className="gudang-table">
+                        <thead>
+                            <tr>
+                                <th>Nama</th>
+                                <th>Role</th>
+                                <th>Email</th>
+                                <th>Handphone</th>
+                                <th>Whatsapp Number</th>
+                                <th>Actions</th>
                             </tr>
-                        ))
-                    ) : (
-                        <tr>
-                            <td colSpan="6">No data available</td>
-                        </tr>
-                    )}
-                </tbody>
-            </table>
+                        </thead>
+                        <tbody>
+                            {filteredEmployees.length > 0 ? (
+                                filteredEmployees.map((employee) => (
+                                    <tr key={employee.id}>
+                                        <td>{employee.name}</td>
+                                        <td>{employee.role}</td>
+                                        <td>{employee.email}</td>
+                                        <td>{employee.phone}</td>
+                                        <td>{employee.whatsappNumber}</td>
+                                        <td>
+                                            <button
+                                                className="detail-btn"
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    navigate(`/employee/${employee.id}`);
+                                                }}
+                                            >
+                                                Detail
+                                            </button>
+                                        </td>
+                                    </tr>
+                                ))
+                            ) : (
+                                <tr>
+                                    <td colSpan="5" className="no-data">No data available</td>
+                                </tr>
+                            )}
+                        </tbody>
+                    </table>
+                )}
+            </div>
         </div>
     );
 };

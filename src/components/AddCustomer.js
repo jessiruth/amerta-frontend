@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import "../styles/AddEmployee.css"; // Reuse same style
+import "../styles/AddGoodsAndServices.css"; // Reuse same style
 
 const AddCustomer = () => {
     const [formData, setFormData] = useState({
@@ -18,6 +18,8 @@ const AddCustomer = () => {
     const [validationErrors, setValidationErrors] = useState({});
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [showConfirmation, setShowConfirmation] = useState(false);
+    const [showCancelConfirmation, setShowCancelConfirmation] = useState(false);
+    const [showSuccessModal, setShowSuccessModal] = useState(false);
     const navigate = useNavigate();
     const token = localStorage.getItem("token");
 
@@ -33,6 +35,12 @@ const AddCustomer = () => {
 
     const validateForm = () => {
         let errors = {};
+        ["name", "email", "phone", "handphone", "whatsapp", "address", "role"].forEach((field) => {
+            if (!formData[field].trim()) {
+                errors[field] = `${field.charAt(0).toUpperCase() + field.slice(1)} wajib diisi.`;
+            }
+        });
+        
         if (!/\S+@\S+\.\S+/.test(formData.email)) {
             errors.email = "Format email tidak valid.";
         }
@@ -62,8 +70,7 @@ const AddCustomer = () => {
             });
 
             if ([200, 201].includes(response.status)) {
-                alert("Customer berhasil ditambahkan!");
-                navigate("/customer");
+                setShowSuccessModal(true);
             } else {
                 setError("Gagal menambahkan customer. Silakan coba lagi.");
             }
@@ -75,20 +82,17 @@ const AddCustomer = () => {
     };
 
     const handleCancel = () => {
-        if (window.confirm("Apakah Anda yakin ingin membatalkan penambahan customer?"))
-            navigate("/customer");
+        setShowCancelConfirmation(true);
     };
 
     return (
-        <div className="gudang-form-container">
-            <div className="gudang-form-content">
-                <div className="page-header">
-                    <h1 className="page-title">Tambah Customer</h1>
-                </div>
-
-                <form onSubmit={handleSubmit} className="form-container">
-                    <div className="form-section">
-
+        <div className="barang-form-container">
+            <div className="barang-page-header">
+                <h1 className="barang-page-title">Tambah Customer</h1>
+            </div>
+            <div className="barang-form-content">
+                <form onSubmit={handleSubmit}>
+                    <div className="barang-form-section">
                         <div className="form-row">
                             <div className="form-group">
                                 <label>Nama Perusahaan</label>
@@ -97,7 +101,7 @@ const AddCustomer = () => {
                             <div className="form-group">
                                 <label>Email</label>
                                 <input type="email" name="email" value={formData.email} onChange={handleChange} required />
-                                {validationErrors.email && <span className="error-message">{validationErrors.email}</span>}
+                                {validationErrors.email && <div className="barang-error">{validationErrors.email}</div>}
                             </div>
                         </div>
 
@@ -105,12 +109,12 @@ const AddCustomer = () => {
                             <div className="form-group">
                                 <label>No. Telepon</label>
                                 <input type="text" name="phone" value={formData.phone} onChange={handleChange} required />
-                                {validationErrors.phone && <span className="error-message">{validationErrors.phone}</span>}
+                                {validationErrors.phone && <div className="barang-error">{validationErrors.phone}</div>}
                             </div>
                             <div className="form-group">
                                 <label>No. Handphone</label>
                                 <input type="text" name="handphone" value={formData.handphone} onChange={handleChange} required />
-                                {validationErrors.handphone && <span className="error-message">{validationErrors.handphone}</span>}
+                                {validationErrors.handphone && <div className="barang-error">{validationErrors.handphone}</div>}
                             </div>
                         </div>
 
@@ -118,7 +122,7 @@ const AddCustomer = () => {
                             <div className="form-group">
                                 <label>No. WhatsApp</label>
                                 <input type="text" name="whatsapp" value={formData.whatsapp} onChange={handleChange} required />
-                                {validationErrors.whatsapp && <span className="error-message">{validationErrors.whatsapp}</span>}
+                                {validationErrors.whatsapp && <div className="barang-error">{validationErrors.whatsapp}</div>}
                             </div>
                             <div className="form-group">
                                 <label>Alamat</label>
@@ -133,36 +137,80 @@ const AddCustomer = () => {
                                 <option value="VENDOR">VENDOR</option>
                                 <option value="CUSTOMER">CUSTOMER</option>
                             </select>
-                            {validationErrors.role && <span className="error-message">{validationErrors.role}</span>}
+                            {validationErrors.role && <div className="barang-error">{validationErrors.role}</div>}
                         </div>
                     </div>
 
-                    <div className="form-actions">
-                        <button type="button" className="cancel-btn" onClick={handleCancel}>Batal</button>
-                        <button type="submit" className="submit-btn" disabled={isSubmitting}>
+                    <div className="barang-actions">
+                        <button type="button" className="barang-cancel-btn" onClick={handleCancel}>Batal</button>
+                        <button type="submit" className="barang-submit-btn" disabled={isSubmitting}>
                             {isSubmitting ? "Menyimpan..." : "Simpan Customer"}
                         </button>
                     </div>
                 </form>
+            </div>
 
-                {showConfirmation && (
-                    <div className="modal-overlay">
-                        <div className="modal-content">
-                            <div className="modal-header">
-                                <h3>Konfirmasi</h3>
-                                <button className="close-button" onClick={() => setShowConfirmation(false)}>&times;</button>
-                            </div>
-                            <div className="modal-body">
-                                <p>Apakah Anda yakin ingin menyimpan data customer ini?</p>
-                            </div>
-                            <div className="modal-footer">
-                                <button className="cancel-btn" onClick={() => setShowConfirmation(false)}>Batal</button>
-                                <button className="submit-btn" onClick={confirmSubmit}>Ya, Simpan</button>
-                            </div>
+            {showConfirmation && (
+                <div className="modal-overlay">
+                    <div className="modal-content">
+                        <div className="modal-header">
+                            <h3>Konfirmasi Simpan</h3>
+                            <button className="close-button" onClick={() => setShowConfirmation(false)}>&times;</button>
+                        </div>
+                        <div className="modal-body">
+                            <p>Apakah Anda yakin ingin menyimpan customer ini?</p>
+                        </div>
+                        <div className="modal-footer">
+                            <button className="secondary-btn" onClick={() => setShowConfirmation(false)}>Kembali</button>
+                            <button className="primary-btn" onClick={confirmSubmit}>Ya, Simpan</button>
                         </div>
                     </div>
-                )}
-            </div>
+                </div>
+            )}
+
+            {showCancelConfirmation && (
+                <div className="modal-overlay">
+                    <div className="modal-content">
+                        <div className="modal-header">
+                            <h3>Konfirmasi Batal</h3>
+                            <button className="close-button" onClick={() => setShowCancelConfirmation(false)}>&times;</button>
+                        </div>
+                        <div className="modal-body">
+                            <p>Apakah Anda yakin ingin membatalkan penambahan customer?</p>
+                            <p className="warning-text">Semua data yang telah dimasukkan akan hilang.</p>
+                        </div>
+                        <div className="modal-footer">
+                            <button className="secondary-btn" onClick={() => setShowCancelConfirmation(false)}>Kembali</button>
+                            <button className="danger-btn" onClick={() => navigate("/customer")}>Ya, Batalkan</button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {showSuccessModal && (
+                <div className="modal-overlay">
+                    <div className="modal-content">
+                        <div className="modal-header">
+                            <h3>Customer Ditambahkan</h3>
+                            <button className="close-button" onClick={() => setShowSuccessModal(false)}>&times;</button>
+                        </div>
+                        <div className="modal-body">
+                            <p>Customer berhasil ditambahkan. Anda akan diarahkan ke halaman customer.</p>
+                        </div>
+                        <div className="modal-footer">
+                            <button
+                                className="primary-btn"
+                                onClick={() => {
+                                    setShowSuccessModal(false);
+                                    navigate("/customer");
+                                }}
+                            >
+                                OK
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };
