@@ -44,7 +44,7 @@ const Employee = () => {
     };
 
     const handleDetailClick = (e, employeeId) => {
-        e.stopPropagation(); // Prevent row click when clicking detail button
+        e.stopPropagation();
         navigate(`/employee/${employeeId}`);
     };
 

@@ -160,7 +160,17 @@ const UpdateProfile = () => {
               <p>Password Anda berhasil diperbarui.</p>
             </div>
             <div className="modal-footer">
-              <button className="primary-btn" onClick={() => navigate("/home")}>OK</button>
+              <button
+                className="primary-btn"
+                onClick={() => {
+                  localStorage.removeItem("token");
+                  localStorage.removeItem("id");
+                  setShowSuccessModal(false);
+                  navigate("/");
+                }}
+              >
+                OK
+              </button>
             </div>
           </div>
         </div>
