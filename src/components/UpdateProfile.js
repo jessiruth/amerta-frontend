@@ -15,6 +15,7 @@ const UpdateProfile = () => {
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [validationErrors, setValidationErrors] = useState({});
   const [showConfirmation, setShowConfirmation] = useState(false);
+  const [showCancelConfirmation, setShowCancelConfirmation] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [saving, setSaving] = useState(false);
 
@@ -28,7 +29,11 @@ const UpdateProfile = () => {
   const validateForm = () => {
     const errors = {};
     if (!oldPassword.trim()) errors.oldPassword = "Password lama wajib diisi.";
-    if (!newPassword.trim()) errors.newPassword = "Password baru wajib diisi.";
+    if (!newPassword.trim()) {
+      errors.newPassword = "Password baru wajib diisi.";
+    } else if (/\s/.test(newPassword)) {
+      errors.newPassword = "Password baru tidak boleh mengandung spasi.";
+    }
     setValidationErrors(errors);
     return Object.keys(errors).length === 0;
   };
@@ -40,6 +45,17 @@ const UpdateProfile = () => {
     } else {
       const firstError = document.querySelector('.barang-error');
       if (firstError) firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  };
+
+  const handleChange = (setter, field) => (e) => {
+    setter(e.target.value);
+    if (validationErrors[field]) {
+      setValidationErrors((prev) => {
+        const copy = { ...prev };
+        delete copy[field];
+        return copy;
+      });
     }
   };
 
@@ -93,7 +109,7 @@ const UpdateProfile = () => {
                 <input
                   type={showOldPassword ? "text" : "password"}
                   value={oldPassword}
-                  onChange={(e) => setOldPassword(e.target.value)}
+                  onChange={handleChange(setOldPassword, 'oldPassword')}
                 />
                 <span onClick={() => setShowOldPassword(!showOldPassword)} className="eye-icon">
                   {showOldPassword ? <VisibilityOff /> : <Visibility />}
@@ -108,7 +124,7 @@ const UpdateProfile = () => {
                 <input
                   type={showNewPassword ? "text" : "password"}
                   value={newPassword}
-                  onChange={(e) => setNewPassword(e.target.value)}
+                  onChange={handleChange(setNewPassword, 'newPassword')}
                 />
                 <span onClick={() => setShowNewPassword(!showNewPassword)} className="eye-icon">
                   {showNewPassword ? <VisibilityOff /> : <Visibility />}
@@ -121,7 +137,7 @@ const UpdateProfile = () => {
           </div>
 
           <div className="barang-actions">
-            <button type="button" className="barang-cancel-btn" onClick={() => navigate("/home")}>Batal</button>
+            <button type="button" className="barang-cancel-btn" onClick={() => setShowCancelConfirmation(true)}>Batal</button>
             <button type="submit" className="barang-submit-btn" disabled={saving}>
               {saving ? "Menyimpan..." : "Simpan Perubahan"}
             </button>
@@ -129,7 +145,7 @@ const UpdateProfile = () => {
         </form>
       </div>
 
-      {/* Modal Konfirmasi */}
+      {/* Modal Konfirmasi Simpan */}
       {showConfirmation && (
         <div className="modal-overlay">
           <div className="modal-content">
@@ -148,6 +164,26 @@ const UpdateProfile = () => {
         </div>
       )}
 
+      {/* Modal Konfirmasi Batal */}
+      {showCancelConfirmation && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h3>Konfirmasi Batal</h3>
+              <button className="close-button" onClick={() => setShowCancelConfirmation(false)}>&times;</button>
+            </div>
+            <div className="modal-body">
+              <p>Apakah Anda yakin ingin membatalkan perubahan?</p>
+              <p className="warning-text">Semua data yang telah dimasukkan akan hilang.</p>
+            </div>
+            <div className="modal-footer">
+              <button className="secondary-btn" onClick={() => setShowCancelConfirmation(false)}>Kembali</button>
+              <button className="danger-btn" onClick={() => navigate(`/profile/${id}`)}>Ya, Batalkan</button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Modal Sukses */}
       {showSuccessModal && (
         <div className="modal-overlay">
@@ -160,7 +196,19 @@ const UpdateProfile = () => {
               <p>Password Anda berhasil diperbarui.</p>
             </div>
             <div className="modal-footer">
-              <button className="primary-btn" onClick={() => navigate("/home")}>OK</button>
+              <button
+                className="primary-btn"
+                onClick={() => {
+                  localStorage.removeItem("token");
+                  localStorage.removeItem("name");
+                  localStorage.removeItem("role");
+                  localStorage.removeItem("id");
+                  setShowSuccessModal(false);
+                  navigate("/");
+                }}
+              >
+                OK
+              </button>
             </div>
           </div>
         </div>
