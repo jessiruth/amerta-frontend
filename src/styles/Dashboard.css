@@ -1,0 +1,127 @@
+.dashboard-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background-color: #f8f9fa;
+    font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+}
+
+.dashboard-content {
+    padding: 30px;
+    margin-left: 80px;
+    margin-top: 80px;
+    width: calc(100% - 80px);
+    flex: 1;
+}
+
+.dashboard-title {
+    font-size: 24px;
+    font-weight: 600;
+    color: #333;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.dashboard-filters {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    margin-bottom: 25px;
+    padding: 20px;
+}
+
+.filter-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+    flex-wrap: wrap;
+}
+
+.filter-label {
+    width: 180px;
+    font-weight: 500;
+    color: #6c757d;
+    margin-bottom: 8px;
+}
+
+.filter-inputs {
+    flex: 1;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.filter-inputs select,
+.filter-inputs input {
+    padding: 8px 12px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    min-width: 150px;
+    font-size: 14px;
+}
+
+.filter-actions {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.chart-card {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    padding: 20px;
+}
+
+.chart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.chart-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #333;
+}
+
+.chart-description {
+    font-size: 14px;
+    color: #6c757d;
+}
+
+.chart-wrapper {
+    width: 100%;
+    height: 400px;
+    margin-top: 20px;
+}
+
+@media (max-width: 768px) {
+    .dashboard-content {
+        padding: 15px;
+        margin-left: 0;
+        margin-top: 60px;
+        width: 100%;
+    }
+
+    .filter-label {
+        width: 100%;
+        margin-bottom: 5px;
+    }
+
+    .filter-row {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .chart-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+
+    .chart-wrapper {
+        height: 300px;
+    }
+}

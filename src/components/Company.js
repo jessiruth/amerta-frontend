@@ -20,9 +20,9 @@ const Company = () => {
                     <img src={employeeImage} alt="Employee" />
                     <p>Employee</p>
                 </div>
-                <div className="company-box" onClick={() => navigate("/customer")}>
-                    <img src={employeeImage} alt="Customer" />
-                    <p>Customer</p>
+                <div className="company-box" onClick={() => navigate("/dashboard")}>
+                    <img src={employeeImage} alt="Dashboard" />
+                    <p>Dashboard</p>
                 </div>
             </div>
         </div>
