@@ -20,6 +20,7 @@ const AddCustomer = () => {
     const [showConfirmation, setShowConfirmation] = useState(false);
     const [showCancelConfirmation, setShowCancelConfirmation] = useState(false);
     const [showSuccessModal, setShowSuccessModal] = useState(false);
+    const [hasSubmitted, setHasSubmitted] = useState(false);
     const navigate = useNavigate();
     const token = localStorage.getItem("token");
 
@@ -56,8 +57,12 @@ const AddCustomer = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        setError("");
-        if (!validateForm()) return;
+        setHasSubmitted(true);
+        if (!validateForm()) {
+        const firstError = document.querySelector('.barang-error');
+        if (firstError) firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        return;
+        }
         setShowConfirmation(true);
     };
 
@@ -95,49 +100,51 @@ const AddCustomer = () => {
                     <div className="barang-form-section">
                         <div className="form-row">
                             <div className="form-group">
-                                <label>Nama Perusahaan</label>
-                                <input type="text" name="name" value={formData.name} onChange={handleChange} required />
+                                <label>Nama Perusahaan<span className="required">*</span></label>
+                                <input type="text" name="name" value={formData.name} onChange={handleChange} />
+                                {hasSubmitted && validationErrors.name && <div className="barang-error">{validationErrors.name}</div>}
                             </div>
                             <div className="form-group">
-                                <label>Email</label>
-                                <input type="email" name="email" value={formData.email} onChange={handleChange} required />
-                                {validationErrors.email && <div className="barang-error">{validationErrors.email}</div>}
-                            </div>
-                        </div>
-
-                        <div className="form-row">
-                            <div className="form-group">
-                                <label>No. Telepon</label>
-                                <input type="text" name="phone" value={formData.phone} onChange={handleChange} required />
-                                {validationErrors.phone && <div className="barang-error">{validationErrors.phone}</div>}
-                            </div>
-                            <div className="form-group">
-                                <label>No. Handphone</label>
-                                <input type="text" name="handphone" value={formData.handphone} onChange={handleChange} required />
-                                {validationErrors.handphone && <div className="barang-error">{validationErrors.handphone}</div>}
+                                <label>Email<span className="required">*</span></label>
+                                <input type="email" name="email" value={formData.email} onChange={handleChange} />
+                                {hasSubmitted && validationErrors.email && <div className="barang-error">{validationErrors.email}</div>}
                             </div>
                         </div>
 
                         <div className="form-row">
                             <div className="form-group">
-                                <label>No. WhatsApp</label>
-                                <input type="text" name="whatsapp" value={formData.whatsapp} onChange={handleChange} required />
-                                {validationErrors.whatsapp && <div className="barang-error">{validationErrors.whatsapp}</div>}
+                                <label>No. Telepon<span className="required">*</span></label>
+                                <input type="text" name="phone" value={formData.phone} onChange={handleChange} />
+                                {hasSubmitted && validationErrors.phone && <div className="barang-error">{validationErrors.phone}</div>}
                             </div>
                             <div className="form-group">
-                                <label>Alamat</label>
-                                <textarea name="address" value={formData.address} onChange={handleChange} required />
+                                <label>No. Handphone<span className="required">*</span></label>
+                                <input type="text" name="handphone" value={formData.handphone} onChange={handleChange} />
+                                {hasSubmitted && validationErrors.handphone && <div className="barang-error">{validationErrors.handphone}</div>}
+                            </div>
+                        </div>
+
+                        <div className="form-row">
+                            <div className="form-group">
+                                <label>No. WhatsApp<span className="required">*</span></label>
+                                <input type="text" name="whatsapp" value={formData.whatsapp} onChange={handleChange} />
+                                {hasSubmitted && validationErrors.whatsapp && <div className="barang-error">{validationErrors.whatsapp}</div>}
+                            </div>
+                            <div className="form-group">
+                                <label>Alamat<span className="required">*</span></label>
+                                <textarea name="address" value={formData.address} onChange={handleChange} />
+                                {hasSubmitted && validationErrors.address && <div className="barang-error">{validationErrors.address}</div>}
                             </div>
                         </div>
 
                         <div className="form-group">
-                            <label>Role</label>
-                            <select name="role" value={formData.role} onChange={handleChange} required>
+                            <label>Role<span className="required">*</span></label>
+                            <select name="role" value={formData.role} onChange={handleChange} >
                                 <option value="">Pilih Role</option>
                                 <option value="VENDOR">VENDOR</option>
                                 <option value="CUSTOMER">CUSTOMER</option>
                             </select>
-                            {validationErrors.role && <div className="barang-error">{validationErrors.role}</div>}
+                            {hasSubmitted && validationErrors.role && <div className="barang-error">{validationErrors.role}</div>}
                         </div>
                     </div>
 

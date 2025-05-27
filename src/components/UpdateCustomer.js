@@ -11,6 +11,7 @@ const UpdateCustomer = () => {
     const [saving, setSaving] = useState(false);
     const [showConfirmation, setShowConfirmation] = useState(false);
     const [showSuccessModal, setShowSuccessModal] = useState(false);
+    const [hasSubmitted, setHasSubmitted] = useState(false);
     const [confirmationType, setConfirmationType] = useState('save');
 
     const [formData, setFormData] = useState({
@@ -94,6 +95,7 @@ const UpdateCustomer = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
+        setHasSubmitted(true);
         if (validateForm()) {
             setConfirmationType('save');
             setShowConfirmation(true);
@@ -167,10 +169,9 @@ const UpdateCustomer = () => {
                                     name="name"
                                     value={formData.name}
                                     onChange={handleChange}
-                                    className={validationErrors.name ? "error-input" : ""}
-                                    required
+                                    className={hasSubmitted && validationErrors.name ? "error-input" : ""}
                                 />
-                                {validationErrors.name && <span className="error-message">{validationErrors.name}</span>}
+                                {hasSubmitted && validationErrors.name && <span className="error-message">{validationErrors.name}</span>}
                             </div>
                             <div className="form-group">
                                 <label>Email<span className="required">*</span></label>
@@ -179,10 +180,9 @@ const UpdateCustomer = () => {
                                     name="email"
                                     value={formData.email}
                                     onChange={handleChange}
-                                    className={validationErrors.email ? "error-input" : ""}
-                                    required
+                                    className={hasSubmitted && validationErrors.email ? "error-input" : ""}
                                 />
-                                {validationErrors.email && <span className="error-message">{validationErrors.email}</span>}
+                                {hasSubmitted && validationErrors.email && <span className="error-message">{validationErrors.email}</span>}
                             </div>
                         </div>
 
@@ -194,10 +194,9 @@ const UpdateCustomer = () => {
                                     name="phone"
                                     value={formData.phone}
                                     onChange={handleChange}
-                                    className={validationErrors.phone ? "error-input" : ""}
-                                    required
+                                    className={hasSubmitted && validationErrors.phone ? "error-input" : ""}
                                 />
-                                {validationErrors.phone && <span className="error-message">{validationErrors.phone}</span>}
+                                {hasSubmitted && validationErrors.phone && <span className="error-message">{validationErrors.phone}</span>}
                             </div>
                             <div className="form-group">
                                 <label>No. Handphone<span className="required">*</span></label>
@@ -206,10 +205,9 @@ const UpdateCustomer = () => {
                                     name="handphone"
                                     value={formData.handphone}
                                     onChange={handleChange}
-                                    className={validationErrors.handphone ? "error-input" : ""}
-                                    required
+                                    className={hasSubmitted && validationErrors.handphone ? "error-input" : ""}
                                 />
-                                {validationErrors.handphone && <span className="error-message">{validationErrors.handphone}</span>}
+                                {hasSubmitted && validationErrors.handphone && <span className="error-message">{validationErrors.handphone}</span>}
                             </div>
                         </div>
 
@@ -221,10 +219,9 @@ const UpdateCustomer = () => {
                                     name="whatsapp"
                                     value={formData.whatsapp}
                                     onChange={handleChange}
-                                    className={validationErrors.whatsapp ? "error-input" : ""}
-                                    required
+                                    className={hasSubmitted && validationErrors.whatsapp ? "error-input" : ""}
                                 />
-                                {validationErrors.whatsapp && <span className="error-message">{validationErrors.whatsapp}</span>}
+                                {hasSubmitted && validationErrors.whatsapp && <span className="error-message">{validationErrors.whatsapp}</span>}
                             </div>
                             <div className="form-group">
                                 <label>Alamat<span className="required">*</span></label>
@@ -232,10 +229,9 @@ const UpdateCustomer = () => {
                                     name="address"
                                     value={formData.address}
                                     onChange={handleChange}
-                                    className={validationErrors.address ? "error-input" : ""}
-                                    required
+                                    className={hasSubmitted && validationErrors.address ? "error-input" : ""}
                                 />
-                                {validationErrors.address && <span className="error-message">{validationErrors.address}</span>}
+                                {hasSubmitted && validationErrors.address && <span className="error-message">{validationErrors.address}</span>}
                             </div>
                         </div>
 
