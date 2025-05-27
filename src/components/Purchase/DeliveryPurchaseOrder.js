@@ -3,6 +3,8 @@ import { useParams, useNavigate } from "react-router-dom";
 import axiosInstance from "../../services/axiosInstance";
 import "../../styles/GudangDetail.css";
 import "../../styles/AddSalesOrder.css";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const DeliveryPurchaseOrder = () => {
   const { id } = useParams();
@@ -84,9 +86,10 @@ const DeliveryPurchaseOrder = () => {
       });
       setModalType(null);
       setSuccessModal(true);
-    } catch {
+    } catch (error){
       setModalType(null);
-      alert("Gagal memproses pengiriman.");
+      const message = error.response?.data?.message || "Gagal untuk delivery purchase order.";
+      toast.error(message);
     }
   };
 
@@ -95,6 +98,7 @@ const DeliveryPurchaseOrder = () => {
 
   return (
     <div className="gudang-form-container">
+      <ToastContainer />
       <div className="gudang-form-content">
         <div className="page-header">
           <h1 className="page-title">Pengiriman Purchase Order</h1>

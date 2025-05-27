@@ -134,8 +134,9 @@ const UpdateGoods = () => {
       });
 
       setShowSuccessModal(true);
-    } catch {
-      toast.error("Gagal mengupdate barang.");
+    } catch (error){
+      const message = error.response?.data?.message || "Gagal mengupdate barang.";
+      toast.error(message);
     } finally {
       setShowModal(null);
     }

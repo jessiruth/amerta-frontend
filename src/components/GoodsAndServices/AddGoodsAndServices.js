@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import DeleteIcon from "@mui/icons-material/Delete";
 import axiosInstance from "../../services/axiosInstance";
 import "../../styles/AddGoodsAndServices.css";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const AddGoodsAndServices = () => {
   const navigate = useNavigate();
@@ -101,8 +103,9 @@ const AddGoodsAndServices = () => {
       const id = res.data.data?.id;
       setSavedId(id);
       setShowSuccessModal(true);
-    } catch {
-      setErrors({ general: "Gagal menyimpan barang." });
+    } catch (error) {
+      const message = error.response?.data?.message || "Gagal menambah barang.";
+      toast.error(message);
     } finally {
       setShowModal(null);
     }
@@ -177,6 +180,7 @@ const AddGoodsAndServices = () => {
 
   return (
     <div className="barang-form-container">
+      <ToastContainer />
       <div className="barang-page-header">
         <h1 className="barang-page-title">Tambah Barang</h1>
       </div>
