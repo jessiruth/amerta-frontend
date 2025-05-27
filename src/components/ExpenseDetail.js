@@ -1,102 +1,129 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axiosInstance from "../services/axiosInstance";
-import "../styles/ExpenseDetail.css";
+import "../styles/GudangDetail.css";
 
 const ExpenseDetail = () => {
-    const { id } = useParams();
-    const navigate = useNavigate();
-    const [data, setData] = useState(null);
-    const [error, setError] = useState("");
-    const [loading, setLoading] = useState(true);
-    const token = localStorage.getItem("token");
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const [data, setData] = useState(null);
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(true);
+  const token = localStorage.getItem("token");
 
-    useEffect(() => {
-        if (!token) navigate("/");
-    }, [navigate, token]);
+  useEffect(() => {
+    if (!token) navigate("/");
+  }, [navigate, token]);
 
-    useEffect(() => {
-        const fetchDetail = async () => {
-            try {
-                if (!token) {
-                    setError("Unauthorized: Token tidak ditemukan");
-                    setLoading(false);
-                    return;
-                }
+  useEffect(() => {
+    const fetchDetail = async () => {
+      try {
+        if (!token) {
+          setError("Unauthorized: Token tidak ditemukan");
+          setLoading(false);
+          return;
+        }
 
-                console.log(`Fetching data for ID: ${id}`);
+        const response = await axiosInstance.get(`/api/pengeluaran/view/${id}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
 
-                const response = await axiosInstance.get(`/api/pengeluaran/view/${id}`, {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                });
+        setData(response.data);
+      } catch (err) {
+        if (err.response) {
+          setError(err.response.data.message || "Data tidak ditemukan.");
+        } else {
+          setError("Terjadi kesalahan saat mengambil data.");
+        }
+      } finally {
+        setLoading(false);
+      }
+    };
 
-                console.log("Detail API Response:", response.data);
+    fetchDetail();
+  }, [id, token]);
 
-                setData(response.data);
-                setLoading(false);
-            } catch (err) {
-                console.error("Error fetching detail:", err);
-
-                if (err.response) {
-                    setError(err.response.data.message || "Data tidak ditemukan.");
-                } else {
-                    setError("Terjadi kesalahan saat mengambil data.");
-                }
-
-                setLoading(false);
-            }
-        };
-
-        fetchDetail();
-    }, [id, token]);
-
-    if (loading) {
-        return <p className="loading-message">Memuat data...</p>;
-    }
-
-    if (error) {
-        return <p className="error-message">{error}</p>;
-    }
-
-    if (!data) {
-        return <p className="error-message">Data tidak ditemukan.</p>;
-    }
-
+  if (loading) {
     return (
-        <div className="expense-detail-container">
-            <h2>Detail Pengeluaran {data.id}</h2>
-            <table className="expense-detail-table">
-                <tbody>
-                    <tr>
-                        <th>Jenis Pengeluaran</th>
-                        <td>{data.jenisPengeluaran}</td>
-                    </tr>
-                    <tr>
-                        <th>Jumlah</th>
-                        <td>{data.jumlah.toLocaleString("id-ID", { style: "currency", currency: "IDR" })}</td>
-                    </tr>
-                    <tr>
-                        <th>Tanggal</th>
-                        <td>{new Date(data.tanggal).toLocaleDateString("id-ID")}</td>
-                    </tr>
-                    <tr>
-                        <th>Penanggung Jawab</th>
-                        <td>{data.penanggung_jawab}</td>
-                    </tr>
-                    <tr>
-                        <th>Keterangan</th>
-                        <td>{data.keterangan}</td>
-                    </tr>
-                </tbody>
-            </table>
-
-            <button className="back-button" onClick={() => navigate("/expense")}>
-                Back
-            </button>
+      <div className="gudang-detail-container">
+        <div className="gudang-detail-content">
+          <div className="loading-container">
+            <div className="loading-text">Memuat detail pengeluaran...</div>
+          </div>
         </div>
+      </div>
     );
+  }
+
+  if (error) {
+    return (
+      <div className="gudang-detail-container">
+        <div className="gudang-detail-content">
+          <div className="error-container">
+            <div className="error-text">{error}</div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!data) {
+    return (
+      <div className="gudang-detail-container">
+        <div className="gudang-detail-content">
+          <div className="error-text">Data tidak ditemukan.</div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="gudang-detail-container">
+      <div className="gudang-detail-content">
+        <div className="page-header">
+          <h1 className="page-title">Detail Pengeluaran</h1>
+        </div>
+
+        <div className="action-buttons">
+          <button className="back-btn" onClick={() => navigate("/expense")}>Kembali</button>
+        </div>
+
+        <div className="detail-card">
+          <div className="section-header">
+            <h2 className="section-title">Informasi Pengeluaran</h2>
+          </div>
+          <div className="section-content">
+            <div className="detail-row">
+              <span className="detail-label">ID:</span>
+              <span className="detail-value">{data.id}</span>
+            </div>
+            <div className="detail-row">
+              <span className="detail-label">Jenis Pengeluaran:</span>
+              <span className="detail-value">{data.jenisPengeluaran}</span>
+            </div>
+            <div className="detail-row">
+              <span className="detail-label">Jumlah:</span>
+              <span className="detail-value">{data.jumlah.toLocaleString("id-ID", { style: "currency", currency: "IDR" })}</span>
+            </div>
+            <div className="detail-row">
+              <span className="detail-label">Tanggal Pengeluaran:</span>
+              <span className="detail-value">{new Date(data.tanggal).toLocaleDateString("id-ID", { year: "numeric", month: "long", day: "numeric" })}</span>
+            </div>
+            <div className="detail-row">
+              <span className="detail-label">Penanggung Jawab:</span>
+              <span className="detail-value">{data.penanggung_jawab}</span>
+            </div>
+            <div className="detail-row">
+              <span className="detail-label">Keterangan:</span>
+              <span className="detail-value">{data.keterangan}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export default ExpenseDetail;

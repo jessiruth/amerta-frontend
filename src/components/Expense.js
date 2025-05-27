@@ -52,23 +52,40 @@ const Expense = () => {
     }, [fetchData]);
 
     useEffect(() => {
-        const lower = searchTerm.toLowerCase();
+        const lower = searchTerm.toLowerCase().trim();
+        const numeric = parseFloat(searchTerm.replace(",", "."));
 
         const filtered = data.filter((item) => {
-            if (searchCategory === "pengeluaran") {
-                return item.jenisPengeluaran.toLowerCase().includes(lower);
-            } else if (searchCategory === "jumlah") {
-                const searchValue = searchTerm.replace(/[^0-9]/g, "");
-                if (searchValue === "") return true;
-                return item.jumlah.toString().includes(searchValue);
-            } else if (searchCategory === "penanggung") {
-                return item.penanggung_jawab.toLowerCase().includes(lower);
-            } else {
-                return (
-                    item.jenisPengeluaran.toLowerCase().includes(lower) ||
-                    item.jumlah.toString().includes(searchTerm.replace(/[^0-9]/g, "")) ||
-                    item.penanggung_jawab.toLowerCase().includes(lower)
-                );
+            if (!lower) return true;
+
+            switch (searchCategory) {
+                case "pengeluaran":
+                    return item.jenisPengeluaran?.toLowerCase() === lower;
+                case "jumlah":
+                    return !isNaN(numeric) && parseFloat(item.jumlah) === numeric;
+                case "tanggal":
+                    const formattedTanggal = new Date(item.tanggal).toLocaleDateString("id-ID", {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric"
+                    }).toLowerCase();
+
+                    return formattedTanggal.includes(lower);
+                case "penanggung":
+                    return item.penanggung_jawab?.toLowerCase() === lower;
+                case "all":
+                default:
+                    const fullDate = new Date(item.tanggal).toLocaleDateString("id-ID", {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric"
+                    }).toLowerCase();
+                    return (
+                        item.jenisPengeluaran?.toLowerCase().includes(lower) ||
+                        item.jumlah?.toString().replace(".",",").includes(searchTerm) ||
+                        fullDate.includes(lower) ||
+                        item.penanggung_jawab?.toLowerCase().includes(lower)
+                    );
             }
         });
 
@@ -108,9 +125,9 @@ const Expense = () => {
                     <table className="gudang-table">
                         <thead>
                             <tr>
-                                <th>ID</th>
                                 <th>Jenis Pengeluaran</th>
                                 <th>Jumlah</th>
+                                <th>Tanggal Pengeluaran</th>
                                 <th>Penanggung Jawab</th>
                                 <th>Action</th>
                             </tr>
@@ -119,9 +136,9 @@ const Expense = () => {
                             {filteredData.length > 0 ? (
                                 filteredData.map((item) => (
                                     <tr key={item.id}>
-                                        <td>{item.id}</td>
                                         <td>{item.jenisPengeluaran}</td>
-                                        <td>{item.jumlah.toLocaleString("id-ID", { style: "currency", currency: "IDR" })}</td>
+                                        <td>Rp{parseFloat(item.jumlah).toLocaleString("id-ID", { minimumFractionDigits: 2 })}</td>
+                                        <td>{new Date(item.tanggal).toLocaleDateString("id-ID", { year: "numeric", month: "long", day: "numeric" })}</td>
                                         <td>{item.penanggung_jawab}</td>
                                         <td>
                                             <button

@@ -13,6 +13,7 @@ const UpdateEmployee = () => {
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [confirmationType, setConfirmationType] = useState('save');
+  const [hasSubmitted, setHasSubmitted] = useState(false);
   const [formData, setFormData] = useState({
     phone: '',
     homePhone: '',
@@ -92,6 +93,7 @@ const UpdateEmployee = () => {
     if (!formData.businessPhone.trim()) errors.businessPhone = "Nomor telepon bisnis harus diisi";
     if (!formData.whatsappNumber.trim()) errors.whatsappNumber = "Nomor WhatsApp harus diisi";
     if (!formData.role.trim()) errors.role = "Role harus diisi";
+    if (!formData.notes.trim()) errors.notes = "Note wajib diisi";
     if (formData.phone && !/^\d+$/.test(formData.phone)) errors.phone = "Harus berupa angka";
     if (formData.homePhone && !/^\d+$/.test(formData.homePhone)) errors.homePhone = "Harus berupa angka";
     if (formData.businessPhone && !/^\d+$/.test(formData.businessPhone)) errors.businessPhone = "Harus berupa angka";
@@ -103,6 +105,7 @@ const UpdateEmployee = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    setHasSubmitted(true);
     if (validateForm()) {
       setConfirmationType('save');
       setShowConfirmation(true);
@@ -175,10 +178,9 @@ const UpdateEmployee = () => {
                   name="phone"
                   value={formData.phone}
                   onChange={handleChange}
-                  className={validationErrors.phone ? "error-input" : ""}
-                  required
+                  className={hasSubmitted && validationErrors.phone ? "error-input" : ""}
                 />
-                {validationErrors.phone && <span className="error-message">{validationErrors.phone}</span>}
+                {hasSubmitted && validationErrors.phone && <span className="error-message">{validationErrors.phone}</span>}
               </div>
               <div className="form-group">
                 <label>Nomor WhatsApp<span className="required">*</span></label>
@@ -187,10 +189,9 @@ const UpdateEmployee = () => {
                   name="whatsappNumber"
                   value={formData.whatsappNumber}
                   onChange={handleChange}
-                  className={validationErrors.whatsappNumber ? "error-input" : ""}
-                  required
+                  className={hasSubmitted && validationErrors.whatsappNumber ? "error-input" : ""}
                 />
-                {validationErrors.whatsappNumber && <span className="error-message">{validationErrors.whatsappNumber}</span>}
+                {hasSubmitted && validationErrors.whatsappNumber && <span className="error-message">{validationErrors.whatsappNumber}</span>}
               </div>
             </div>
             <div className="form-row">
@@ -201,10 +202,9 @@ const UpdateEmployee = () => {
                   name="homePhone"
                   value={formData.homePhone}
                   onChange={handleChange}
-                  className={validationErrors.homePhone ? "error-input" : ""}
-                  required
+                  className={hasSubmitted && validationErrors.homePhone ? "error-input" : ""}
                 />
-                {validationErrors.homePhone && <span className="error-message">{validationErrors.homePhone}</span>}
+                {hasSubmitted && validationErrors.homePhone && <span className="error-message">{validationErrors.homePhone}</span>}
               </div>
               <div className="form-group">
                 <label>Nomor Telepon Bisnis<span className="required">*</span></label>
@@ -213,10 +213,9 @@ const UpdateEmployee = () => {
                   name="businessPhone"
                   value={formData.businessPhone}
                   onChange={handleChange}
-                  className={validationErrors.businessPhone ? "error-input" : ""}
-                  required
+                  className={hasSubmitted && validationErrors.businessPhone ? "error-input" : ""}
                 />
-                {validationErrors.businessPhone && <span className="error-message">{validationErrors.businessPhone}</span>}
+                {hasSubmitted && validationErrors.businessPhone && <span className="error-message">{validationErrors.businessPhone}</span>}
               </div>
             </div>
             <div className="form-row">
@@ -226,8 +225,7 @@ const UpdateEmployee = () => {
                   name="role"
                   value={formData.role}
                   onChange={handleChange}
-                  className={validationErrors.role ? "error-input" : ""}
-                  required
+                  className={hasSubmitted && validationErrors.role ? "error-input" : ""}
                 >
                   <option value="">Pilih Role</option>
                   <option value="administrasi">Administrasi</option>
@@ -237,21 +235,21 @@ const UpdateEmployee = () => {
                   <option value="kepala_gudang">Kepala Gudang</option>
                   <option value="komisaris">Komisaris</option>
                 </select>
-                {validationErrors.role && <span className="error-message">{validationErrors.role}</span>}
+                {hasSubmitted && validationErrors.role && <span className="error-message">{validationErrors.role}</span>}
               </div>
             </div>
             <div className="form-row">
               <div className="form-group" style={{ flex: 1 }}>
-                <label>Catatan</label>
+                <label>Catatan<span className="required">*</span></label>
                 <textarea
                   name="notes"
                   value={formData.notes}
                   onChange={handleChange}
-                  className={validationErrors.notes ? "error-input" : ""}
+                  className={hasSubmitted && validationErrors.notes ? "error-input" : ""}
                   rows="3"
                   maxLength={500}
                 />
-                {validationErrors.notes && <span className="error-message">{validationErrors.notes}</span>}
+                {hasSubmitted && validationErrors.notes && <span className="error-message">{validationErrors.notes}</span>}
               </div>
             </div>
             <div className="form-row">
