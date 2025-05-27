@@ -43,9 +43,21 @@ const Home = () => {
     const storedRole = localStorage.getItem("role");
     if (storedName) setName(storedName);
     if (storedRole) setRole(storedRole);
-
+    fetchGudangData();
     fetchDashboardData();
   }, [navigate]);
+
+  const fetchGudangData = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const headers = { Authorization: `Bearer ${token}` };
+      const gudangRes = await axiosInstance.get("/api/gudang/", { headers });
+      setGudangList(gudangRes.data?.data || []);
+      setSummary(prev => ({ ...prev, totalGudang: gudangRes.data?.data?.length || 0 }));
+    } catch (err) {
+      console.error("Gagal memuat data gudang:", err);
+    }
+  };
 
   const fetchDashboardData = async () => {
     const token = localStorage.getItem("token");
@@ -100,7 +112,7 @@ const Home = () => {
         x: "salesDate",
         y: "shipping.shippingFee",
         aggregation: "avg",
-        filter
+        filter:  filter
       }, { headers });
       setShippingScatterData(shippingAvgRes.data.data.data || []);
 
@@ -110,7 +122,7 @@ const Home = () => {
         x: "paymentDate",
         y: "totalAmountPayed",
         aggregation: "sum",
-        filter
+        filter: filter
       }, { headers });
 
       const expensePORes = await axiosInstance.post("/api/dashboard/get-data", {
@@ -118,7 +130,7 @@ const Home = () => {
         x: "paymentDate",
         y: "totalAmountPayed",
         aggregation: "sum",
-        filter
+        filter: filter
       }, { headers });
 
       // Gabungkan berdasarkan tanggal
@@ -357,7 +369,7 @@ const Home = () => {
               </div>
 
               <div className="chart-card">
-                <h3>Rata-Rata Shipping Fee ({new Date().getFullYear()})</h3>
+                <h3>Rata-Rata Shipping Fee Sales ({new Date().getFullYear()})</h3>
                 {shippingScatterData.length === 0 ? (
                   <div className="no-data">No data available</div>
                 ) : (
@@ -445,43 +457,43 @@ const Home = () => {
                   </tbody>
                 </table>
               </div>
-
-              <div className="dashboard-table-card">
-                <h3>Daftar Gudang</h3>
-                <table className="dashboard-table">
-                  <thead>
-                    <tr>
-                      <th>Nama</th>
-                      <th>Kota, Provinsi</th>
-                      <th>Kapasitas</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {gudangList.length === 0 ? (
-                      <tr>
-                        <td colSpan={3} style={{ textAlign: "center" }}>No data available</td>
-                      </tr>
-                    ) : (
-                      gudangList.map((gudang, idx) => (
-                        <tr key={idx}>
-                          <td>{gudang.nama}</td>
-                          <td>
-                            {gudang.alamatGudang?.kota && gudang.alamatGudang?.provinsi
-                              ? `${gudang.alamatGudang.kota}, ${gudang.alamatGudang.provinsi}`
-                              : gudang.alamatGudang?.kota || "-"}
-                          </td>
-                          <td>{parseFloat(gudang.kapasitas).toLocaleString("id-ID")}</td>
-                        </tr>
-                      ))
-                    )}
-                  </tbody>
-                </table>
-              </div>
-
             </div>
 
           </>
         )}
+        <div className="dashboard-table-section">
+          <div className="dashboard-table-card">
+            <h3>Daftar Gudang</h3>
+            <table className="dashboard-table">
+              <thead>
+                <tr>
+                  <th>Nama</th>
+                  <th>Kota, Provinsi</th>
+                  <th>Kapasitas</th>
+                </tr>
+              </thead>
+              <tbody>
+                {gudangList.length === 0 ? (
+                  <tr>
+                    <td colSpan={3} style={{ textAlign: "center" }}>No data available</td>
+                  </tr>
+                ) : (
+                  gudangList.slice(-5).reverse().map((gudang, idx) => (
+                    <tr key={idx}>
+                      <td>{gudang.nama}</td>
+                      <td>
+                        {gudang.alamatGudang?.kota && gudang.alamatGudang?.provinsi
+                          ? `${gudang.alamatGudang.kota}, ${gudang.alamatGudang.provinsi}`
+                          : gudang.alamatGudang?.kota || "-"}
+                      </td>
+                      <td>{parseFloat(gudang.kapasitas).toLocaleString("id-ID")}</td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
     </div>
   );
