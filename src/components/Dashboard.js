@@ -13,7 +13,7 @@ const Dashboard = () => {
 
     const [entity, setEntity] = useState("sales_order");
     const [x, setX] = useState("salesDate");
-    const [y, setY] = useState("shipping.shippingFee");
+    const [y, setY] = useState("totalPrice");
     const [aggregation, setAggregation] = useState("sum");
     const [chartType, setChartType] = useState("line");
 
@@ -30,19 +30,28 @@ const Dashboard = () => {
         customerIds: []
     });
 
-    const pieColors = [
-        '#F39C12', '#3498DB', '#2ECC71', '#E74C3C',
-        '#9B59B6', '#1ABC9C', '#34495E', '#E67E22',
-        '#BDC3C7', '#7F8C8D', '#D35400', '#8E44AD'
-    ];
+    const getVisibleFilters = (entity) => {
+        switch (entity) {
+            case "barang": return ["tanggal", "gudang", "chart"];
+            case "gudang": return ["tanggal", "barang", "chart"];
+            case "status": return ["tanggal", "chart"];
+            default: return ["tanggal", "parameter", "status_customer", "barang", "gudang", "chart", "agregasi"];
+        }
+    };
 
     const fetchData = async () => {
         setLoading(true);
         setError(null);
         try {
-            const response = await axiosInstance.post("/api/dashboard/get-data", {
-                entity, x, y, aggregation, filter,
-            }, {
+            const payload = {
+                entity,
+                x: entity === "status" ? "salesDate" : x,
+                y: entity === "status" ? "id" : y,
+                aggregation: entity === "status" ? "count" : aggregation,
+                filter,
+            };
+
+            const response = await axiosInstance.post("/api/dashboard/get-data", payload, {
                 headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
             });
             setData(response.data.data.data);
@@ -69,45 +78,12 @@ const Dashboard = () => {
 
             setAllBarang(barangRes.data.data);
             setAllGudang(gudangRes.data.data);
-
             const role = entity === "purchase_order" ? "VENDOR" : "CUSTOMER";
             setAllCustomers(customerRes.data.data.filter(c => c.role === role));
         } catch (err) {
             console.error("Gagal load data filter:", err);
         }
     };
-
-    const resetFilters = () => {
-        setFilter({
-            startDate: "",
-            endDate: "",
-            statusList: [],
-            barangIds: [],
-            gudangIds: [],
-            customerIds: []
-        });
-
-        setChartType("line");
-        setAggregation("sum");
-        const defaultX = entity === "sales_order" ? "salesDate" : "purchaseDate";
-        const defaultY = entity === "sales_order" ? "shipping.shippingFee" : "delivery.deliveryFee";
-        setX(defaultX);
-        setY(defaultY);
-    };
-
-
-
-    useEffect(() => {
-        fetchFilters();
-    }, [entity]);
-
-    useEffect(() => {
-        fetchData();
-    }, []);
-
-    const statusOptions = entity === "sales_order"
-        ? ["CREATED", "CONFIRMED", "COMPLETED", "IN SHIPPING", "SHIPPED"]
-        : ["CREATED", "CONFIRMED", "COMPLETED", "IN DELIVERY", "DELIVERED"];
 
     const parameterXOptions = entity === "sales_order"
         ? [
@@ -125,33 +101,88 @@ const Dashboard = () => {
             { label: "Tanggal Payment", value: "payment.paymentDate" }
         ];
 
-
     const parameterYOptions = entity === "sales_order"
         ? [
+            { label: "Total Harga SO", value: "totalPrice" },
             { label: "Shipping Fee", value: "shipping.shippingFee" },
             { label: "Total Invoice", value: "invoice.totalAmount" },
-            { label: "Pembayaran", value: "payment.totalAmountPayed" },
-            { label: "Total Harga SO", value: "totalPrice" }
+            { label: "Pembayaran", value: "payment.totalAmountPayed" }
         ]
         : [
+            { label: "Total Harga PO", value: "totalPrice" },
             { label: "Delivery Fee", value: "delivery.deliveryFee" },
             { label: "Total Invoice", value: "invoice.totalAmount" },
-            { label: "Pembayaran", value: "payment.totalAmountPayed" },
-            { label: "Total Harga PO", value: "totalPrice" }
+            { label: "Pembayaran", value: "payment.totalAmountPayed" }
         ];
+
+    const statusOptions = entity === "sales_order"
+        ? ["CREATED", "CONFIRMED", "COMPLETED", "IN SHIPPING", "SHIPPED"]
+        : ["CREATED", "CONFIRMED", "COMPLETED", "IN DELIVERY", "DELIVERED"];
 
     const handleMultiSelectChange = (e, field) => {
         const selected = Array.from(e.target.selectedOptions, opt => opt.value);
         setFilter(prev => ({ ...prev, [field]: selected }));
     };
 
-    const getAxisLabel = (field) => {
-        if (field.toLowerCase().includes("date")) return "Bulan";
+    const resetFilters = () => {
+        setX("salesDate");
+        setY("totalPrice");
+        setAggregation("sum");
+        setChartType("line");
+
+        setFilter({
+            entity: "sales_order",
+            startDate: "",
+            endDate: "",
+            statusList: [],
+            barangIds: [],
+            gudangIds: [],
+            customerIds: []
+        });
+
+        setEntity("sales_order");
+        setTimeout(() => {
+            setEntity("sales_order");
+        }, 0);
+    };
+
+    const getAxisLabel = (field, aggregation, entity) => {
+        if (entity === "status") {
+            return aggregation === "count" ? "Jumlah" : "Nilai";
+        }
+
+        if (aggregation === "count") return "Jumlah";
         if (field.toLowerCase().includes("price")) return "Harga (Rp)";
         if (field.toLowerCase().includes("fee")) return "Harga (Rp)";
         if (field.toLowerCase().includes("amount")) return "Harga (Rp)";
         if (field.toLowerCase().includes("quantity")) return "Jumlah";
+        if (field.toLowerCase().includes("date")) return "Bulan";
         return "Nilai";
+    };
+
+
+    const pieColors = ['#F39C12', '#3498DB', '#2ECC71', '#E74C3C', '#9B59B6', '#1ABC9C', '#34495E', '#E67E22'];
+
+    const resetParamsByEntity = (selectedEntity) => {
+        if (selectedEntity === "sales_order") {
+            setX("salesDate");
+            setY("totalPrice");
+            setAggregation("sum");
+        } else if (selectedEntity === "purchase_order") {
+            setX("purchaseDate");
+            setY("totalPrice");
+            setAggregation("sum");
+        } else if (selectedEntity === "status") {
+            setX("salesDate");
+            setY("id");
+            setAggregation("count");
+        } else {
+            setX("x");
+            setY("y");
+            setAggregation("sum");
+        }
+
+        setChartType("line");
     };
 
     const renderChart = () => {
@@ -160,8 +191,8 @@ const Dashboard = () => {
             margin: { top: 10, right: 30, left: 40, bottom: 40 }
         };
 
-        const xLabel = getAxisLabel(x);
-        const yLabel = getAxisLabel(y);
+        const xLabel = getAxisLabel(x, aggregation, entity);
+        const yLabel = getAxisLabel(y, aggregation, entity);
 
         switch (chartType) {
             case "bar":
@@ -333,127 +364,136 @@ const Dashboard = () => {
         }
     };
 
+    useEffect(() => {
+        fetchFilters();
+    }, [entity]);
 
+    useEffect(() => {
+        fetchData();
+    }, [entity, x, y, aggregation, filter]);
 
     return (
         <div className="gudang-detail-content">
-            <div className="page-header">
-                <h1 className="page-title">Dashboard</h1>
-            </div>
-
+            <div className="page-header"><h1 className="page-title">Dashboard</h1></div>
             <div className="detail-card">
-                <div className="section-header">
-                    <h2 className="section-title">Filter Dashboard</h2>
-                </div>
+                <div className="section-header"><h2 className="section-title">Filter Dashboard</h2></div>
                 <div className="section-content">
-                    {/* Filters */}
                     <div className="detail-row">
                         <div className="detail-label">Entity:</div>
-                        <select value={entity} onChange={e => {
-                            const newEntity = e.target.value;
-                            setEntity(newEntity);
-
-                            // Reset x dan y hanya jika entity waktu
-                            if (["sales_order", "purchase_order"].includes(newEntity)) {
-                                setX(newEntity === "sales_order" ? "salesDate" : "purchaseDate");
-                                setY(newEntity === "sales_order" ? "shipping.shippingFee" : "delivery.deliveryFee");
-                            } else {
-                                setX("x");
-                                setY("y");
-                            }
-                        }}>
+                        <select
+                            value={entity}
+                            onChange={e => {
+                                const selected = e.target.value;
+                                resetParamsByEntity(selected);
+                                setEntity(selected); // <- setelah reset param
+                                setFilter({
+                                    startDate: "",
+                                    endDate: "",
+                                    statusList: [],
+                                    barangIds: [],
+                                    gudangIds: [],
+                                    customerIds: []
+                                });
+                            }}
+                        >
                             <option value="sales_order">Sales Order</option>
                             <option value="purchase_order">Purchase Order</option>
                             <option value="barang">Barang</option>
                             <option value="gudang">Gudang</option>
                             <option value="status">Status</option>
                         </select>
-
                     </div>
 
-                    <div className="detail-row">
-                        <div className="detail-label">Tanggal:</div>
-                        <div style={{ display: "flex", gap: "10px", flex: 1 }}>
-                            <input type="date" value={filter.startDate} onChange={e => setFilter({ ...filter, startDate: e.target.value })} />
-                            <input type="date" value={filter.endDate} onChange={e => setFilter({ ...filter, endDate: e.target.value })} />
+                    {getVisibleFilters(entity).includes("tanggal") && (
+                        <div className="detail-row">
+                            <div className="detail-label">Tanggal:</div>
+                            <div style={{ display: "flex", gap: "10px", flex: 1 }}>
+                                <input type="date" value={filter.startDate} onChange={e => setFilter({ ...filter, startDate: e.target.value })} />
+                                <input type="date" value={filter.endDate} onChange={e => setFilter({ ...filter, endDate: e.target.value })} />
+                            </div>
                         </div>
-                    </div>
+                    )}
 
-                    <div className="detail-row">
-                        <div className="detail-label">Parameter:</div>
-                        <div style={{ display: "flex", gap: "10px", flex: 1 }}>
-                            <select value={x} onChange={e => setX(e.target.value)}>
-                                {parameterXOptions.map(opt => (
-                                    <option key={opt.value} value={opt.value}>{opt.label}</option>
-                                ))}
-                            </select>
-                            <select value={y} onChange={e => setY(e.target.value)}>
-                                {parameterYOptions.map(opt => (
-                                    <option key={opt.value} value={opt.value}>{opt.label}</option>
-                                ))}
-                            </select>
+                    {getVisibleFilters(entity).includes("parameter") && (
+                        <div className="detail-row">
+                            <div className="detail-label">Parameter:</div>
+                            <div style={{ display: "flex", gap: "10px", flex: 1 }}>
+                                <select value={x} onChange={e => setX(e.target.value)}>
+                                    {parameterXOptions.map(opt => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
+                                </select>
+                                <select value={y} onChange={e => setY(e.target.value)}>
+                                    {parameterYOptions.map(opt => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
+                                </select>
+                            </div>
                         </div>
-                    </div>
+                    )}
 
-                    <div className="detail-row">
-                        <div className="detail-label">Status / Customer:</div>
-                        <div style={{ display: "flex", gap: "10px", flex: 1 }}>
-                            <select multiple value={filter.statusList} onChange={e => handleMultiSelectChange(e, "statusList")}>
-                                {statusOptions.map(status => (
-                                    <option key={status} value={status}>{status}</option>
-                                ))}
-                            </select>
-                            <select multiple value={filter.customerIds} onChange={e => handleMultiSelectChange(e, "customerIds")}>
-                                {allCustomers.map(c => (
-                                    <option key={c.id} value={c.id}>{c.name}</option>
-                                ))}
-                            </select>
+                    {getVisibleFilters(entity).includes("status_customer") && (
+                        <div className="detail-row">
+                            <div className="detail-label">Status / Customer:</div>
+                            <div style={{ display: "flex", gap: "10px", flex: 1 }}>
+                                <select multiple value={filter.statusList} onChange={e => handleMultiSelectChange(e, "statusList")}>
+                                    {statusOptions.map(status => <option key={status} value={status}>{status}</option>)}
+                                </select>
+                                <select multiple value={filter.customerIds} onChange={e => handleMultiSelectChange(e, "customerIds")}>
+                                    {allCustomers.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+                                </select>
+                            </div>
                         </div>
-                    </div>
+                    )}
 
-                    <div className="detail-row">
-                        <div className="detail-label">Barang / Gudang:</div>
-                        <div style={{ display: "flex", gap: "10px", flex: 1 }}>
+                    {getVisibleFilters(entity).includes("barang") && (
+                        <div className="detail-row">
+                            <div className="detail-label">Barang:</div>
                             <select multiple value={filter.barangIds} onChange={e => handleMultiSelectChange(e, "barangIds")}>
-                                {allBarang.map(barang => (
-                                    <option key={barang.id} value={barang.id}>{barang.nama}</option>
-                                ))}
+                                {allBarang.map(barang => <option key={barang.id} value={barang.id}>{barang.nama}</option>)}
                             </select>
+                        </div>
+                    )}
+
+                    {getVisibleFilters(entity).includes("gudang") && (
+                        <div className="detail-row">
+                            <div className="detail-label">Gudang:</div>
                             <select multiple value={filter.gudangIds} onChange={e => handleMultiSelectChange(e, "gudangIds")}>
-                                {allGudang.map(gudang => (
-                                    <option key={gudang.nama} value={gudang.nama}>{gudang.nama}</option>
-                                ))}
+                                {allGudang.map(gudang => <option key={gudang.nama} value={gudang.nama}>{gudang.nama}</option>)}
                             </select>
                         </div>
-                    </div>
+                    )}
 
-                    <div className="detail-row">
-                        <div className="detail-label">Jenis Grafik / Agregasi:</div>
-                        <div style={{ display: "flex", gap: "10px", flex: 1 }}>
-                            <select value={chartType} onChange={e => setChartType(e.target.value)}>
-                                <option value="line">Line</option>
-                                <option value="bar">Bar</option>
-                                <option value="area">Area</option>
-                                <option value="pie">Pie</option>
-                                <option value="scatter">Scatter</option>
-                            </select>
-                            <select value={aggregation} onChange={e => setAggregation(e.target.value)}>
-                                <option value="sum">Sum</option>
-                                <option value="avg">Average</option>
-                                <option value="min">Min</option>
-                                <option value="max">Max</option>
-                                <option value="count">Count</option>
-                            </select>
+                    {getVisibleFilters(entity).includes("chart") && (
+                        <div className="detail-row">
+                            <div className="detail-label">Jenis Grafik:</div>
+                            <div style={{ display: "flex", gap: "10px", flex: 1 }}>
+                                <select value={chartType} onChange={e => setChartType(e.target.value)}>
+                                    <option value="line">Line</option>
+                                    <option value="bar">Bar</option>
+                                    <option value="area">Area</option>
+                                    <option value="pie">Pie</option>
+                                    <option value="scatter">Scatter</option>
+                                </select>
+                            </div>
                         </div>
-                    </div>
+                    )}
 
+                    {getVisibleFilters(entity).includes("agregasi") && (
+                        <div className="detail-row">
+                            <div className="detail-label">Agregasi:</div>
+                            <div style={{ display: "flex", gap: "10px", flex: 1 }}>
+                                <select value={aggregation} onChange={e => setAggregation(e.target.value)}>
+                                    <option value="sum">Sum</option>
+                                    <option value="avg">Average</option>
+                                    <option value="min">Min</option>
+                                    <option value="max">Max</option>
+                                    <option value="count">Count</option>
+                                </select>
+                            </div>
+                        </div>
+                    )}
 
                     <div className="action-buttons">
                         <button className="update-btn" onClick={fetchData}>Filter</button>
                         <button className="back-btn" onClick={resetFilters}>Refresh</button>
                     </div>
-
-
                 </div>
             </div>
 
@@ -461,7 +501,9 @@ const Dashboard = () => {
                 <div className="section-header">
                     <h2 className="section-title">Dashboard</h2>
                     <p style={{ marginLeft: "20px", color: "#6c757d", fontSize: "14px" }}>
-                        X: {getAxisLabel(x)} | Y: {getAxisLabel(y)} | Agregasi: {aggregation.toUpperCase()}
+                        {entity === "status"
+                            ? "Jumlah Order berdasarkan Status"
+                            : `X: ${getAxisLabel(x)} | Y: ${getAxisLabel(y)} | Agregasi: ${aggregation.toUpperCase()}`}
                     </p>
                 </div>
                 <div className="section-content">
@@ -473,7 +515,6 @@ const Dashboard = () => {
                         <ResponsiveContainer width="100%" height={400}>
                             {renderChart()}
                         </ResponsiveContainer>
-
                     )}
                 </div>
             </div>
