@@ -56,15 +56,21 @@ const Home = () => {
       startDate: `${year}-01-01`,
       endDate: `${year}-12-31`
     };
-    
+
+    const filterStatus = {
+      statusList: ['COMPLETED'],
+      startDate: `${year}-01-01`,
+      endDate: `${year}-12-31`
+    };
+
     try {
       // Bar Chart: Penjualan vs Pembelian
       const [sales, purchase] = await Promise.all([
         axiosInstance.post("/api/dashboard/get-data", {
-          entity: "sales_order", x: "salesDate", y: "id", aggregation: "count", filter
+          entity: "sales_order", x: "salesDate", y: "id", aggregation: "count", filter: filterStatus
         }, { headers }),
         axiosInstance.post("/api/dashboard/get-data", {
-          entity: "purchase_order", x: "purchaseDate", y: "id", aggregation: "count", filter
+          entity: "purchase_order", x: "purchaseDate", y: "id", aggregation: "count", filter: filterStatus
         }, { headers })
       ]);
 
@@ -78,13 +84,13 @@ const Home = () => {
 
       // Line Chart: Profit Penjualan
       const lineRes = await axiosInstance.post("/api/dashboard/get-data", {
-        entity: "sales_order", x: "salesDate", y: "totalPrice", aggregation: "sum", filter
+        entity: "sales_order", x: "salesDate", y: "totalPrice", aggregation: "sum", filter: filterStatus
       }, { headers });
       setLineData(lineRes.data.data.data || []);
 
       // Line Chart: Pengeluaran PO
       const expenseRes = await axiosInstance.post("/api/dashboard/get-data", {
-        entity: "purchase_order", x: "purchaseDate", y: "totalPrice", aggregation: "sum", filter
+        entity: "purchase_order", x: "purchaseDate", y: "totalPrice", aggregation: "sum", filter:  filterStatus
       }, { headers });
       setExpenseData(expenseRes.data.data.data || []);
 
@@ -99,7 +105,7 @@ const Home = () => {
       setShippingScatterData(shippingAvgRes.data.data.data || []);
 
       // Area Chart: Pengeluaran Aktual VS Pendapatan
-     const incomeRes = await axiosInstance.post("/api/dashboard/get-data", {
+      const incomeRes = await axiosInstance.post("/api/dashboard/get-data", {
         entity: "sales_payment",
         x: "paymentDate",
         y: "totalAmountPayed",
@@ -155,9 +161,9 @@ const Home = () => {
       const countByMonth = (list, dateKey) =>
         (list && list.length > 0)
           ? list.filter((item) => {
-              const d = new Date(item[dateKey]);
-              return d.getMonth() === thisMonth && d.getFullYear() === thisYear;
-            }).length
+            const d = new Date(item[dateKey]);
+            return d.getMonth() === thisMonth && d.getFullYear() === thisYear;
+          }).length
           : 0;
 
       const soThisMonth = countByMonth(salesRes.data.data, "salesDate") || 0;
@@ -242,28 +248,28 @@ const Home = () => {
             <div className="charts-section">
               <div className="chart-card">
                 <h3>Penjualan vs Pembelian ({new Date().getFullYear()})</h3>
-                  {barData.length === 0 ? (
-                    <div className="no-data">No data available</div>
-                    ) : (
-                      <BarChart width={350} height={250} data={barData}>
-                        <Bar dataKey="sales" fill="#f7931e" />
-                        <Bar dataKey="purchase" fill="#8884d8" />
-                        <XAxis dataKey="x" tickFormatter={(dateStr) => {
-                          const date = new Date(dateStr);
-                          return date.toLocaleString("default", { month: "short" });
-                        }} />
-                        <YAxis />
-                        <Tooltip />
-                        <Legend />
-                      </BarChart>
-                    )}
+                {barData.length === 0 ? (
+                  <div className="no-data">No data available</div>
+                ) : (
+                  <BarChart width={350} height={250} data={barData}>
+                    <Bar dataKey="sales" fill="#f7931e" />
+                    <Bar dataKey="purchase" fill="#8884d8" />
+                    <XAxis dataKey="x" tickFormatter={(dateStr) => {
+                      const date = new Date(dateStr);
+                      return date.toLocaleString("default", { month: "short" });
+                    }} />
+                    <YAxis />
+                    <Tooltip />
+                    <Legend />
+                  </BarChart>
+                )}
               </div>
 
               <div className="chart-card">
-              <h3>Pendapatan vs Pengeluaran ({new Date().getFullYear()})</h3>
-                  {incomeExpenseData.length === 0 ? (
+                <h3>Pendapatan vs Pengeluaran ({new Date().getFullYear()})</h3>
+                {incomeExpenseData.length === 0 ? (
                   <div className="no-data">No data available</div>
-                  ) : (
+                ) : (
                   <AreaChart width={350} height={250} data={incomeExpenseData}>
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis dataKey="x" tickFormatter={(dateStr) => {
@@ -277,41 +283,41 @@ const Home = () => {
                     <Legend />
                   </AreaChart>
                 )}
-            </div>
+              </div>
 
               <div className="chart-card">
                 <h3>Status Barang (Aktif vs Non-Aktif)</h3>
-                 {barangStatusData.length === 0 ? (
-                    <div className="no-data">No data available</div>
-                  ) : (
-                    <PieChart width={350} height={250}>
-                      <Pie
-                        data={barangStatusData}
-                        dataKey="value"
-                        nameKey="name"
-                        cx="50%"
-                        cy="50%"
-                        outerRadius={80}
-                        innerRadius={50}
-                        labelLine={false}
-                      >
-                        {barangStatusData.map((_, i) => (
-                          <Cell key={i} fill={["#00C49F", "#FF8042"][i % 2]} />
-                        ))}
-                      </Pie>
-                      <Tooltip />
-                      <Legend />
-                      <text
-                        x={175}
-                        y={117}
-                        textAnchor="middle"
-                        dominantBaseline="middle"
-                        style={{ fontSize: "20px", fontWeight: "bold" }}
-                      >
-                        {barangStatusData.reduce((acc, cur) => acc + cur.value, 0)}
-                      </text>
-                    </PieChart>
-                  )}
+                {barangStatusData.length === 0 ? (
+                  <div className="no-data">No data available</div>
+                ) : (
+                  <PieChart width={350} height={250}>
+                    <Pie
+                      data={barangStatusData}
+                      dataKey="value"
+                      nameKey="name"
+                      cx="50%"
+                      cy="50%"
+                      outerRadius={80}
+                      innerRadius={50}
+                      labelLine={false}
+                    >
+                      {barangStatusData.map((_, i) => (
+                        <Cell key={i} fill={["#00C49F", "#FF8042"][i % 2]} />
+                      ))}
+                    </Pie>
+                    <Tooltip />
+                    <Legend />
+                    <text
+                      x={175}
+                      y={117}
+                      textAnchor="middle"
+                      dominantBaseline="middle"
+                      style={{ fontSize: "20px", fontWeight: "bold" }}
+                    >
+                      {barangStatusData.reduce((acc, cur) => acc + cur.value, 0)}
+                    </text>
+                  </PieChart>
+                )}
               </div>
 
               <div className="chart-card">
@@ -379,7 +385,7 @@ const Home = () => {
 
             </div>
 
-           <div className="dashboard-table-section">
+            <div className="dashboard-table-section">
               <div className="dashboard-table-card">
                 <h3>Purchase Orders Terbaru</h3>
                 <table className="dashboard-table">
