@@ -5,6 +5,7 @@ import {
     BarChart, Bar, LineChart, Line, AreaChart, Area, PieChart, Pie, ScatterChart, Scatter,
     XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend, Cell
 } from 'recharts';
+import Select from "react-select";
 
 const Dashboard = () => {
     const [data, setData] = useState([]);
@@ -184,6 +185,11 @@ const Dashboard = () => {
 
         setChartType("line");
     };
+
+    const customerOptions = allCustomers.map(c => ({ value: c.id, label: c.name }));
+    const statusOptionsFormatted = statusOptions.map(s => ({ value: s, label: s }));
+    const gudangOptions = allGudang.map(g => ({ value: g.nama, label: g.nama }));
+    const barangOptions = allBarang.map(b => ({ value: b.id, label: b.nama }));
 
     const renderChart = () => {
         const chartProps = {
@@ -432,12 +438,28 @@ const Dashboard = () => {
                         <div className="detail-row">
                             <div className="detail-label">Status / Customer:</div>
                             <div style={{ display: "flex", gap: "10px", flex: 1 }}>
-                                <select multiple value={filter.statusList} onChange={e => handleMultiSelectChange(e, "statusList")}>
-                                    {statusOptions.map(status => <option key={status} value={status}>{status}</option>)}
-                                </select>
-                                <select multiple value={filter.customerIds} onChange={e => handleMultiSelectChange(e, "customerIds")}>
-                                    {allCustomers.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
-                                </select>
+                                <Select
+                                    isMulti
+                                    options={statusOptionsFormatted}
+                                    value={statusOptionsFormatted.filter(opt => filter.statusList.includes(opt.value))}
+                                    onChange={(selected) =>
+                                        setFilter(prev => ({
+                                            ...prev,
+                                            statusList: selected.map(opt => opt.value)
+                                        }))
+                                    }
+                                />
+                                <Select
+                                    isMulti
+                                    options={customerOptions}
+                                    value={customerOptions.filter(opt => filter.customerIds.includes(opt.value))}
+                                    onChange={(selected) =>
+                                        setFilter(prev => ({
+                                            ...prev,
+                                            customerIds: selected.map(opt => opt.value)
+                                        }))
+                                    }
+                                />
                             </div>
                         </div>
                     )}
@@ -445,18 +467,34 @@ const Dashboard = () => {
                     {getVisibleFilters(entity).includes("barang") && (
                         <div className="detail-row">
                             <div className="detail-label">Barang:</div>
-                            <select multiple value={filter.barangIds} onChange={e => handleMultiSelectChange(e, "barangIds")}>
-                                {allBarang.map(barang => <option key={barang.id} value={barang.id}>{barang.nama}</option>)}
-                            </select>
+                            <Select
+                                isMulti
+                                options={barangOptions}
+                                value={barangOptions.filter(opt => filter.barangIds.includes(opt.value))}
+                                onChange={(selected) =>
+                                    setFilter(prev => ({
+                                        ...prev,
+                                        barangIds: selected.map(opt => opt.value)
+                                    }))
+                                }
+                            />
                         </div>
                     )}
 
                     {getVisibleFilters(entity).includes("gudang") && (
                         <div className="detail-row">
                             <div className="detail-label">Gudang:</div>
-                            <select multiple value={filter.gudangIds} onChange={e => handleMultiSelectChange(e, "gudangIds")}>
-                                {allGudang.map(gudang => <option key={gudang.nama} value={gudang.nama}>{gudang.nama}</option>)}
-                            </select>
+                            <Select
+                                isMulti
+                                options={gudangOptions}
+                                value={gudangOptions.filter(opt => filter.gudangIds.includes(opt.value))}
+                                onChange={(selected) =>
+                                    setFilter(prev => ({
+                                        ...prev,
+                                        gudangIds: selected.map(opt => opt.value)
+                                    }))
+                                }
+                            />
                         </div>
                     )}
 
