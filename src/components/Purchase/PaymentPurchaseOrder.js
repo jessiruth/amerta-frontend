@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axiosInstance from "../../services/axiosInstance";
 import "../../styles/GudangDetail.css";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const PaymentPurchaseOrder = () => {
   const { id } = useParams();
@@ -63,8 +65,10 @@ const PaymentPurchaseOrder = () => {
       });
       setModalType(null);
       setSuccessModal(true);
-    } catch {
+    } catch (error){
       setModalType(null);
+        const message = error.response?.data?.message || "Gagal membayar purchase order.";
+        toast.error(message);
     }
   };
 
@@ -101,6 +105,7 @@ const PaymentPurchaseOrder = () => {
 
   return (
     <div className="gudang-form-container">
+      <ToastContainer />
       <div className="gudang-form-content">
         <div className="page-header">
           <h1 className="page-title">Pembayaran Purchase Order</h1>

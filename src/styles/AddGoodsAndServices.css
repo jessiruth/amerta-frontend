@@ -232,3 +232,11 @@
   cursor: pointer;
   color: #555;
 }
+
+input[type="date"] {
+  font-size: 14px;
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  width: 100%;
+}

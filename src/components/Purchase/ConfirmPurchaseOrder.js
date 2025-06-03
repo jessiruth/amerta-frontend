@@ -3,6 +3,8 @@ import { useParams, useNavigate } from "react-router-dom";
 import axiosInstance from "../../services/axiosInstance";
 import "../../styles/GudangDetail.css";
 import "../../styles/AddSalesOrder.css";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const ConfirmPurchaseOrder = () => {
     const { id } = useParams();
@@ -49,8 +51,10 @@ const ConfirmPurchaseOrder = () => {
                     })
                 );
                 setItemPrices(prices);
-            } catch {
+            } catch (error) {
                 setData(null);
+                const message = error.response?.data?.message || "Gagal mengupdate barang.";
+                toast.error(message);
             } finally {
                 setLoading(false);
             }
@@ -87,8 +91,10 @@ const ConfirmPurchaseOrder = () => {
             });
             setModalType(null);
             setSuccessModal(true);
-        } catch {
+        } catch (error){
             setModalType(null);
+            const message = error.response?.data?.message || "Gagal mengupdate barang.";
+            toast.error(message);
         }
     };
 
@@ -117,6 +123,7 @@ const ConfirmPurchaseOrder = () => {
 
     return (
         <div className="gudang-form-container">
+            <ToastContainer />
             <div className="gudang-form-content">
                 <div className="page-header">
                     <h1 className="page-title">Konfirmasi Purchase Order</h1>

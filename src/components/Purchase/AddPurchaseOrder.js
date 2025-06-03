@@ -4,6 +4,8 @@ import { useNavigate } from "react-router-dom";
 import DeleteIcon from "@mui/icons-material/Delete";
 import axiosInstance from "../../services/axiosInstance";
 import "../../styles/AddGoodsAndServices.css";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const AddPurchaseOrder = () => {
   const navigate = useNavigate();
@@ -114,9 +116,10 @@ const AddPurchaseOrder = () => {
       setCreatedId(id);
       setSuccessModal(true);
       setModalType(null);
-    } catch {
+    } catch (error) {
       setModalType(null);
-      alert("Gagal menyimpan Purchase Order");
+      const message = error.response?.data?.message || "Gagal menambah purchase order.";
+      toast.error(message);
     }
   };
 
@@ -193,6 +196,7 @@ const AddPurchaseOrder = () => {
 
   return (
     <div className="barang-form-container">
+      <ToastContainer />
       <div className="barang-page-header">
         <h1 className="barang-page-title">Tambah Purchase Order</h1>
       </div>
