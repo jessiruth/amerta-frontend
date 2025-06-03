@@ -65,7 +65,7 @@ const AddGoodsAndServices = () => {
     if (stokList.length === 0) newErr.stokList = "Minimal harus ada satu stok barang";
 
     stokList.forEach((s, idx) => {
-      if (!s.stock || isNaN(s.stock) || Number(s.stock) < 0) {
+      if (s.stock === "" || isNaN(Number(s.stock)) || Number(s.stock) < 0) {
         newErr[`stock-${idx}`] = "Jumlah stock tidak valid";
       }
       if (!s.namaGudang) {
