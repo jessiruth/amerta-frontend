@@ -67,8 +67,8 @@ const DeliveryPurchaseOrder = () => {
       errors.deliveryFee = "Gunakan format yang sesuai, contoh: 12000,50";
     }
 
-    if (new Date(deliveryDate) < new Date(data.purchaseDate)) {
-      errors.deliveryDate = "Tanggal pengiriman tidak boleh sebelum tanggal pembelian.";
+    if (new Date(deliveryDate) < new Date(data.invoice?.invoiceDate)) {
+      errors.deliveryDate = "Tanggal pengiriman tidak boleh sebelum tanggal invoice.";
     }
 
     setInputErrors(errors);

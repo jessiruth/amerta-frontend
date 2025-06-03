@@ -231,10 +231,10 @@ const AddPurchaseOrder = () => {
                 <table className="purchase-stock-table">
                   <thead>
                     <tr>
-                      <th>Barang*</th>
-                      <th>Jumlah*</th>
-                      <th>Gudang*</th>
-                      <th>Pajak (%) *</th>
+                      <th>Barang<span className="required">*</span></th>
+                      <th>Jumlah<span className="required">*</span></th>
+                      <th>Gudang<span className="required">*</span></th>
+                      <th>Pajak (%)<span className="required">*</span></th>
                       <th>Hapus</th>
                     </tr>
                   </thead>
