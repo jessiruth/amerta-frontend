@@ -1,10 +1,17 @@
 import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 import "../styles/Finance.css";
 import expenseImage from "../assets/Expense.png";
 import revenueImage from "../assets/Revenue.png";
 
 const Finance = () => {
     const navigate = useNavigate();
+
+    const token = localStorage.getItem("token");
+
+    useEffect(() => {
+        if (!token) navigate("/");
+    }, [navigate, token]);
 
     return (
         <div className="finance-container">

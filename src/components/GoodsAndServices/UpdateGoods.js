@@ -1,256 +1,396 @@
-import { useState, useEffect, useCallback } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import axiosInstance from "../../services/axiosInstance";
-import "../../styles/UpdateGoods.css";
+import React, { useState, useEffect, useCallback } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import DeleteIcon from "@mui/icons-material/Delete";
-import Modal from "@mui/material/Modal";
-import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
-import Button from "@mui/material/Button";
+import axiosInstance from "../../services/axiosInstance";
+import "../../styles/AddGoodsAndServices.css";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const UpdateGoods = () => {
-    const { id } = useParams();
-    const navigate = useNavigate();
-    const [nama, setNama] = useState("");
-    const [kategori, setKategori] = useState("");
-    const [merk, setMerk] = useState("");
-    const [isActive, setIsActive] = useState(null);
-    const [stokList, setStokList] = useState([]);
-    const [gudangOptions, setGudangOptions] = useState([]);
-    const [errorMessage, setErrorMessage] = useState("");
-    const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
-    const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
-    const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const [nama, setNama] = useState("");
+  const [kategori, setKategori] = useState("");
+  const [merk, setMerk] = useState("");
+  const [hargaBeli, setHargaBeli] = useState("");
+  const [hargaJual, setHargaJual] = useState("");
+  const [isActive, setIsActive] = useState(null);
+  const [stokList, setStokList] = useState([]);
+  const [gudangOptions, setGudangOptions] = useState([]);
+  const [errors, setErrors] = useState({});
+  const [showModal, setShowModal] = useState(null);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
 
+  const parseHarga = (str) => parseFloat(str.replace(",", "."));
+
+  useEffect(() => {
     const token = localStorage.getItem("token");
-    if (!token) {
-        navigate("/login");
+    if (!token) navigate("/");
+
+    const fetchBarang = async () => {
+      const res = await axiosInstance.get(`/api/barang/${id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      const barang = res.data.data;
+      setNama(barang.nama);
+      setKategori(barang.kategori);
+      setMerk(barang.merk);
+      setIsActive(barang.active);
+      setHargaBeli(barang.hargaBeli.toString().replace(".", ","));
+      setHargaJual(barang.hargaJual.toString().replace(".", ","));
+
+      const mappedStock = barang.stockBarang.map(s => ({
+        stock: s.stock,
+        namaGudang: s.namaGudang,
+        isExisting: true
+      }));
+      setStokList(mappedStock);
+    };
+
+    const fetchGudangs = async () => {
+      const token = localStorage.getItem("token");
+      const res = await axiosInstance.get("/api/gudang/", {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setGudangOptions(res.data.data.map(g => g.nama));
+    };
+
+    fetchBarang();
+    fetchGudangs();
+  }, [id, navigate]);
+
+  const validateForm = () => {
+    const newErr = {};
+    const hargaRegex = /^\d+(,\d{1,2})?$/;
+
+    const beliValid = hargaRegex.test(hargaBeli);
+    const jualValid = hargaRegex.test(hargaJual);
+
+    const beli = parseHarga(hargaBeli);
+    const jual = parseHarga(hargaJual);
+
+    if (!nama.trim()) newErr.nama = "Nama wajib diisi";
+    if (!kategori.trim()) newErr.kategori = "Kategori wajib diisi";
+    if (!merk.trim()) newErr.merk = "Merk wajib diisi";
+
+    if (!hargaBeli) {
+      newErr.hargaBeli = "Harga beli wajib diisi";
+    } else if (!beliValid) {
+      newErr.hargaBeli = "Format harga beli tidak valid (gunakan koma, contoh: 12500,50)";
+    } else if (beli < 1) {
+      newErr.hargaBeli = "Harga beli minimal adalah 1";
     }
 
-    const fetchBarangDetail = useCallback(async () => {
-        try {
-            const response = await axiosInstance.get(`/api/barang/${id}`, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
-    
-            const barang = response.data.data;
-            setNama(barang.nama);
-            setKategori(barang.kategori);
-            setMerk(barang.merk);
-            setIsActive(barang.active);
-            setStokList(barang.stockBarang.map(stock => ({
-                stock: stock.stock,
-                namaGudang: stock.namaGudang,
-                isExisting: true // Penanda bahwa stok ini tidak bisa mengubah gudangnya
-            })));
-        } catch (error) {
-            console.error("Error fetching barang data:", error);
-            setErrorMessage("Gagal mengambil data barang.");
-            setIsErrorModalOpen(true);
-        }
-    }, [id, token]);
+    if (!hargaJual) {
+      newErr.hargaJual = "Harga jual wajib diisi";
+    } else if (!jualValid) {
+      newErr.hargaJual = "Format harga jual tidak valid (gunakan koma, contoh: 15000,75)";
+    } else if (jual < 1) {
+      newErr.hargaJual = "Harga jual minimal adalah 1";
+    }
 
-    const fetchGudangOptions = useCallback(async () => {
-        try {
-            const response = await axiosInstance.get("/api/gudang/", {
-                headers: { Authorization: `Bearer ${token}` }
-            });
-            setGudangOptions(response.data.data.map(gudang => gudang.nama));
-        } catch (error) {
-            console.error("Error fetching gudang data:", error);
-            setErrorMessage("Gagal mengambil daftar gudang.");
-            setIsErrorModalOpen(true);
-        }
-    }, [token]);
+    if (isActive === null) newErr.isActive = "Status barang wajib dipilih";
 
-    useEffect(() => {
-        fetchBarangDetail();
-        fetchGudangOptions();
-    }, [fetchBarangDetail, fetchGudangOptions]);
+    if (stokList.length === 0) {
+      newErr.stokList = "Minimal harus ada satu stok barang";
+    }
 
-    const addStockRow = () => {
-        setStokList([...stokList, { stock: "", namaGudang: "", isExisting: false }]);
-    };
+    stokList.forEach((s, idx) => {
+     if (s.stock === "" || isNaN(Number(s.stock)) || Number(s.stock) < 0) {
+        newErr[`stock-${idx}`] = "Jumlah stock tidak valid";
+      }
+      if (!s.isExisting && !s.namaGudang) {
+        newErr[`gudang-${idx}`] = "Gudang wajib dipilih";
+      }
+    });
 
-    const removeStockRow = (index) => {
-        setStokList(stokList.filter((_, i) => i !== index));
-    };
+    setErrors(newErr);
+    return Object.keys(newErr).length === 0;
+  };
 
-    const updateStockRow = (index, field, value) => {
-        const updatedStokList = [...stokList];
-        updatedStokList[index][field] = value;
-        setStokList(updatedStokList);
-    };
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (validateForm()) setShowModal("confirm");
+  };
 
-    const handleSubmit = (event) => {
-        event.preventDefault();
+  const handleConfirm = async () => {
+    const token = localStorage.getItem("token");
 
-        setErrorMessage("");
+    try {
+      await axiosInstance.put(`/api/barang/update/${id}`, {
+        nama,
+        kategori,
+        merk,
+        active: isActive,
+        hargaBeli: parseHarga(hargaBeli),
+        hargaJual: parseHarga(hargaJual),
+        listStockBarang: stokList.map(s => ({
+          stock: Number(s.stock),
+          namaGudang: s.namaGudang
+        }))
+      }, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
 
-        if (!nama || !kategori || !merk || stokList.length === 0) {
-            setErrorMessage("Semua field harus diisi!");
-            setIsErrorModalOpen(true);
-            return;
-        }
+      setShowSuccessModal(true);
+    } catch (error){
+      const message = error.response?.data?.message || "Gagal mengupdate barang.";
+      toast.error(message);
+    } finally {
+      setShowModal(null);
+    }
+  };
 
-        for (let stok of stokList) {
-            if (!stok.namaGudang) {
-                setErrorMessage("Harap pilih gudang untuk setiap stok!");
-                setIsErrorModalOpen(true);
-                return;
-            }
-        }
+  const addStock = () => {
+    setStokList(prev => {
+      const updated = [...prev, { stock: "", namaGudang: "" }];
 
-        setIsConfirmModalOpen(true);
-    };
+      if (updated.length > 0 && errors.stokList) {
+        setErrors(prev => {
+          const copy = { ...prev };
+          delete copy.stokList;
+          return copy;
+        });
+      }
 
-    const confirmSubmit = async () => {
-        setIsConfirmModalOpen(false);
+      return updated;
+    });
+  };
 
-        const requestData = {
-            nama,
-            kategori,
-            isActive,
-            merk,
-            listStockBarang: stokList.map(({ stock, namaGudang }) => ({
-                stock: parseInt(stock),
-                namaGudang
-            }))
-        };
+  const removeStock = (index) => {
+    const updated = [...stokList];
+    updated.splice(index, 1);
+    setStokList(updated);
+  };
 
-        try {
-            await axiosInstance.put(`/api/barang/update/${id}`, requestData, {
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`
-                }
-            });
+  const updateStock = (index, field, value) => {
+    const updated = [...stokList];
+    updated[index][field] = value;
+    setStokList(updated);
 
-            setIsSuccessModalOpen(true);
-        } catch (error) {
-            console.error("Error updating barang:", error);
-            setErrorMessage(error.response?.data?.message || "Terjadi kesalahan saat mengupdate barang.");
-            setIsErrorModalOpen(true);
-        }
-    };
+    const errKey = `${field === "stock" ? "stock" : "gudang"}-${index}`;
+    if (errors[errKey]) {
+      setErrors(prev => {
+        const copy = { ...prev };
+        delete copy[errKey];
+        return copy;
+      });
+    }
 
-    return (
-        <div className="page-container-update-goods">
-            <div className="form-container">
-                <h1 className="page-title-update-goods">Update Goods & Service</h1>
+    if (errors.stokList) {
+      setErrors(prev => {
+        const copy = { ...prev };
+        delete copy.stokList;
+        return copy;
+      });
+    }
+  };
 
-                <form onSubmit={handleSubmit}>
-                    <label>Nama Barang:</label>
-                    <input type="text" value={nama} onChange={(e) => setNama(e.target.value)} required />
+    // Tambahkan ini di bagian atas fungsi komponen:
+  const handleChangeField = (field, value) => {
+    switch (field) {
+      case "nama": setNama(value); break;
+      case "kategori": setKategori(value); break;
+      case "merk": setMerk(value); break;
+      case "hargaBeli": setHargaBeli(value); break;
+      case "hargaJual": setHargaJual(value); break;
+      case "isActive":
+        setIsActive(value);
+        break;
+      default: break;
+    }
 
-                    <label>Kategori:</label>
-                    <input type="text" value={kategori} onChange={(e) => setKategori(e.target.value)} required />
+    // Hapus error terkait jika ada
+    if (errors[field]) {
+      setErrors(prev => {
+        const copy = { ...prev };
+        delete copy[field];
+        return copy;
+      });
+    }
+  };
 
-                    <label>Merk:</label>
-                    <input type="text" value={merk} onChange={(e) => setMerk(e.target.value)} required />
-
-                    <label>Status Barang:</label>
-                    <div className="radio-group">
-                        <label>
-                            <input type="radio" name="isActive" value="true" checked={isActive === true} onChange={() => setIsActive(true)} />
-                            Active
-                        </label>
-                        <label>
-                            <input type="radio" name="isActive" value="false" checked={isActive === false} onChange={() => setIsActive(false)} />
-                            Inactive
-                        </label>
-                    </div>
-
-                    <div className="stock-section">
-                        <h3>Stock Barang per Gudang:</h3>
-                        <button type="button" onClick={addStockRow} className="add-stock-btn">+ Add</button>
-                    </div>
-
-                    <div className="scrollable-table">
-                        <table className="stock-table">
-                            <thead>
-                                <tr>
-                                    <th>Stock</th>
-                                    <th>Gudang</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {stokList.map((stok, index) => (
-                                    <tr key={index}>
-                                        <td>
-                                            <input type="number" min="0" value={stok.stock}
-                                                onChange={(e) => updateStockRow(index, "stock", e.target.value)} required />
-                                        </td>
-                                        <td>
-                                            {stok.isExisting ? (
-                                                <span>{stok.namaGudang}</span>
-                                            ) : (
-                                                <select value={stok.namaGudang} onChange={(e) => updateStockRow(index, "namaGudang", e.target.value)} required>
-                                                    <option value="" disabled hidden>Pilih Gudang...</option>
-                                                    {gudangOptions.map((gudang, idx) => (
-                                                        <option key={idx} value={gudang}>{gudang}</option>
-                                                    ))}
-                                                </select>
-                                            )}
-                                        </td>
-                                        <td>
-                                            {!stok.isExisting && (
-                                                <button
-                                                    type="button"
-                                                    className="delete-stock-btn"
-                                                    onClick={() => removeStockRow(index)}
-                                                    title="Hapus stok ini">
-                                                    <DeleteIcon />
-                                                </button>
-                                            )}
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <div className="button-group">
-                        <button type="button" className="cancel-btn" onClick={() => navigate("/goods-and-services")}>Cancel</button>
-                        <button type="submit" className="save-btn">Update</button>
-                    </div>
-                </form>
+  return (
+    <div className="barang-form-container">
+      <ToastContainer />
+      <div className="barang-page-header">
+        <h1 className="barang-page-title">Update Barang</h1>
+      </div>
+      <div className="barang-form-content">
+        <form onSubmit={handleSubmit}>
+          <div className="barang-form-section">
+            <div className="barang-form-group">
+              <label>Nama Barang<span className="required">*</span></label>
+              <input type="text" value={nama} placeholder="Masukkan nama barang" onChange={e => handleChangeField("nama", e.target.value)} />
+              {errors.nama && <div className="barang-error">{errors.nama}</div>}
             </div>
+            <div className="barang-form-group">
+              <label>Kategori<span className="required">*</span></label>
+              <input type="text" value={kategori} placeholder="Masukkan kategori barang" onChange={e => handleChangeField("kategori", e.target.value)} />
+              {errors.kategori && <div className="barang-error">{errors.kategori}</div>}
+            </div>
+            <div className="barang-form-group">
+              <label>Merk<span className="required">*</span></label>
+              <input type="text" value={merk} placeholder="Masukkan merk barang" onChange={e => handleChangeField("merk", e.target.value)} />
+              {errors.merk && <div className="barang-error">{errors.merk}</div>}
+            </div>
+            <div className="barang-form-group">
+              <label>Harga Beli<span className="required">*</span></label>
+              <input
+                type="text"
+                inputMode="decimal"
+                placeholder="Contoh: 12500,50"
+                value={hargaBeli}
+                onChange={e => handleChangeField("hargaBeli", e.target.value)}
+              />
+              {errors.hargaBeli && <div className="barang-error">{errors.hargaBeli}</div>}
+            </div>
+            <div className="barang-form-group">
+              <label>Harga Jual<span className="required">*</span></label>
+              <input
+                type="text"
+                inputMode="decimal"
+                placeholder="Contoh: 15000,75"
+                value={hargaJual}
+                onChange={e => handleChangeField("hargaJual", e.target.value)}
+              />
+              {errors.hargaJual && <div className="barang-error">{errors.hargaJual}</div>}
+            </div>
+            <div className="barang-form-group">
+              <label>Status Barang<span className="required">*</span></label>
+              <div className="barang-radio-group">
+                <label>
+                  <input
+                    type="radio"
+                    checked={isActive === true}
+                    onChange={() => handleChangeField("isActive", true)}
+                  /> Aktif
+                </label>
+                <label>
+                  <input
+                    type="radio"
+                    checked={isActive === false}
+                    onChange={() => handleChangeField("isActive", false)}
+                  /> Tidak Aktif
+                </label>
+              </div>
+              {errors.isActive && <div className="barang-error">{errors.isActive}</div>}
+            </div>
+          </div>
 
-             <Modal open={isConfirmModalOpen} onClose={() => setIsConfirmModalOpen(false)}>
-                <Box className="modal-style">
-                    <Typography className="modal-header-confirm">Konfirmasi</Typography>
-                    <Typography className="modal-message">Apakah Anda yakin ingin menambahkan barang ini?</Typography>
-                    <div className="modal-actions">
-                        <Button className="modal-close-btn-confirm-success" onClick={() => setIsConfirmModalOpen(false)}>Cancel</Button>
-                        <Button className="modal-confirm-btn-confirm-success" onClick={confirmSubmit}>Confirm</Button>
-                    </div>
-                </Box>
-            </Modal>
+          <div className="barang-form-section">
+            <h3>Stock per Gudang</h3>
+            <button type="button" className="barang-add-btn" onClick={addStock}>+ Tambah Barang</button>
+            {errors.stokList && <div className="barang-error">{errors.stokList}</div>}
 
-            <Modal open={isSuccessModalOpen} onClose={() => navigate("/goods-and-services")}>
-                <Box className="modal-style">
-                    <Typography className="modal-header-success">Sukses!</Typography>
-                    <Typography className="modal-message">Barang berhasil ditambahkan.</Typography>
-                    <div className="modal-actions">
-                        <Button className="modal-close-btn-confirm-success" onClick={() => navigate("/goods-and-services")}>Close</Button>
-                        {id && (
-                            <Button className="view-btn" onClick={() => navigate(`/goods-and-services/${id}`)}>View Barang</Button>
-                        )}
-                    </div>
-                </Box>
-            </Modal>
+            <div className="barang-stock-table-wrapper">
+              {stokList.length > 0 && (
+                <table className="barang-stock-table">
+                  <thead>
+                    <tr>
+                      <th>Jumlah</th>
+                      <th>Gudang</th>
+                      <th>Hapus</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {stokList.map((s, idx) => (
+                      <tr key={idx}>
+                        <td>
+                          <input type="number" placeholder="Jumlah" value={s.stock} min="0"
+                            onChange={e => updateStock(idx, "stock", e.target.value)} />
+                          {errors[`stock-${idx}`] && <div className="barang-error">{errors[`stock-${idx}`]}</div>}
+                        </td>
+                        <td>
+                          {s.isExisting ? (
+                            <span>{s.namaGudang}</span>
+                          ) : (
+                            <select value={s.namaGudang} onChange={e => updateStock(idx, "namaGudang", e.target.value)}>
+                              <option value="">Pilih Gudang</option>
+                              {gudangOptions.map((g, i) => <option key={i} value={g}>{g}</option>)}
+                            </select>
+                          )}
+                          {errors[`gudang-${idx}`] && <div className="barang-error">{errors[`gudang-${idx}`]}</div>}
+                        </td>
+                        <td>
+                          {!s.isExisting && (
+                            <button type="button" className="barang-delete-button" onClick={() => removeStock(idx)}>
+                              <DeleteIcon />
+                            </button>
+                          )}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              )}
+            </div>
+          </div>
 
-            <Modal open={isErrorModalOpen} onClose={() => setIsErrorModalOpen(false)}>
-                <Box className="modal-style">
-                    <Typography className="modal-header-error">⚠ Error</Typography>
-                    <Typography className="modal-message">{errorMessage}</Typography>
-                    <Button className="modal-close-btn" onClick={() => setIsErrorModalOpen(false)}>Close</Button>
-                </Box>
-            </Modal>
+          <div className="barang-actions">
+            <button type="button" className="barang-cancel-btn" onClick={() => setShowModal("cancel")}>Batal</button>
+            <button type="submit" className="barang-submit-btn">Simpan</button>
+          </div>
+        </form>
+      </div>
+
+      {showModal && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h3>{showModal === "confirm" ? "Konfirmasi Simpan" : "Konfirmasi Batal"}</h3>
+              <button className="close-button" onClick={() => setShowModal(null)}>&times;</button>
+            </div>
+            <div className="modal-body">
+              {showModal === "confirm" ? (
+                <p>Apakah Anda yakin ingin menyimpan perubahan barang ini?</p>
+              ) : (
+                <>
+                  <p>Apakah Anda yakin ingin membatalkan perubahan?</p>
+                  <p className="warning-text">Semua perubahan yang belum disimpan akan hilang.</p>
+                </>
+              )}
+            </div>
+            <div className="modal-footer">
+              <button className="secondary-btn" onClick={() => setShowModal(null)}>Kembali</button>
+              <button
+                className={showModal === "confirm" ? "primary-btn" : "danger-btn"}
+                onClick={() => showModal === "confirm"
+                  ? handleConfirm()
+                  : navigate("/goods-and-services")}
+              >
+                {showModal === "confirm" ? "Ya, Simpan" : "Ya, Batalkan"}
+              </button>
+            </div>
+          </div>
         </div>
-    );
+      )}
+
+       {/* Modal Sukses */}
+      {showSuccessModal && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h3>Barang Diupdate</h3>
+              <button className="close-button" onClick={() => setShowSuccessModal(false)}>&times;</button>
+            </div>
+            <div className="modal-body">
+              <p>Barang berhasil diupdate. Anda akan diarahkan ke detail barang.</p>
+            </div>
+            <div className="modal-footer">
+              <button
+                className="primary-btn"
+                onClick={() => navigate(`/goods-and-services/${id}`)}
+              >
+                Lihat Barang
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
 };
 
 export default UpdateGoods;

@@ -388,3 +388,16 @@ textarea {
         justify-content: space-between;
     }
 }
+
+.readonly-input {
+    background-color: #f3f4f6;
+    cursor: not-allowed;
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+}
+
+.readonly-input:focus {
+    outline: none;
+    border-color: var(--border-color);
+    box-shadow: none;
+}

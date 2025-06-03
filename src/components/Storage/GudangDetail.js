@@ -187,7 +187,7 @@ const GudangDetail = () => {
                                     <tr>
                                         <th>Kode</th>
                                         <th>Nama</th>
-                                        <th>Deskripsi</th>
+                                        <th>Stok</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -195,7 +195,9 @@ const GudangDetail = () => {
                                         <tr key={barang.id || barang.kodeBarang}>
                                             <td>{barang.id || barang.kodeBarang}</td>
                                             <td>{barang.nama || barang.namaBarang}</td>
-                                            <td>{barang.deskripsi || barang.deskripsiBarang || '-'}</td>
+                                            <td>
+                                                {barang.stockBarang?.find(sb => sb.namaGudang === gudang.nama)?.stock ?? 0}
+                                            </td>
                                         </tr>
                                     ))}
                                 </tbody>

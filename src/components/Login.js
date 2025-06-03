@@ -27,6 +27,8 @@ const Login = () => {
                 console.log("Login berhasil, menyimpan token...");
                 localStorage.setItem("token", response.data.data.token);
                 localStorage.setItem("name", response.data.data.name);
+                localStorage.setItem("role", response.data.data.role);
+                localStorage.setItem("id", response.data.data.id);
                 navigate("/home");
             } else {
                 console.log("Login gagal, status bukan 200:", response.data);
