@@ -8,7 +8,7 @@ const AddEmployee = () => {
     name: "", username: "", email: "", password: "", gender: "true",
     phone: "", homePhone: "", businessPhone: "", whatsappNumber: "",
     entryDate: new Date().toISOString().split("T")[0],
-    birthDate: "", status: "",
+    birthDate: "", employeeStatus: "",
     ktpNumber: "", notes: "", role: ""
   });
 
@@ -88,7 +88,7 @@ const AddEmployee = () => {
     }
 
     if (!formData.role.trim()) errors.role = "Role wajib dipilih.";
-    if (!formData.status.trim()) errors.status = "Status wajib dipilih.";
+    if (!formData.employeeStatus.trim()) errors.employeeStatus = "Status wajib dipilih.";
     if (!formData.notes.trim()) errors.notes = "Catatan wajib diisi.";
 
     setValidationErrors(errors);
@@ -113,7 +113,7 @@ const AddEmployee = () => {
       const payload = {
         ...formData,
         gender: formData.gender === "true",
-        status: formData.status === "true",
+        employeeStatus: formData.employeeStatus === "true",
         entryDate: `${formData.entryDate}T00:00:00`,
         birthDate: `${formData.birthDate}T00:00:00`
       };
@@ -223,23 +223,23 @@ const AddEmployee = () => {
                   <label>
                     <input
                       type="radio"
-                      name="status"
+                      name="employeeStatus"
                       value="true"
-                      checked={formData.status === "true"}
+                      checked={formData.employeeStatus === "true"}
                       onChange={handleChange}
                     /> Aktif
                   </label>
                   <label>
                     <input
                       type="radio"
-                      name="status"
+                      name="employeeStatus"
                       value="false"
-                      checked={formData.status === "false"}
+                      checked={formData.employeeStatus === "false"}
                       onChange={handleChange}
                     /> Tidak Aktif
                   </label>
                 </div>
-                {hasSubmitted && validationErrors.status && <div className="barang-error">{validationErrors.status}</div>}
+                {hasSubmitted && validationErrors.employeeStatus && <div className="barang-error">{validationErrors.employeeStatus}</div>}
               </div>
             </div>
 

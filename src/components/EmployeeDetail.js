@@ -50,6 +50,10 @@ const EmployeeDetail = () => {
     navigate(`/employee/update/${id}`);
   };
 
+  const handleEditPassword = () => {
+    navigate(`/employee/update-password/${id}`);
+  };
+
   const handleBack = () => {
     navigate('/employee');
   };
@@ -95,6 +99,7 @@ const EmployeeDetail = () => {
         <div className="employee-detail-actions">
           <button className="back-btn" onClick={handleBack}>Kembali</button>
           <button className="update-btn" onClick={handleEdit}>Update Karyawan</button>
+          <button className="primary-btn" onClick={handleEditPassword}>Update Password</button>
         </div>
 
         <div className="employee-detail-card">
