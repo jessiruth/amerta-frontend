@@ -1,0 +1,108 @@
+import { useEffect, useState, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
+import "../styles/Navbar.css";
+import logo from "../assets/Logo.png";
+import logoutIcon from "../assets/Logout.png";
+import profileIcon from "../assets/Profile.png";
+import companyIcon from "../assets/Company.png";
+import financeIcon from "../assets/Finance.png";
+import purchasesIcon from "../assets/Purchases.png";
+import salesIcon from "../assets/Sales.png";
+import assetsIcon from "../assets/Assets.png";
+import crmIcon from "../assets/CRM.png";
+
+const AUTO_LOGOUT_TIME = 10 * 60 * 1000;
+
+const Navbar = () => {
+    const navigate = useNavigate();
+    const [id, setId] = useState("");
+
+    const handleLogout = useCallback(() => {
+        const confirmLogout = window.confirm("Are you sure you want to log out?");
+        if (confirmLogout) {
+            localStorage.removeItem("token");
+            localStorage.removeItem("name");
+            localStorage.removeItem("role");
+            localStorage.removeItem("id");
+            navigate("/");
+        }
+    }, [navigate]);
+
+    useEffect(() => {
+        let timeout;
+
+        const storedId = localStorage.getItem("id");
+        if (storedId) {
+            setId(storedId);
+        }
+
+        const resetTimer = () => {
+            clearTimeout(timeout);
+            timeout = setTimeout(() => {
+                alert("You have been logged out due to inactivity.");
+                handleLogout();
+            }, AUTO_LOGOUT_TIME);
+        };
+
+        window.addEventListener("mousemove", resetTimer);
+        window.addEventListener("keypress", resetTimer);
+        window.addEventListener("click", resetTimer);
+        window.addEventListener("scroll", resetTimer);
+
+        resetTimer();
+
+        return () => {
+            clearTimeout(timeout);
+            window.removeEventListener("mousemove", resetTimer);
+            window.removeEventListener("keypress", resetTimer);
+            window.removeEventListener("click", resetTimer);
+            window.removeEventListener("scroll", resetTimer);
+        };
+    }, [handleLogout]);
+
+    return (
+        <div className="navbar-container">
+            {/* Navbar Top */}
+            <div className="navbar-top">
+                <img
+                    src={logo}
+                    alt="Logo"
+                    className="logo clickable-logo"
+                    onClick={() => navigate("/home")}
+                />
+                <div className="top-right-buttons">
+                    <button onClick={() => navigate(`/profile/${id}`)} className="logout-btn">
+                        <img src={profileIcon} alt="Profile" />
+                    </button>
+                    <button onClick={handleLogout} className="logout-btn">
+                        <img src={logoutIcon} alt="Logout" />
+                    </button>
+                </div>
+            </div>
+
+            {/* Navbar Left */}
+            <div className="navbar-left">
+                <div className="nav-item" data-tooltip="Company" onClick={() => navigate("/company")}>
+                    <img src={companyIcon} alt="Company" className="nav-icon" />
+                </div>
+                <div className="nav-item" data-tooltip="Finance" onClick={() => navigate("/finance")}>
+                    <img src={financeIcon} alt="Finance" className="nav-icon" />
+                </div>
+                <div className="nav-item" data-tooltip="Purchases" onClick={() => navigate("/purchases")}>
+                    <img src={purchasesIcon} alt="Purchases" className="nav-icon" />
+                </div>
+                <div className="nav-item" data-tooltip="Sales" onClick={() => navigate("/sales")}>
+                    <img src={salesIcon} alt="Sales" className="nav-icon" />
+                </div>
+                <div className="nav-item" data-tooltip="Assets" onClick={() => navigate("/assets")}>
+                    <img src={assetsIcon} alt="Assets" className="nav-icon" />
+                </div>
+                <div className="nav-item" data-tooltip="CRM" onClick={() => navigate("/customer")}>
+                    <img src={crmIcon} alt="CRM" className="nav-icon" />
+                </div>
+            </div>
+        </div>
+    );
+};
+
+export default Navbar;
