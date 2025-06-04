@@ -12,6 +12,8 @@ const SalesFeature = () => {
 
     const token = localStorage.getItem("token");
 
+    const role = localStorage.getItem("role")?.toLowerCase();
+
     useEffect(() => {
         if (!token) navigate("/");
     }, [navigate, token]);
@@ -23,10 +25,12 @@ const SalesFeature = () => {
 
             {/* Baris pertama */}
             <div className="sales-feature-row">
-                <div className="asset-box" onClick={() => navigate("/sales/completed")}>
-                    <img src={salesIcon} alt="Sales" />
-                    <p>Sales</p>
-                </div>
+                {role !== "komisaris" && (
+                    <div className="asset-box" onClick={() => navigate("/sales/completed")}>
+                        <img src={salesIcon} alt="Sales" />
+                        <p>Sales</p>
+                    </div>
+                )}
                 <div className="asset-box" onClick={() => navigate("/sales-order")}>
                     <img src={salesOrderIcon} alt="Sales Order" />
                     <p>Sales Order</p>
