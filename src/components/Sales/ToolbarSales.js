@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import "../../styles/ToolbarGoods.css";
-import addIcon from "../../assets/Add.png";
 import refreshIcon from "../../assets/Refresh.png";
 import SearchIcon from "@mui/icons-material/Search";
 
@@ -31,14 +30,6 @@ const ToolbarSales = ({ onAdd, onRefresh, onFilter, onSearch, selectedCategory, 
 
     return (
         <div className="toolbar-goods">
-            {/* Add Button */}
-            <div className="toolbar-goods-item">
-                <button className="toolbar-goods-btn add-btn" onClick={onAdd}>
-                    <img src={addIcon} alt="Add" />
-                </button>
-                <p className="toolbar-goods-text">Add</p>
-            </div>
-
             {/* Refresh Button */}
             <div className="toolbar-goods-item">
                 <button className="toolbar-goods-btn white-btn" onClick={onRefresh}>

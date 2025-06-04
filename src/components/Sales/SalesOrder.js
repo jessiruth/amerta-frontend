@@ -103,7 +103,6 @@ const SalesOrder = () => {
             <h1 className="page-title">Sales Order</h1>
 
             <ToolbarSalesOrder
-                onAdd={() => navigate("/sales-order/add")}
                 onRefresh={handleRefresh}
                 onFilter={(category) => setSearchCategory(category)}
                 onSearch={(term) => setSearchTerm(term)}

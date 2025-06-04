@@ -1,10 +1,10 @@
-import { useState, useEffect } from "react";
-import "../styles/ToolbarGoods.css";
+import { useEffect, useState } from "react";
+import "../styles/ToolbarGoods.css"; // gunakan CSS yang sudah kamu berikan
 import addIcon from "../assets/Add.png";
 import refreshIcon from "../assets/Refresh.png";
 import SearchIcon from "@mui/icons-material/Search";
 
-const Toolbar = ({ onAdd, onRefresh, onFilter, onSearch, selectedCategory, searchTerm }) => {
+const ToolbarCustomer = ({ onAdd, onRefresh, onFilter, onSearch, selectedCategory, searchTerm }) => {
   const [inputValue, setInputValue] = useState("");
   const role = localStorage.getItem("role")?.toLowerCase();
 
@@ -22,19 +22,10 @@ const Toolbar = ({ onAdd, onRefresh, onFilter, onSearch, selectedCategory, searc
     onFilter(e.target.value);
   };
 
-  const getPlaceholderText = () => {
-    if (selectedCategory === "harga jual" || selectedCategory === "harga beli") {
-      return "Contoh: 12500,50";
-    }
-    if (selectedCategory === "stok") {
-      return "Contoh: 10";
-    }
-    return `Search by ${selectedCategory}`;
-  };
-
   return (
     <div className="toolbar-goods">
-      {!["kepala_gudang", "komisaris", "administrasi"].includes(role) && (
+      {/* Tombol Tambah */}
+      {!["komisaris"].includes(role) && (
         <div className="toolbar-goods-item">
           <button className="toolbar-goods-btn add-btn" onClick={onAdd}>
             <img src={addIcon} alt="Add" />
@@ -43,6 +34,7 @@ const Toolbar = ({ onAdd, onRefresh, onFilter, onSearch, selectedCategory, searc
         </div>
       )}
 
+      {/* Tombol Refresh */}
       <div className="toolbar-goods-item">
         <button className="toolbar-goods-btn white-btn" onClick={onRefresh}>
           <img src={refreshIcon} alt="Refresh" />
@@ -50,24 +42,28 @@ const Toolbar = ({ onAdd, onRefresh, onFilter, onSearch, selectedCategory, searc
         <p className="toolbar-goods-text">Refresh</p>
       </div>
 
-      <div className="toolbar-goods-item filter-container">
-        <select className="toolbar-goods-dropdown" onChange={handleCategoryChange} value={selectedCategory}>
+      {/* Dropdown Filter */}
+      <div className="toolbar-goods-item">
+        <select
+          className="toolbar-goods-dropdown"
+          onChange={handleCategoryChange}
+          value={selectedCategory}
+        >
           <option value="all">Filter: All</option>
           <option value="nama">Filter: Nama</option>
-          <option value="kategori">Filter: Kategori</option>
-          <option value="merk">Filter: Merk</option>
-          <option value="stok">Filter: Stok</option>
-          <option value="harga jual">Filter: Harga Jual</option>
-          <option value="harga beli">Filter: Harga Beli</option>
-          <option value="status">Filter: Status</option>
+          <option value="role">Filter: Role</option>
+          <option value="email">Filter: Email</option>
+          <option value="no_hp">Filter: Handphone</option>
+          <option value="wa">Filter: WhatsApp</option>
         </select>
       </div>
 
+      {/* Search Bar */}
       <div className="toolbar-goods-search-container">
         <input
           type="text"
-          placeholder={getPlaceholderText()}
           className="toolbar-goods-search-bar"
+          placeholder={`Search by ${selectedCategory}`}
           value={inputValue}
           onChange={handleSearchChange}
         />
@@ -77,4 +73,4 @@ const Toolbar = ({ onAdd, onRefresh, onFilter, onSearch, selectedCategory, searc
   );
 };
 
-export default Toolbar;
+export default ToolbarCustomer;

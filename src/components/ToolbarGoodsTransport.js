@@ -6,6 +6,7 @@ import SearchIcon from "@mui/icons-material/Search";
 
 const ToolbarGoodsTransport = ({ onAdd, onRefresh, onFilter, onSearch, selectedCategory, searchTerm }) => {
   const [inputValue, setInputValue] = useState("");
+  const role = localStorage.getItem("role")?.toLowerCase();
 
   useEffect(() => {
     setInputValue(searchTerm);
@@ -24,12 +25,14 @@ const ToolbarGoodsTransport = ({ onAdd, onRefresh, onFilter, onSearch, selectedC
   return (
     <div className="toolbar-goods">
       {/* Tombol Tambah */}
-      <div className="toolbar-goods-item">
-        <button className="toolbar-goods-btn add-btn" onClick={onAdd}>
-          <img src={addIcon} alt="Add" />
-        </button>
-        <p className="toolbar-goods-text">Add</p>
-      </div>
+      {!["kepala_gudang", "komisaris", "administrasi"].includes(role) && (
+        <div className="toolbar-goods-item">
+          <button className="toolbar-goods-btn add-btn" onClick={onAdd}>
+            <img src={addIcon} alt="Add" />
+          </button>
+          <p className="toolbar-goods-text">Add</p>
+        </div>
+      )}
 
       {/* Tombol Refresh */}
       <div className="toolbar-goods-item">

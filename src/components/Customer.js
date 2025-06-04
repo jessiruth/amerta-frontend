@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import Toolbar from "../components/ToolbarEmployee";
+import Toolbar from "../components/ToolbarCustomer";
 import "../styles/GoodsTransport.css";
 import axiosInstance from "../services/axiosInstance";
 

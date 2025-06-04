@@ -6,6 +6,7 @@ import SearchIcon from "@mui/icons-material/Search";
 
 const ToolbarExpense = ({ onAdd, onRefresh, onFilter, onSearch, selectedCategory, searchTerm }) => {
   const [inputValue, setInputValue] = useState("");
+  const role = localStorage.getItem("role")?.toLowerCase();
 
   useEffect(() => {
     setInputValue(searchTerm);
@@ -33,12 +34,14 @@ const ToolbarExpense = ({ onAdd, onRefresh, onFilter, onSearch, selectedCategory
 
   return (
     <div className="toolbar-goods">
-      <div className="toolbar-goods-item">
-        <button className="toolbar-goods-btn add-btn" onClick={onAdd}>
-          <img src={addIcon} alt="Add" />
-        </button>
-        <p className="toolbar-goods-text">Add</p>
-      </div>
+      {!["komisaris"].includes(role) && (
+        <div className="toolbar-goods-item">
+          <button className="toolbar-goods-btn add-btn" onClick={onAdd}>
+            <img src={addIcon} alt="Add" />
+          </button>
+          <p className="toolbar-goods-text">Add</p>
+        </div>
+      )}
 
       <div className="toolbar-goods-item">
         <button className="toolbar-goods-btn white-btn" onClick={onRefresh}>

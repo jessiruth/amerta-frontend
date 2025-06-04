@@ -6,6 +6,7 @@ import SearchIcon from "@mui/icons-material/Search";
 
 const ToolbarGudang = ({ onAdd, onRefresh, onFilter, onSearch, selectedCategory, searchTerm }) => {
     const [inputValue, setInputValue] = useState("");
+    const role = localStorage.getItem("role")?.toLowerCase();
 
     useEffect(() => {
         setInputValue(searchTerm);
@@ -31,13 +32,15 @@ const ToolbarGudang = ({ onAdd, onRefresh, onFilter, onSearch, selectedCategory,
     return (
         <div className="toolbar-goods">
             {/* Add Button */}
-            <div className="toolbar-goods-item">
+            {!["komisaris"].includes(role) && (
+                <div className="toolbar-goods-item">
                 <button className="toolbar-goods-btn add-btn" onClick={onAdd}>
                     <img src={addIcon} alt="Add" />
                 </button>
                 <p className="toolbar-goods-text">Add</p>
-            </div>
-
+                </div>
+            )}
+            
             {/* Refresh Button */}
             <div className="toolbar-goods-item">
                 <button className="toolbar-goods-btn white-btn" onClick={onRefresh}>
