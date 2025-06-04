@@ -21,6 +21,12 @@ const ToolbarEmployee = ({ onAdd, onRefresh, onFilter, onSearch, selectedCategor
     onFilter(e.target.value);
   };
 
+  const handleRoleSelect = (e) => {
+    const selectedRole = e.target.value;
+    setInputValue(selectedRole);
+    onSearch(selectedRole);
+  };
+
   return (
     <div className="toolbar-goods">
       {/* Tombol Tambah */}
@@ -57,14 +63,32 @@ const ToolbarEmployee = ({ onAdd, onRefresh, onFilter, onSearch, selectedCategor
 
       {/* Search Bar */}
       <div className="toolbar-goods-search-container">
-        <input
-          type="text"
-          className="toolbar-goods-search-bar"
-          placeholder={`Search by ${selectedCategory}`}
-          value={inputValue}
-          onChange={handleSearchChange}
-        />
-        <SearchIcon className="toolbar-goods-search-icon" />
+        {selectedCategory === "role" ? (
+          <select
+            className="toolbar-goods-dropdown"
+            value={inputValue}
+            onChange={handleRoleSelect}
+          >
+            <option value="">-- Pilih Role --</option>
+            <option value="administrasi">Administrasi</option>
+            <option value="direktur">Direktur</option>
+            <option value="sales">Sales</option>
+            <option value="komisaris">Komisaris</option>
+            <option value="kepala_gudang">Kepala Gudang</option>
+            <option value="general_manager">General Manager</option>
+          </select>
+        ) : (
+          <div className="toolbar-goods-search-wrapper">
+            <input
+              type="text"
+              className="toolbar-goods-search-bar"
+              placeholder={`Search by ${selectedCategory}`}
+              value={inputValue}
+              onChange={handleSearchChange}
+            />
+            <SearchIcon className="toolbar-goods-search-icon" />
+          </div>
+        )}
       </div>
     </div>
   );
