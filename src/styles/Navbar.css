@@ -97,33 +97,3 @@
     opacity: 1;
     visibility: visible;
 }
-
-@media print {
-    /* Sembunyikan seluruh struktur navbar */
-    .navbar-container,
-    .navbar-top,
-    .navbar-left,
-    .logout-btn,
-    .nav-item,
-    .nav-item::after,
-    .clickable-logo {
-      display: none !important;
-      visibility: hidden !important;
-    }
-  
-    /* Optional: Buat konten utama penuh tanpa terhalang navbar */
-    body {
-      margin: 0 !important;
-      padding: 0 !important;
-    }
-  
-    /* Jika ada container utama untuk konten, hapus padding/margin kiri */
-    .main-content,
-    .gudang-detail-container,
-    .page-container-detail {
-      margin-left: 0 !important;
-      padding-left: 0 !important;
-      width: 100% !important;
-    }
-  }
-  

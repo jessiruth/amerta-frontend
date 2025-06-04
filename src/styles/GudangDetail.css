@@ -210,7 +210,6 @@
 
 @media print {
 
-    /* Sembunyikan elemen navigasi dan tombol aksi saat print */
     .sidebar,
     .navbar,
     .action-buttons,
@@ -228,10 +227,61 @@
     .navbar-top,
     .logout-btn {
         display: none !important;
-        visibility: hidden;
+        visibility: hidden !important;
     }
 
-    /* Pastikan konten utama memenuhi lebar halaman */
+    html, body {
+        margin: 0 !important;
+        padding: 0 !important;
+        font-size: 12px;
+        line-height: 1.4;
+    }
+
+    .gudang-detail-container {
+        display: block !important;
+    }
+
+    .detail-row {
+        display: block !important;
+        margin-bottom: 10px;
+    }
+
+    .detail-label {
+        display: inline-block;
+        width: 100%;
+        font-weight: bold;
+    }
+
+    .detail-value {
+        display: inline-block;
+        width: 100%;
+    }
+
+    .page-title {
+        font-size: 28px !important;
+        color: #2c2c2c !important;
+    }
+
+    .section-title:before {
+        display: none !important;
+    }
+
+    table.barang-table {
+        table-layout: fixed;
+        word-wrap: break-word;
+    }
+
+    .barang-table th, .barang-table td {
+        font-size: 12px !important;
+        padding: 4px !important;
+        color: #2c2c2c !important;
+    }
+
+    .detail-card {
+        page-break-inside: avoid;
+        margin-bottom: 10px !important;
+    }
+
     .gudang-detail-container,
     .gudang-detail-content,
     .detail-card {
@@ -240,16 +290,19 @@
         box-shadow: none !important;
         padding: 0 !important;
         margin: 0 !important;
+        display: block !important;
+        min-height: unset !important;
+        height: auto !important;
+        overflow: visible !important;
     }
 
-    .barang-table th,
-    .barang-table td {
-        font-size: 12px !important;
-        padding: 6px !important;
+    body {
+        overflow: visible !important;
+        height: auto !important;
     }
 
-    /* Hilangkan margin halaman dari browser (opsional) */
     @page {
+        size: A4 !important;
         margin: 1cm;
     }
 }
