@@ -118,6 +118,14 @@ const GudangDetail = () => {
                             <span className="detail-value">{gudang.kapasitas}</span>
                         </div>
                         <div className="detail-row">
+                            <span className="detail-label">Total Stock:</span>
+                            <span className="detail-value">{gudang.totalStock}</span>
+                        </div>
+                        <div className="detail-row">
+                            <span className="detail-label">Sisa Kapasitas:</span>
+                            <span className="detail-value">{gudang.sisaKapasitas}</span>
+                        </div>
+                        <div className="detail-row">
                             <span className="detail-label">Deskripsi:</span>
                             <span className="detail-value">{gudang.deskripsi || '-'}</span>
                         </div>
