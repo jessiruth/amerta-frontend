@@ -53,6 +53,7 @@ const Toolbar = ({ onAdd, onRefresh, onFilter, onSearch, selectedCategory, searc
       <div className="toolbar-goods-item filter-container">
         <select className="toolbar-goods-dropdown" onChange={handleCategoryChange} value={selectedCategory}>
           <option value="all">Filter: All</option>
+          <option value="id">Filter: ID</option>
           <option value="nama">Filter: Nama</option>
           <option value="kategori">Filter: Kategori</option>
           <option value="merk">Filter: Merk</option>

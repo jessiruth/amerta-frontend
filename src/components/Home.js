@@ -43,17 +43,26 @@ const Home = () => {
     const storedRole = localStorage.getItem("role");
     if (storedName) setName(storedName);
     if (storedRole) setRole(storedRole);
-    fetchGudangData();
-    fetchDashboardData();
   }, [navigate]);
+
+  useEffect(() => {
+    if (role) {
+      fetchDashboardData();
+
+      if (role !== "sales") {
+        fetchGudangData();
+      }
+    }
+  }, [role]);
 
   const fetchGudangData = async () => {
     try {
       const token = localStorage.getItem("token");
       const headers = { Authorization: `Bearer ${token}` };
       const gudangRes = await axiosInstance.get("/api/gudang/", { headers });
+      const totalGudang = gudangRes.data?.data?.length || 0;
       setGudangList(gudangRes.data?.data || []);
-      setSummary(prev => ({ ...prev, totalGudang: gudangRes.data?.data?.length || 0 }));
+      setSummary(prev => ({ ...prev, totalGudang: totalGudang}));
     } catch (err) {
       console.error("Gagal memuat data gudang:", err);
     }
@@ -145,18 +154,13 @@ const Home = () => {
       mergedData.sort((a, b) => new Date(a.x) - new Date(b.x));
       setIncomeExpenseData(mergedData);
 
-
-      // Summary Data
-      const [barangRes, customerRes, salesRes, purchaseRes, gudangRes] = await Promise.all([
+      const [barangRes, customerRes, salesRes, purchaseRes] = await Promise.all([
         axiosInstance.get("/api/barang/viewall", { headers }),
         axiosInstance.get("/api/customer/viewall", { headers }),
         axiosInstance.get("/api/sales-order/viewall", { headers }),
-        axiosInstance.get("/api/purchase-order/viewall", { headers }),
-        axiosInstance.get("/api/gudang/", { headers })
+        axiosInstance.get("/api/purchase-order/viewall", { headers })
       ]);
 
-      const totalGudang = gudangRes.data?.data?.length || 0;
-      setGudangList(gudangRes.data?.data || []);
       const activeItems = barangRes.data.data.filter((b) => b.active).length;
       const inactiveItems = barangRes.data.data.filter((b) => !b.active).length;
       setBarangStatusData([
@@ -181,15 +185,14 @@ const Home = () => {
       const soThisMonth = countByMonth(salesRes.data.data, "salesDate") || 0;
       const poThisMonth = countByMonth(purchaseRes.data.data, "purchaseDate") || 0;
 
-      setSummary({
+      setSummary(prev => ({
+        ...prev,
         barangAktif: activeItems,
         totalCustomer: customers,
         totalSupplier: vendors,
-        totalGudang: totalGudang,
         salesOrderBulanIni: soThisMonth,
         purchaseOrderBulanIni: poThisMonth
-      });
-
+      }));
 
       // Fetch nama vendor untuk setiap PO
       const poWithVendor = await Promise.all(purchaseRes.data.data.map(async (po) => {
@@ -250,10 +253,12 @@ const Home = () => {
                 <div className="summary-box-title">PO Bulan Ini</div>
                 <div className="summary-box-value">{summary.purchaseOrderBulanIni}</div>
               </div>
-              <div className="summary-box">
-                <div className="summary-box-title">Gudang</div>
-                <div className="summary-box-value">{summary.totalGudang}</div>
-              </div>
+                {role !== "sales" && (
+                  <div className="summary-box">
+                    <div className="summary-box-title">Gudang</div>
+                    <div className="summary-box-value">{summary.totalGudang}</div>
+                  </div>
+                )}
             </div>
 
 
@@ -461,39 +466,41 @@ const Home = () => {
 
           </>
         )}
-        <div className="dashboard-table-section">
-          <div className="dashboard-table-card">
-            <h3>Daftar Gudang</h3>
-            <table className="dashboard-table">
-              <thead>
-                <tr>
-                  <th>Nama</th>
-                  <th>Kota, Provinsi</th>
-                  <th>Kapasitas</th>
-                </tr>
-              </thead>
-              <tbody>
-                {gudangList.length === 0 ? (
+       {role !== "sales" && (
+          <div className="dashboard-table-section">
+            <div className="dashboard-table-card">
+              <h3>Daftar Gudang</h3>
+              <table className="dashboard-table">
+                <thead>
                   <tr>
-                    <td colSpan={3} style={{ textAlign: "center" }}>No data available</td>
+                    <th>Nama</th>
+                    <th>Kota, Provinsi</th>
+                    <th>Kapasitas</th>
                   </tr>
-                ) : (
-                  gudangList.slice(-5).reverse().map((gudang, idx) => (
-                    <tr key={idx}>
-                      <td>{gudang.nama}</td>
-                      <td>
-                        {gudang.alamatGudang?.kota && gudang.alamatGudang?.provinsi
-                          ? `${gudang.alamatGudang.kota}, ${gudang.alamatGudang.provinsi}`
-                          : gudang.alamatGudang?.kota || "-"}
-                      </td>
-                      <td>{parseFloat(gudang.kapasitas).toLocaleString("id-ID")}</td>
+                </thead>
+                <tbody>
+                  {gudangList.length === 0 ? (
+                    <tr>
+                      <td colSpan={3} style={{ textAlign: "center" }}>No data available</td>
                     </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
+                  ) : (
+                    gudangList.slice(-5).reverse().map((gudang, idx) => (
+                      <tr key={idx}>
+                        <td>{gudang.nama}</td>
+                        <td>
+                          {gudang.alamatGudang?.kota && gudang.alamatGudang?.provinsi
+                            ? `${gudang.alamatGudang.kota}, ${gudang.alamatGudang.provinsi}`
+                            : gudang.alamatGudang?.kota || "-"}
+                        </td>
+                        <td>{parseFloat(gudang.kapasitas).toLocaleString("id-ID")}</td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );

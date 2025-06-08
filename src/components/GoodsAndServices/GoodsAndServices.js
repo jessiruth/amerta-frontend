@@ -65,6 +65,9 @@ const GoodsAndServices = () => {
       if (searchCategory === "merk") {
         return barang.merk.toLowerCase() === lower;
       }
+      if (searchCategory === "id") {
+        return barang.id.toLowerCase() === lower;
+      }
       if (searchCategory === "harga jual") {
         return !isNaN(parsed) && parseFloat(barang.hargaJual) === parsed;
       }
@@ -108,7 +111,7 @@ const GoodsAndServices = () => {
 
   const handleRefresh = () => {
     setSearchTerm("");
-    setSearchCategory("nama");
+    setSearchCategory("all");
     setCurrentPage(1);
     fetchData();
   };
@@ -153,6 +156,7 @@ const GoodsAndServices = () => {
           <table className="goods-table">
             <thead>
               <tr>
+                <th>ID</th>
                 <th>Nama</th>
                 <th>Kategori</th>
                 <th>Merk</th>
@@ -167,6 +171,7 @@ const GoodsAndServices = () => {
               {currentItems.length > 0 ? (
                 currentItems.map((barang) => (
                   <tr key={barang.id}>
+                    <td>{barang.id}</td>
                     <td>{barang.nama}</td>
                     <td>{barang.kategori}</td>
                     <td>{barang.merk}</td>
