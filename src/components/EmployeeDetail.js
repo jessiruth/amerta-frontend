@@ -10,6 +10,7 @@ const EmployeeDetail = () => {
   const [loading, setLoading] = useState(true);
   const [employeeData, setEmployeeData] = useState(null);
   const [error, setError] = useState(null);
+  const role = localStorage.getItem("role")?.toLowerCase();
 
   const fetchEmployeeData = useCallback(async () => {
     setLoading(true);
@@ -98,8 +99,12 @@ const EmployeeDetail = () => {
         <h1 className="employee-detail-title">{employeeData.name}</h1>
         <div className="employee-detail-actions">
           <button className="back-btn" onClick={handleBack}>Kembali</button>
-          <button className="update-btn" onClick={handleEdit}>Update Karyawan</button>
+          {!["administrasi", "komisaris"].includes(role) && (
+            <button className="update-btn" onClick={handleEdit}>Update Karyawan</button>
+          )}
+          {!["direktur", "general_manager", "komisaris"].includes(role) && (
           <button className="primary-btn" onClick={handleEditPassword}>Update Password</button>
+          )}
         </div>
 
         <div className="employee-detail-card">

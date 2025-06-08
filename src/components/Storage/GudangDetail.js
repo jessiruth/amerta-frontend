@@ -9,6 +9,7 @@ const GudangDetail = () => {
     const [error, setError] = useState(null);
     const { namaGudang } = useParams();
     const navigate = useNavigate();
+    const role = localStorage.getItem("role")?.toLowerCase();
 
     const fetchGudangDetail = useCallback(async (token) => {
         setLoading(true);

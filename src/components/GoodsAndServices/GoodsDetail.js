@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axiosInstance from '../../services/axiosInstance';
 import '../../styles/GoodsDetail.css';
-import SearchIcon from "@mui/icons-material/Search";
 
 const GoodsDetail = () => {
   const [barang, setBarang] = useState(null);
@@ -10,6 +9,7 @@ const GoodsDetail = () => {
   const [error, setError] = useState(null);
   const { id } = useParams();
   const navigate = useNavigate();
+  const userRole = localStorage.getItem("role")?.toLowerCase();
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -64,7 +64,11 @@ const GoodsDetail = () => {
 
         <div className="goods-action-buttons">
           <button className="goods-back-btn" onClick={handleBack}>Kembali</button>
+
+          {!["administrasi", "komisaris"].includes(userRole) && (
           <button className="goods-update-btn" onClick={handleUpdate}>Update Barang</button>
+          )}
+
         </div>
 
         <div className="goods-card">

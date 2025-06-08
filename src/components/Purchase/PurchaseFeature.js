@@ -13,6 +13,8 @@ const PurchaseFeature = () => {
 
     const token = localStorage.getItem("token");
 
+    const role = localStorage.getItem("role")?.toLowerCase();
+
     useEffect(() => {
         if (!token) navigate("/");
     }, [navigate, token]);
@@ -23,10 +25,12 @@ const PurchaseFeature = () => {
 
             {/* Baris pertama */}
             <div className="sales-feature-row">
-                <div className="asset-box" onClick={() => navigate("/purchase/completed")}>
-                    <img src={purchaseIcon} alt="Purchase" />
-                    <p>Purchase</p>
-                </div>
+                {role !== "komisaris" && (
+                    <div className="asset-box" onClick={() => navigate("/purchase/completed")}>
+                        <img src={purchaseIcon} alt="Purchase" />
+                        <p>Purchase</p>
+                    </div>
+                )}
                 <div className="asset-box" onClick={() => navigate("/purchase-order")}>
                     <img src={purchaseOrderIcon} alt="Purchase Order" />
                     <p>Purchase Order</p>
