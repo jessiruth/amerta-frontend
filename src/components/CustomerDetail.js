@@ -12,6 +12,7 @@ const CustomerDetail = () => {
     const [orders, setOrders] = useState([]);
     const [error, setError] = useState(null);
     const token = localStorage.getItem("token");
+    const userRole = localStorage.getItem("role")?.toLowerCase();
 
     const fetchCustomerData = useCallback(async () => {
         setLoading(true);
@@ -118,7 +119,9 @@ const CustomerDetail = () => {
 
                 <div className="action-buttons">
                     <button className="back-btn" onClick={handleBack}>Kembali</button>
+                    {!["administrasi", "komisaris"].includes(userRole) && (
                     <button className="update-btn" onClick={handleUpdateCustomer}>Update Customer/Vendor</button>
+                    )}
                 </div>
 
                 <div className="detail-card">

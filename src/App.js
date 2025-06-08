@@ -28,7 +28,6 @@ import UpdateCustomer from "./components/UpdateCustomer";
 import CustomerDetail from "./components/CustomerDetail";
 import Sales from "./components/Sales/Sales";
 import SalesOrder from "./components/Sales/SalesOrder";
-
 import AddGudang from "./components/Storage/AddGudang";
 import GudangList from './components/Storage/GudangList';
 import GudangDetail from "./components/Storage/GudangDetail";
@@ -64,10 +63,10 @@ import SalesInvoiceDetail from "./components/SalesInvoiceDetail";
 import DetailPurchase from "./components/Purchase/DetailPurchase";
 import DetailSales from "./components/Sales/DetailSales";
 import Dashboard from "./components/Dashboard";
-
 import Profile from "./components/Profile";
 import UpdateProfile from "./components/UpdateProfile";
 import UpdatePassword from "./components/UpdatePassword";
+import RoleProtectedRoute from "./components/RoleProtectedRoute";
 
 function Layout() {
     const location = useLocation();
@@ -79,87 +78,346 @@ function Layout() {
             <Routes>
                 <Route path="/" element={<Login />} />
                 <Route path="/home" element={<Home />} />
-                <Route path="/assets" element={<Assets />} />
 
-                <Route path="/goods-and-services" element={<GoodsAndServices />} />
-                <Route path="/goods-transport" element={<GoodsTransport />} />
-                <Route path="/goods-and-services/:id" element={<GoodsDetail />} />
-                <Route path="/goods-and-services/add" element={<AddGoods />} />
-                <Route path="/goods-and-services/update/:id" element={<UpdateGoods />} />
-                <Route path="/good-and-services" element={<GoodsAndServices />} />
-                <Route path="/goods-transport" element={<GoodsTransport />} />
-                <Route path="/goods-transport/add" element={<AddGoodsTransport />} />
-                <Route path="/goods-transport/detail/:id" element={<GoodsTransportDetail />} />
-                <Route path="/good-and-services/:id" element={<GoodsDetail />} />
+                <Route path="/assets" element={
+                    <RoleProtectedRoute allowedRoles={["direktur", "general_manager", "kepala_gudang", "administrasi", "komisaris"]}>
+                        <Assets />
+                    </RoleProtectedRoute>
+                } />
+                <Route path="/goods-and-services" element={
+                    <RoleProtectedRoute allowedRoles={["direktur", "general_manager", "kepala_gudang", "administrasi", "komisaris"]}>
+                        <GoodsAndServices />
+                    </RoleProtectedRoute>
+                } />
+                <Route path="/goods-and-services/:id" element={
+                    <RoleProtectedRoute allowedRoles={["direktur", "general_manager", "kepala_gudang", "administrasi", "komisaris"]}>
+                        <GoodsDetail />
+                    </RoleProtectedRoute>
+                } />
+                <Route path="/goods-and-services/add" element={
+                    <RoleProtectedRoute allowedRoles={["direktur", "general_manager"]}>
+                        <AddGoods />
+                    </RoleProtectedRoute>
+                } />
+                <Route path="/goods-and-services/update/:id" element={
+                    <RoleProtectedRoute allowedRoles={["direktur", "general_manager", "kepala_gudang"]}>
+                        <UpdateGoods />
+                    </RoleProtectedRoute>
+                } />
 
-                <Route path="/company" element={<Company />} />
-                <Route path="/employee" element={<Employee />} />
-                <Route path="/employee/:id" element={<EmployeeDetail />} />
-                <Route path="/employee/add" element={<AddEmployee />} />
-                <Route path="/employee/update/:id" element={<UpdateEmployee />} />
-                <Route path="/employee/update-password/:id" element={<UpdatePassword />} />
+                <Route path="/goods-transport" element={
+                    <RoleProtectedRoute allowedRoles={["direktur", "general_manager", "kepala_gudang", "administrasi", "komisaris"]}>
+                        <GoodsTransport />
+                    </RoleProtectedRoute>
+                } />
+                <Route path="/goods-transport/add" element={
+                    <RoleProtectedRoute allowedRoles={["direktur", "general_manager", "kepala_gudang"]}>
+                        <AddGoodsTransport />
+                    </RoleProtectedRoute>
+                } />
+                <Route path="/goods-transport/detail/:id" element={
+                    <RoleProtectedRoute allowedRoles={["direktur", "general_manager", "kepala_gudang", "administrasi", "komisaris"]}>
+                        <GoodsTransportDetail />
+                    </RoleProtectedRoute>
+                } />
 
-                <Route path="/create-pengeluaran" element={<CreatePengeluaran />} />
-                <Route path="/create-penerimaan" element={<CreatePenerimaan />} />
+                <Route path="/gudang/add" element={
+                    <RoleProtectedRoute allowedRoles={["direktur", "general_manager"]}>
+                        <AddGudang />
+                    </RoleProtectedRoute>
+                } />
+                <Route path="/gudang" element={
+                    <RoleProtectedRoute allowedRoles={["direktur", "general_manager", "kepala_gudang", "administrasi", "komisaris"]}>
+                        <GudangList />
+                    </RoleProtectedRoute>
+                } />
+                <Route path="/gudang/:namaGudang" element={
+                    <RoleProtectedRoute allowedRoles={["direktur", "general_manager", "kepala_gudang", "administrasi", "komisaris"]}>
+                        <GudangDetail />
+                    </RoleProtectedRoute>
+                } />
+                <Route path="/gudang/update/:namaGudang" element={
+                    <RoleProtectedRoute allowedRoles={["direktur", "general_manager", "kepala_gudang"]}>    
+                        <UpdateGudang />
+                    </RoleProtectedRoute>
+                } />
 
-                <Route path="/finance" element={<Finance />} />
-                <Route path="/expense" element={<Expense />} />
-                <Route path="/expense/detail/:id" element={<ExpenseDetail />} />
-                <Route path="/revenue" element={<Revenue />} />
-                <Route path="/revenue/detail/:id" element={<RevenueDetail />} />
+                <Route path="/company" element={
+                    <RoleProtectedRoute allowedRoles={["direktur", "general_manager", "sales", "administrasi", "komisaris"]}>
+                        <Company />
+                    </RoleProtectedRoute>
+                } />
+                <Route path="/employee" element={
+                    <RoleProtectedRoute allowedRoles={["direktur", "general_manager", "administrasi", "komisaris"]}>
+                        <Employee />
+                    </RoleProtectedRoute>
+                } />
+                <Route path="/employee/:id" element={
+                    <RoleProtectedRoute allowedRoles={["direktur", "general_manager", "administrasi", "komisaris"]}>
+                        <EmployeeDetail />
+                    </RoleProtectedRoute>
+                } />
+                <Route path="/employee/add" element={
+                    <RoleProtectedRoute allowedRoles={["direktur", "administrasi"]}>
+                        <AddEmployee />
+                    </RoleProtectedRoute>
+                } />
+                <Route path="/employee/update/:id" element={
+                    <RoleProtectedRoute allowedRoles={["direktur", "general_manager"]}>
+                        <UpdateEmployee />
+                    </RoleProtectedRoute>
+                } />
+                <Route path="/employee/update-password/:id" element={
+                    <RoleProtectedRoute allowedRoles={["administrasi"]}>
+                        <UpdatePassword />
+                    </RoleProtectedRoute>
+                } />
 
-                <Route path="/gudang/add" element={<AddGudang />} />
-                <Route path="/gudang" element={<GudangList />} />
-                <Route path="/gudang/:namaGudang" element={<GudangDetail />} />
-                <Route path="/gudang/update/:namaGudang" element={<UpdateGudang />} />
-        
-                <Route path="/customer" element={<Customer />} />
-                <Route path="/customer/add" element={<AddCustomer />} />
-                <Route path="/customer/update/:id" element={<UpdateCustomer />} />
-                <Route path="/customer/:id" element={<CustomerDetail />} />
+                <Route path="/dashboard" element={
+                    <RoleProtectedRoute allowedRoles={["direktur", "general_manager", "sales", "administrasi", "komisaris"]}>
+                        <Dashboard />
+                    </RoleProtectedRoute>
+                } />
 
-                <Route path="/sales" element={<SalesFeature />} />
-                <Route path="/sales/completed" element={<Sales/>} />
-                <Route path="/sales/completed/detail/:id" element={<DetailSales/>} />
-                <Route path="/sales-order" element={<SalesOrder/>} />
-                <Route path="/sales-order/detail/:id" element={<DetailSalesOrder />} />
-                <Route path="/sales-order/add" element={<AddSalesOrder />} />
-                <Route path="/sales-order/confirm/:id" element={<ConfirmSalesOrder />} />
-                <Route path="/sales-order/shipping/:id" element={<ShippingSalesOrder />} />
-                <Route path="/sales-order/confirm-shipping/:id" element={<ConfirmShippingSalesOrder />} />
-                <Route path="/sales-order/payment/:id" element={<PaymentSalesOrder />} />
+                <Route path="/finance" element={
+                    <RoleProtectedRoute allowedRoles={["direktur", "administrasi", "komisaris"]}>
+                        <Finance />
+                    </RoleProtectedRoute>
+                } />
+                <Route path="/create-pengeluaran" element={
+                    <RoleProtectedRoute allowedRoles={["direktur", "administrasi"]}>
+                        <CreatePengeluaran />
+                    </RoleProtectedRoute>
+                } />
+                <Route path="/expense" element={
+                    <RoleProtectedRoute allowedRoles={["direktur", "administrasi", "komisaris"]}>
+                        <Expense />
+                    </RoleProtectedRoute>
+                } />
+                <Route path="/expense/detail/:id" element={
+                    <RoleProtectedRoute allowedRoles={["direktur", "administrasi", "komisaris"]}>
+                        <ExpenseDetail />
+                    </RoleProtectedRoute>
+                } />
 
-                <Route path="/purchases" element={<PurchaseFeature />} />
-                <Route path="/purchase/completed" element={<Purchase/>} />
-                <Route path="/purchase/completed/detail/:id" element={<DetailPurchase/>} />
-                <Route path="/purchase-order" element={<PurchaseOrder/>} />
-                <Route path="/purchase-order/detail/:id" element={<DetailPurchaseOrder/>} />
-                <Route path="/purchase-order/add" element={<AddPurchaseOrder />} />
-                <Route path="/purchase-order/confirm/:id" element={<ConfirmPurchaseOrder />} /> 
-                <Route path="/purchase-order/delivery/:id" element={<DeliveryPurchaseOrder />} />
-                <Route path="/purchase-order/complete-delivery/:id" element={<CompletePurchaseOrder />} />
-                <Route path="/purchase-order/payment/:id" element={<PaymentPurchaseOrder />} />
-                <Route path="/purchase-order/complete/:id" element={<CompletePurchaseOrder />} />
+                <Route path="/create-penerimaan" element={
+                    <RoleProtectedRoute allowedRoles={["direktur", "administrasi"]}>
+                        <CreatePenerimaan />
+                    </RoleProtectedRoute>
+                } />
+                <Route path="/revenue" element={
+                    <RoleProtectedRoute allowedRoles={["direktur", "administrasi", "komisaris"]}>
+                        <Revenue />
+                    </RoleProtectedRoute>
+                } />
+                <Route path="/revenue/detail/:id" element={
+                    <RoleProtectedRoute allowedRoles={["direktur", "administrasi", "komisaris"]}>
+                        <RevenueDetail />
+                    </RoleProtectedRoute>
+                } />
 
-                <Route path="/sales-receipt" element={<SalesReceipt/>} />
-                <Route path="/sales-receipt/detail/:id" element={<SalesReceiptDetail />} />
-                <Route path="/purchase-receipt" element={<PurchaseReceipt/>} />
-                <Route path="/purchase-receipt/detail/:id" element={<PurchaseReceiptDetail />} />
+                <Route path="/customer" element={
+                    <RoleProtectedRoute allowedRoles={["direktur", "general_manager", "sales", "administrasi", "komisaris"]}>
+                        <Customer />
+                    </RoleProtectedRoute>
+                } />
+                <Route path="/customer/add" element={
+                    <RoleProtectedRoute allowedRoles={["direktur", "general_manager", "sales", "administrasi"]}>
+                        <AddCustomer />
+                    </RoleProtectedRoute>
+                } />
+                <Route path="/customer/update/:id" element={
+                    <RoleProtectedRoute allowedRoles={["direktur", "general_manager", "sales", "administrasi"]}>
+                        <UpdateCustomer />
+                    </RoleProtectedRoute>
+                } />
+                <Route path="/customer/:id" element={
+                    <RoleProtectedRoute allowedRoles={["direktur", "general_manager", "sales", "administrasi", "komisaris"]}>
+                        <CustomerDetail />
+                    </RoleProtectedRoute>
+                } />
 
-                <Route path="/shipping" element={<ShippingList />} />
-                <Route path="/shipping/detail/:id" element={<DetailShipping />} />
-                <Route path="/delivery-note" element={<DeliveryList />} />
-                <Route path="/delivery/detail/:id" element={<DetailDelivery />} />
+                <Route path="/sales" element={
+                    <RoleProtectedRoute allowedRoles={["direktur", "general_manager", "sales", "administrasi", "komisaris"]}>
+                        <SalesFeature />
+                    </RoleProtectedRoute>
+                } />
+                <Route path="/sales/completed" element={
+                    <RoleProtectedRoute allowedRoles={["direktur", "general_manager", "sales", "administrasi"]}>
+                        <Sales/>
+                    </RoleProtectedRoute>
+                } />
+                <Route path="/sales/completed/detail/:id" element={
+                    <RoleProtectedRoute allowedRoles={["direktur", "general_manager", "sales", "administrasi"]}>
+                        <DetailSales/>
+                    </RoleProtectedRoute>
+                } />
+                <Route path="/sales-order" element={
+                    <RoleProtectedRoute allowedRoles={["direktur", "general_manager", "sales", "administrasi", "komisaris"]}>
+                        <SalesOrder/>
+                    </RoleProtectedRoute>
+                } />
+                <Route path="/sales-order/detail/:id" element={
+                    <RoleProtectedRoute allowedRoles={["direktur", "general_manager", "sales", "administrasi", "komisaris"]}>
+                        <DetailSalesOrder />
+                    </RoleProtectedRoute>
+                } />
+                <Route path="/sales-order/add" element={
+                    <RoleProtectedRoute allowedRoles={["direktur", "general_manager", "sales", "administrasi"]}>
+                        <AddSalesOrder />
+                    </RoleProtectedRoute>
+                } />
+                <Route path="/sales-order/confirm/:id" element={
+                    <RoleProtectedRoute allowedRoles={["direktur", "general_manager", "sales", "administrasi"]}>
+                        <ConfirmSalesOrder />
+                    </RoleProtectedRoute>
+                } />
+                <Route path="/sales-order/shipping/:id" element={
+                    <RoleProtectedRoute allowedRoles={["direktur", "general_manager", "sales", "administrasi"]}>
+                        <ShippingSalesOrder />
+                    </RoleProtectedRoute>
+                } />
+                <Route path="/sales-order/confirm-shipping/:id" element={
+                    <RoleProtectedRoute allowedRoles={["direktur", "general_manager", "sales", "administrasi"]}>
+                        <ConfirmShippingSalesOrder />
+                    </RoleProtectedRoute>
+                } />
+                <Route path="/sales-order/payment/:id" element={
+                    <RoleProtectedRoute allowedRoles={["direktur", "general_manager", "sales", "administrasi"]}>
+                        <PaymentSalesOrder />
+                    </RoleProtectedRoute>
+                } />
 
-                <Route path="/purchase-invoice" element={<PurchaseInvoice />} />
-                <Route path="/purchase-invoice/detail/:id" element={<PurchaseInvoiceDetail />} />
-                <Route path="/sales-invoice" element={<SalesInvoice />} />
-                <Route path="/sales-invoice/detail/:id" element={<SalesInvoiceDetail />} />
+                <Route path="/purchases" element={
+                    <RoleProtectedRoute allowedRoles={["direktur", "general_manager", "sales", "administrasi", "komisaris"]}>
+                        <PurchaseFeature />
+                    </RoleProtectedRoute>
+                } />
+                <Route path="/purchase/completed" element={
+                    <RoleProtectedRoute allowedRoles={["direktur", "general_manager", "sales", "administrasi"]}>
+                        <Purchase/>
+                    </RoleProtectedRoute>
+                } />
+                <Route path="/purchase/completed/detail/:id" element={
+                    <RoleProtectedRoute allowedRoles={["direktur", "general_manager", "sales", "administrasi"]}>
+                        <DetailPurchase/>
+                    </RoleProtectedRoute>
+                } />
+                <Route path="/purchase-order" element={
+                    <RoleProtectedRoute allowedRoles={["direktur", "general_manager", "sales", "administrasi", "komisaris"]}>
+                        <PurchaseOrder/>
+                    </RoleProtectedRoute>
+                } />
+                <Route path="/purchase-order/detail/:id" element={
+                    <RoleProtectedRoute allowedRoles={["direktur", "general_manager", "sales", "administrasi", "komisaris"]}>
+                        <DetailPurchaseOrder/>
+                    </RoleProtectedRoute>
+                } />
+                <Route path="/purchase-order/add" element={
+                    <RoleProtectedRoute allowedRoles={["direktur", "general_manager", "sales", "administrasi"]}>
+                        <AddPurchaseOrder />
+                    </RoleProtectedRoute>
+                } />
+                <Route path="/purchase-order/confirm/:id" element={
+                    <RoleProtectedRoute allowedRoles={["direktur", "general_manager", "sales", "administrasi"]}>
+                        <ConfirmPurchaseOrder />
+                    </RoleProtectedRoute>
+                } /> 
+                <Route path="/purchase-order/delivery/:id" element={
+                    <RoleProtectedRoute allowedRoles={["direktur", "general_manager", "sales", "administrasi"]}>
+                        <DeliveryPurchaseOrder />
+                    </RoleProtectedRoute>
+                } />
+                <Route path="/purchase-order/complete-delivery/:id" element={
+                    <RoleProtectedRoute allowedRoles={["direktur", "general_manager", "sales", "administrasi"]}>
+                        <CompletePurchaseOrder />
+                    </RoleProtectedRoute>
+                } />
+                <Route path="/purchase-order/payment/:id" element={
+                    <RoleProtectedRoute allowedRoles={["direktur", "general_manager", "sales", "administrasi"]}>
+                        <PaymentPurchaseOrder />
+                    </RoleProtectedRoute>
+                } />
+                <Route path="/purchase-order/complete/:id" element={
+                    <RoleProtectedRoute allowedRoles={["direktur", "general_manager", "sales", "administrasi"]}>
+                        <CompletePurchaseOrder />
+                    </RoleProtectedRoute>
+                } />
 
-                <Route path="/delivery-invoice" element={<PurchaseInvoice />} />
-                <Route path="/purchase-invoice/detail/:id" element={<PurchaseInvoiceDetail />} />
+                <Route path="/sales-receipt" element={
+                    <RoleProtectedRoute allowedRoles={["direktur", "general_manager", "sales", "administrasi", "komisaris"]}>
+                        <SalesReceipt/>
+                    </RoleProtectedRoute>
+                } />
+                <Route path="/sales-receipt/detail/:id" element={
+                    <RoleProtectedRoute allowedRoles={["direktur", "general_manager", "sales", "administrasi", "komisaris"]}>
+                        <SalesReceiptDetail />
+                    </RoleProtectedRoute>
+                } />
+                <Route path="/purchase-receipt" element={
+                    <RoleProtectedRoute allowedRoles={["direktur", "general_manager", "sales", "administrasi", "komisaris"]}>
+                        <PurchaseReceipt/>
+                    </RoleProtectedRoute>
+                } />
+                <Route path="/purchase-receipt/detail/:id" element={
+                    <RoleProtectedRoute allowedRoles={["direktur", "general_manager", "sales", "administrasi", "komisaris"]}>
+                        <PurchaseReceiptDetail />
+                    </RoleProtectedRoute>
+                } />
 
-                <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/shipping" element={
+                    <RoleProtectedRoute allowedRoles={["direktur", "general_manager", "sales", "administrasi", "komisaris"]}>
+                        <ShippingList />
+                    </RoleProtectedRoute>
+                } />
+                <Route path="/shipping/detail/:id" element={
+                    <RoleProtectedRoute allowedRoles={["direktur", "general_manager", "sales", "administrasi", "komisaris"]}>
+                        <DetailShipping />
+                    </RoleProtectedRoute>
+                } />
+                <Route path="/delivery-note" element={
+                    <RoleProtectedRoute allowedRoles={["direktur", "general_manager", "sales", "administrasi", "komisaris"]}>
+                        <DeliveryList />
+                    </RoleProtectedRoute>
+                } />
+                <Route path="/delivery/detail/:id" element={
+                    <RoleProtectedRoute allowedRoles={["direktur", "general_manager", "sales", "administrasi", "komisaris"]}>
+                        <DetailDelivery />
+                    </RoleProtectedRoute>
+                } />
+
+                <Route path="/purchase-invoice" element={
+                    <RoleProtectedRoute allowedRoles={["direktur", "general_manager", "sales", "administrasi", "komisaris"]}>
+                        <PurchaseInvoice />
+                    </RoleProtectedRoute>
+                } />
+                <Route path="/purchase-invoice/detail/:id" element={
+                    <RoleProtectedRoute allowedRoles={["direktur", "general_manager", "sales", "administrasi", "komisaris"]}>
+                        <PurchaseInvoiceDetail />
+                    </RoleProtectedRoute>
+                } />
+                <Route path="/sales-invoice" element={
+                    <RoleProtectedRoute allowedRoles={["direktur", "general_manager", "sales", "administrasi", "komisaris"]}>
+                        <SalesInvoice />
+                    </RoleProtectedRoute>
+                } />
+                <Route path="/sales-invoice/detail/:id" element={
+                    <RoleProtectedRoute allowedRoles={["direktur", "general_manager", "sales", "administrasi", "komisaris"]}>
+                        <SalesInvoiceDetail />
+                    </RoleProtectedRoute>
+                } />
+
+                <Route path="/delivery-invoice" element={
+                    <RoleProtectedRoute allowedRoles={["direktur", "general_manager", "sales", "administrasi", "komisaris"]}>
+                        <PurchaseInvoice />
+                    </RoleProtectedRoute>
+                } />
+                <Route path="/purchase-invoice/detail/:id" element={
+                    <RoleProtectedRoute allowedRoles={["direktur", "general_manager", "sales", "administrasi", "komisaris"]}>
+                        <PurchaseInvoiceDetail />
+                    </RoleProtectedRoute>
+                } />
+
                 <Route path="/profile/:id" element={<Profile />} />
                 <Route path="/profile/update-password/:id" element={<UpdateProfile />} />
             </Routes>
