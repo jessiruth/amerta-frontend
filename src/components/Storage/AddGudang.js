@@ -77,20 +77,21 @@ const AddGudang = () => {
     if (!formData.nama.trim()) newErrors.nama = "Nama gudang harus diisi";
     if (!formData.kapasitas) newErrors.kapasitas = "Kapasitas gudang harus diisi";
     if (formData.kapasitas && isNaN(formData.kapasitas)) newErrors.kapasitas = "Kapasitas harus berupa angka";
-    if (!formData.deskripsi.trim()) newErrors.deskripsi = "Deskripsi harus diisi";
+    if (formData.kapasitas && Number(formData.kapasitas) <= 0) newErrors.kapasitas = "Kapasitas harus lebih dari 0";
     if (!formData.kepalaGudangId) newErrors.kepalaGudangId = "Kepala gudang harus dipilih";
     if (!formData.alamatGudang.alamat.trim()) newErrors['alamatGudang.alamat'] = "Alamat harus diisi";
     if (!formData.alamatGudang.kota.trim()) newErrors['alamatGudang.kota'] = "Kota harus diisi";
     if (!formData.alamatGudang.provinsi.trim()) newErrors['alamatGudang.provinsi'] = "Provinsi harus diisi";
-    if (!formData.alamatGudang.kodePos.trim()) newErrors['alamatGudang.kodePos'] = "Kode pos harus diisi";
     if (formData.alamatGudang.kodePos && !/^\d+$/.test(formData.alamatGudang.kodePos)) {
         newErrors['alamatGudang.kodePos'] = "Kode pos harus berupa angka";
+    }
+    if (formData.alamatGudang.kodePos && formData.alamatGudang.kodePos.length > 5) {
+        newErrors['alamatGudang.kodePos'] = "Kode pos maksimal 5 karakter";
     }
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
-    };
-
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -149,10 +150,9 @@ const AddGudang = () => {
               </div>
 
               <div className="form-group">
-                <label htmlFor="deskripsi">Deskripsi<span className="required">*</span></label>
+                <label htmlFor="deskripsi">Deskripsi</label>
                 <textarea id="deskripsi" name="deskripsi" value={formData.deskripsi}
                   onChange={handleChange} rows="4" placeholder="Deskripsi singkat tentang gudang ini" />
-                  {errors.deskripsi && <span className="error-message">{errors.deskripsi}</span>}
               </div>
 
               <div className="form-group">
