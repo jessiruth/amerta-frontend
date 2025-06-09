@@ -78,10 +78,12 @@ const AddGudang = () => {
     if (!formData.kapasitas) newErrors.kapasitas = "Kapasitas gudang harus diisi";
     if (formData.kapasitas && isNaN(formData.kapasitas)) newErrors.kapasitas = "Kapasitas harus berupa angka";
     if (formData.kapasitas && Number(formData.kapasitas) <= 0) newErrors.kapasitas = "Kapasitas harus lebih dari 0";
+    if (!formData.deskripsi.trim()) newErrors.deskripsi = "Deskripsi harus diisi";
     if (!formData.kepalaGudangId) newErrors.kepalaGudangId = "Kepala gudang harus dipilih";
     if (!formData.alamatGudang.alamat.trim()) newErrors['alamatGudang.alamat'] = "Alamat harus diisi";
     if (!formData.alamatGudang.kota.trim()) newErrors['alamatGudang.kota'] = "Kota harus diisi";
     if (!formData.alamatGudang.provinsi.trim()) newErrors['alamatGudang.provinsi'] = "Provinsi harus diisi";
+    if (!formData.alamatGudang.kodePos.trim()) newErrors['alamatGudang.kodePos'] = "Kode pos harus diisi";
     if (formData.alamatGudang.kodePos && !/^\d+$/.test(formData.alamatGudang.kodePos)) {
         newErrors['alamatGudang.kodePos'] = "Kode pos harus berupa angka";
     }
@@ -152,7 +154,8 @@ const AddGudang = () => {
               <div className="form-group">
                 <label htmlFor="deskripsi">Deskripsi</label>
                 <textarea id="deskripsi" name="deskripsi" value={formData.deskripsi}
-                  onChange={handleChange} rows="4" placeholder="Deskripsi singkat tentang gudang ini" />
+                  onChange={handleChange} className={errors.deskripsi ? "error-input" : ""} rows="4" placeholder="Deskripsi singkat tentang gudang ini" />
+                {errors.deskripsi && <span className="error-message">{errors.deskripsi}</span>}
               </div>
 
               <div className="form-group">

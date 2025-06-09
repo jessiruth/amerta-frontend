@@ -48,13 +48,13 @@ const GudangList = () => {
             if (!lower) return true;
 
             if (searchCategory === "nama") {
-                return item.nama.toLowerCase().includes(lower);
+                return item.nama.toLowerCase() === lower;
             } else if (searchCategory === "kota") {
-                return item.alamatGudang?.kota?.toLowerCase().includes(lower);
+                return item.alamatGudang?.kota?.toLowerCase() === lower;
             } else if (searchCategory === "provinsi") {
-                return item.alamatGudang?.provinsi?.toLowerCase().includes(lower);
+                return item.alamatGudang?.provinsi?.toLowerCase() === lower;
             } else if (searchCategory === "kapasitas") {
-                return numberOnly && item.kapasitas.toString().includes(numberOnly);
+                return numberOnly && item.kapasitas.toString() === numberOnly;
             } else if (searchCategory === "all") {
                 return (
                     item.nama.toLowerCase().includes(lower) ||
