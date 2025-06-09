@@ -1,0 +1,242 @@
+:root {
+  --primary-color: #3182ce;
+  --primary-hover: #2c5282;
+  --danger-color: #e53e3e;
+  --border-color: #e2e8f0;
+  --radius: 8px;
+  --transition: all 0.2s ease;
+}
+
+.barang-form-container {
+  background-color: #f7fafc;
+  min-height: 100vh;
+  padding: 2rem;
+}
+
+.barang-form-content {
+  max-width: 900px;
+  margin: 70px auto 0;
+  background: white;
+  padding: 2rem;
+  border-radius: var(--radius);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.barang-form-section h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: #2d3748;
+}
+
+.barang-form-group {
+  margin-bottom: 1.5rem;
+}
+
+.barang-form-group label {
+  display: block;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+  color: #2d3748;
+  font-size: 0.95rem;
+}
+
+.barang-form-group .required {
+  color: var(--danger-color);
+  margin-left: 0.25rem;
+}
+
+.barang-form-group input,
+.barang-form-group select {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+  font-size: 0.9375rem;
+}
+
+.barang-form-group input:focus,
+.barang-form-group select:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px rgba(49, 130, 206, 0.2);
+}
+
+.barang-radio-group {
+  display: flex;
+  gap: 1.5rem;
+  margin-top: 0.25rem;
+}
+
+.barang-radio-group label {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.barang-error {
+  color: var(--danger-color);
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+  display: block;
+}
+
+.barang-stock-table-wrapper {
+  max-height: 260px;
+  overflow-y: auto;
+  margin-bottom: 1rem;
+}
+
+.barang-stock-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.barang-stock-table th,
+.barang-stock-table td {
+  padding: 0.75rem;
+  text-align: center;
+  border: 1px solid var(--border-color);
+  box-sizing: border-box;
+}
+
+.barang-stock-table th {
+  background-color: #f6f9fc;
+  font-weight: 600;
+  color: #2d3748;
+}
+
+.barang-delete-button {
+  background: none;
+  border: none;
+  color: var(--danger-color);
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
+.barang-delete-button:hover {
+  color: darkred;
+}
+
+.barang-add-btn {
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: var(--radius);
+  margin-bottom: 1rem;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.barang-add-btn:hover {
+  background-color: var(--primary-hover);
+}
+
+.barang-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.barang-cancel-btn,
+.barang-submit-btn {
+  padding: 0.75rem 1.5rem;
+  font-size: 0.9375rem;
+  border-radius: var(--radius);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.barang-cancel-btn {
+  background-color: white;
+  border: 1px solid var(--border-color);
+  color: #4a5568;
+}
+
+.barang-cancel-btn:hover {
+  background-color: #f9fafb;
+}
+
+.barang-submit-btn {
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+}
+
+.barang-submit-btn:hover {
+  background-color: var(--primary-hover);
+}
+
+.barang-page-header {
+  margin-top: 100px;
+  text-align: center;
+}
+
+.barang-page-title {
+  font-size: 1.875rem;
+  font-weight: 700;
+  color: #f7931e;
+  margin-bottom: 2rem;
+  font-family: 'Poppins', sans-serif;
+}
+
+/* Khusus untuk halaman AddPurchaseOrder & AddSalesOrder */
+.purchase-stock-table td:nth-child(2),
+.purchase-stock-table td:nth-child(3),
+.purchase-stock-table td:nth-child(4),
+.purchase-stock-table th:nth-child(2),
+.purchase-stock-table th:nth-child(3),
+.purchase-stock-table th:nth-child(4) {
+  width: 25%;
+ 
+}
+
+.purchase-stock-table select,
+.purchase-stock-table input[type="number"] {
+  width: 100%;
+  padding: 0.5rem;
+  box-sizing: border-box;
+}
+
+.purchase-stock-table th,
+.purchase-stock-table td {
+  padding: 0.75rem;
+  text-align: center;
+  border: 1px solid var(--border-color);
+  box-sizing: border-box;
+}
+
+.purchase-stock-table th {
+  background-color: #f6f9fc;
+  font-weight: 600;
+  color: #2d3748;
+}
+
+.password-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.password-input-wrapper input {
+  flex: 1;
+  padding-right: 40px;
+}
+
+.eye-icon {
+  position: absolute;
+  right: 10px;
+  cursor: pointer;
+  color: #555;
+}
+
+input[type="date"] {
+  font-size: 14px;
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  width: 100%;
+}

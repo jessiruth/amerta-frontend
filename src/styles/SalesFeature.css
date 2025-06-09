@@ -1,0 +1,60 @@
+.sales-feature-container {
+    margin-left: 100px;
+    padding: 80px 20px;
+    text-align: center;
+}
+
+.sales-feature-row {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    margin-top: 20px;
+}
+
+.center-row {
+    justify-content: center; /* Pusatkan baris kedua */
+    margin-top: 30px;
+}
+
+/* Reuse asset-box style */
+.asset-box {
+    background-color: #f7931e;
+    padding: 20px;
+    border-radius: 10px;
+    width: 150px;
+    text-align: center;
+    cursor: pointer;
+    transition: transform 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.asset-box img {
+    width: 50px;
+    height: 50px;
+    margin-bottom: 10px;
+}
+
+.asset-box:hover {
+    transform: scale(1.05);
+    background-color: #d97816;
+    box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.asset-box p {
+    color: black;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.page-title {
+    text-align: center;
+    font-size: 36px;
+    font-weight: bold;
+    color: #f7931e;
+    margin-bottom: 20px;
+    font-family: 'Poppins', sans-serif;
+}

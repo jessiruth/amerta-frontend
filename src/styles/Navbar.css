@@ -1,0 +1,99 @@
+.navbar-container {
+    display: flex;
+    position: fixed;
+    width: 80px; /* Only occupy space for the sidebar */
+    height: 100vh;
+    z-index: 1000;
+    pointer-events: auto; /* Ensure clicks pass through when needed */
+}
+
+.navbar-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #1a1a1a;
+    width: 100%;
+    height: 60px;
+    padding: 0 20px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1001;
+}
+
+.top-right-buttons {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.clickable-logo {
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.clickable-logo:hover {
+    transform: scale(1.1);
+}
+
+.logout-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.logout-btn img {
+    width: 40px;
+    height: auto;
+}
+
+.navbar-left {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #1a1a1a;
+    width: 80px;
+    height: 100vh;
+    padding-top: 80px;
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 900;
+    pointer-events: auto;
+}
+
+.nav-item {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 20px 0;
+    cursor: pointer;
+}
+
+.nav-item img {
+    width: 50px;
+    height: auto;
+}
+
+.nav-item::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    left: 50px;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 14px;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.nav-item:hover::after {
+    opacity: 1;
+    visibility: visible;
+}
