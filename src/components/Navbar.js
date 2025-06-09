@@ -10,24 +10,29 @@ import purchasesIcon from "../assets/Purchases.png";
 import salesIcon from "../assets/Sales.png";
 import assetsIcon from "../assets/Assets.png";
 import crmIcon from "../assets/CRM.png";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 
 const AUTO_LOGOUT_TIME = 10 * 60 * 1000;
 
 const Navbar = () => {
   const navigate = useNavigate();
   const [id, setId] = useState("");
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [role, setRole] = useState("");
 
-  const handleLogout = useCallback(() => {
-    const confirmLogout = window.confirm("Are you sure you want to log out?");
-    if (confirmLogout) {
-      localStorage.removeItem("token");
-      localStorage.removeItem("name");
-      localStorage.removeItem("role");
-      localStorage.removeItem("id");
-      navigate("/");
-    }
-  }, [navigate]);
+    const handleLogout = useCallback(() => {
+        toast.success("Logout berhasil!", { autoClose: 2000 });
+        localStorage.removeItem("token");
+        localStorage.removeItem("name");
+        localStorage.removeItem("role");
+        localStorage.removeItem("id");
+
+        setTimeout(() => {
+            navigate("/");
+        }, 2000);
+    }, [navigate]);
 
   useEffect(() => {
     let timeout;
@@ -38,13 +43,14 @@ const Navbar = () => {
     if (storedId) setId(storedId);
     if (storedRole) setRole(storedRole.toLowerCase());
 
-    const resetTimer = () => {
-      clearTimeout(timeout);
-      timeout = setTimeout(() => {
-        alert("You have been logged out due to inactivity.");
-        handleLogout();
-      }, AUTO_LOGOUT_TIME);
-    };
+        const resetTimer = () => {
+            clearTimeout(timeout);
+            timeout = setTimeout(() => {
+                toast.info("Anda telah logout karena tidak ada aktivitas.", { autoClose: 3000 });
+                handleLogout();
+            }, AUTO_LOGOUT_TIME);
+
+        };
 
     window.addEventListener("mousemove", resetTimer);
     window.addEventListener("keypress", resetTimer);
@@ -62,25 +68,25 @@ const Navbar = () => {
     };
   }, [handleLogout]);
 
-  return (
-    <div className="navbar-container">
-      {/* Navbar Top */}
-      <div className="navbar-top">
-        <img
-          src={logo}
-          alt="Logo"
-          className="logo clickable-logo"
-          onClick={() => navigate("/home")}
-        />
-        <div className="top-right-buttons">
-          <button onClick={() => navigate(`/profile/${id}`)} className="logout-btn">
-            <img src={profileIcon} alt="Profile" />
-          </button>
-          <button onClick={handleLogout} className="logout-btn">
-            <img src={logoutIcon} alt="Logout" />
-          </button>
-        </div>
-      </div>
+    return (
+        <div className="navbar-container">
+            {/* Navbar Top */}
+            <div className="navbar-top">
+                <img
+                    src={logo}
+                    alt="Logo"
+                    className="logo clickable-logo"
+                    onClick={() => navigate("/home")}
+                />
+                <div className="top-right-buttons">
+                    <button onClick={() => navigate(`/profile/${id}`)} className="logout-btn">
+                        <img src={profileIcon} alt="Profile" />
+                    </button>
+                    <button onClick={() => setShowLogoutModal(true)} className="logout-btn">
+                        <img src={logoutIcon} alt="Logout" />
+                    </button>
+                </div>
+            </div>
 
       {/* Navbar Left */}
       <div className="navbar-left">
@@ -118,6 +124,29 @@ const Navbar = () => {
         )}
         
       </div>
+            {showLogoutModal && (
+                <div className="modal-overlay">
+                    <div className="modal-content">
+                        <div className="modal-header">
+                            <h3>Konfirmasi Logout</h3>
+                            <button className="close-button" onClick={() => setShowLogoutModal(false)}>&times;</button>
+                        </div>
+                        <div className="modal-body">
+                            <p>Apakah Anda yakin ingin logout?</p>
+                        </div>
+                        <div className="modal-footer">
+                            <button className="secondary-btn" onClick={() => setShowLogoutModal(false)}>Batal</button>
+                            <button className="danger-btn" onClick={() => {
+                                setShowLogoutModal(false);
+                                handleLogout();
+                            }}>
+                                Ya, Logout
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+            <ToastContainer />
     </div>
   );
 };
