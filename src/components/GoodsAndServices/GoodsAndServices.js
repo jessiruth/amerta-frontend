@@ -89,7 +89,8 @@ const GoodsAndServices = () => {
           barang.kategori.toLowerCase().includes(lower) ||
           barang.merk.toLowerCase().includes(lower) ||
           barang.hargaJual?.toString().replace(".", ",").includes(searchTerm) ||
-          barang.hargaBeli?.toString().replace(".", ",").includes(searchTerm)
+          barang.hargaBeli?.toString().replace(".", ",").includes(searchTerm) ||
+          barang.id.toLowerCase().includes(lower)
         );
       }
       return false;
